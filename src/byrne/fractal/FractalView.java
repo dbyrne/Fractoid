@@ -4,6 +4,7 @@ import android.view.View;
 import android.graphics.*;
 import android.view.MotionEvent;
 import android.content.Context;
+import android.os.AsyncTask.Status;
 
 public class FractalView extends View {
     
@@ -12,6 +13,8 @@ public class FractalView extends View {
   private RectF selection;
   private boolean zoom;
   private double touched_x=-1, touched_y=-1;
+  private GenerateFractalTask mGenerateFractalTask;
+  private String calculationTime;
   
   FractalParameters params;
   
@@ -33,8 +36,32 @@ public class FractalView extends View {
     return fractalBitmap;
   }
 
+  public void startFractalTask() {
+    calculationTime = null;
+    if (mGenerateFractalTask != null && mGenerateFractalTask.getStatus() == Status.RUNNING) {
+      mGenerateFractalTask.cancel(true);
+    }
+    mGenerateFractalTask = new GenerateFractalTask(params,this);
+    mGenerateFractalTask.execute();
+  }
+
   public void setFractal(Bitmap fa) {
     fractalBitmap = fa;
+  }
+  
+  public void setTime(long t) {
+    long time = t / 1000;  
+    String seconds = Integer.toString((int)(time % 60));  
+    String minutes = Integer.toString((int)(time / 60));  
+    for (int i = 0; i < 2; i++) {  
+      if (seconds.length() < 2) {  
+        seconds = "0" + seconds;  
+      }  
+      if (minutes.length() < 2) {  
+        minutes = "0" + minutes;  
+      }
+    }
+    calculationTime = "Time: "+minutes+":"+seconds;
   }
 
   protected void resetCoords() {
@@ -51,7 +78,7 @@ public class FractalView extends View {
     params.setMode(FractalConstants.MANDELBROT_MODE);
     params.setMaxIterations(FractalConstants.STARTING_MAX_ITERATIONS);
     
-    new GenerateFractalTask(params,this).execute();  
+    startFractalTask();
   }
       
   @Override protected void onSizeChanged(int width, int height, int oldw, int oldh) {
@@ -71,7 +98,6 @@ public class FractalView extends View {
         touched_x = event.getX();
         touched_y = event.getY();
       } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
-        
         if (event.getY() > touched_y) {
           maxY=event.getY();
           minY=(double)touched_y;
@@ -121,7 +147,7 @@ public class FractalView extends View {
         
         params.setCoords(realmin,realmax,imagmin,imagmax);
         params.setMaxIterations(params.getMaxIterations() + 15);
-        new  GenerateFractalTask(params,this).execute();
+        startFractalTask();
       }
     } else if (!zoom) {
       if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -141,7 +167,9 @@ public class FractalView extends View {
         
         params.setCoords(realmin,realmax,imagmin,imagmax);
         params.setMaxIterations(FractalConstants.STARTING_MAX_ITERATIONS);
-        new  GenerateFractalTask(params,this).execute();
+        startFractalTask();
+      } else if (event.getAction() == MotionEvent.ACTION_UP) {
+        setZoom(true);
       }
     } 
     return true;
@@ -171,6 +199,11 @@ public class FractalView extends View {
       }
       String maxIterString = "MaxIter: " + params.getMaxIterations();
       canvas.drawText(maxIterString,5,params.getYRes()-5,p);
+      
+      if (calculationTime != null) {
+        canvas.drawText(calculationTime,params.getXRes()-120,params.getYRes()-5,p);
+      }
+      
     } else {
       resetCoords();
     }

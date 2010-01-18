@@ -5,11 +5,11 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.graphics.*;
 
-public class GenerateFractalTask extends AsyncTask<Void, Integer, Bitmap> {
+public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
   
-  ProgressDialog myProgressDialog;
   FractalParameters params;
   FractalView fractalView;
+  long startTime;
   
   public GenerateFractalTask(FractalParameters p, FractalView fv) {
     params = p;
@@ -71,14 +71,19 @@ public class GenerateFractalTask extends AsyncTask<Void, Integer, Bitmap> {
     double deltaQ = (imagmax - imagmin)/yres;
     
     final int max = params.getMaxIterations();
-
-    for (int row=0; row < yres; row++) {
-      if (row % 4 == 0) {
-        this.publishProgress((int)Math.round(100*((double)row/yres)));
+    final int PASSES = 4;
+    
+    for (int rpass = 0; rpass < PASSES; rpass++) {
+    for (int row=rpass; row < yres; row += PASSES) {
+      if (row % 5 == 0) {
+        if (isCancelled())
+          return b;
+        this.publishProgress(b);
       }
       if (mode == FractalConstants.MANDELBROT_MODE) {
         Q = imagmax - row*deltaQ;
       }
+
       for (int col=0; col < xres; col++) {
         if (mode == FractalConstants.MANDELBROT_MODE) {
           x = y = 0.0;
@@ -106,6 +111,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Integer, Bitmap> {
             
           }
         }
+
         if (lessThanMax) {
           int colorIndex = Math.max(0,((int)Math.round(mu*100)-1));
           paint.setColor(colorIntegers[colorIndex]);
@@ -115,28 +121,25 @@ public class GenerateFractalTask extends AsyncTask<Void, Integer, Bitmap> {
         c.drawPoint(col,row,paint);
       }
     }
+    }
     return b;
   }
   
   @Override protected void onPreExecute() {
-    myProgressDialog = new ProgressDialog(fractalView.getContext());
-    myProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-    myProgressDialog.setMessage("Generating Fractal...");
-    myProgressDialog.setCancelable(false);
-    myProgressDialog.show();
+    startTime = System.currentTimeMillis();
   }
-  @Override protected Bitmap doInBackground(Void... unused) {
+  @Override protected Bitmap doInBackground(Void... unused) {   
     return createBitmap();
   }
   
-  @Override protected void onProgressUpdate(Integer... progress) {
-    myProgressDialog.setProgress(progress[0]);
+  @Override protected void onProgressUpdate(Bitmap... b) {
+    fractalView.setFractal(b[0]);
+    fractalView.invalidate();
   }
   
   @Override protected void onPostExecute(Bitmap bitmap) {
-    fractalView.setZoom(true);
     fractalView.setFractal(bitmap);
+    fractalView.setTime(System.currentTimeMillis()-startTime);
     fractalView.invalidate();
-    myProgressDialog.dismiss();
   }
 }
