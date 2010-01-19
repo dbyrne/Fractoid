@@ -42,6 +42,8 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
   
   private Bitmap createBitmap() {
     
+    int order = params.getOrder();
+    
     double realmin = params.getRealMin();
     double realmax = params.getRealMax();
     double imagmin = params.getImagMin();
@@ -49,6 +51,8 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
     
     double P = params.getP();
     double Q = params.getQ();
+    
+    double xtmp = 0;
     
     int xres = params.getXRes();
     int yres = params.getYRes();
@@ -103,12 +107,19 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
             mu = index - Math.log(Math.log(Math.sqrt(xsq + ysq)))/ Math.log(2.0);
             break;
           }
-          y=2*x*y + Q;
+          
+          if (order == FractalConstants.SECOND_ORDER) {
+            xtmp = xsq - ysq;
+            y = (2*x*y) + Q;
+          } else if (order == FractalConstants.FIFTH_ORDER) {
+            xtmp = x*x*x*x*x-10*x*x*x*y*y+5*x*y*y*y*y;
+            y=(5*x*x*x*x*y-10*x*x*y*y*y+y*y*y*y*y) + Q;
+          }
+
           if (mode == FractalConstants.MANDELBROT_MODE) {
-            x = xsq - ysq + realmin + col * deltaP;
+            x = (xtmp) + realmin + col * deltaP;
           } else if (mode == FractalConstants.JULIA_MODE) {
-            x = xsq - ysq + P;
-            
+            x = (xtmp) + P;
           }
         }
 

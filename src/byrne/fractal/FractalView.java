@@ -15,6 +15,7 @@ public class FractalView extends View {
   private double touched_x=-1, touched_y=-1;
   private GenerateFractalTask mGenerateFractalTask;
   private String calculationTime;
+  private int order = FractalConstants.SECOND_ORDER;
   
   FractalParameters params;
   
@@ -27,6 +28,14 @@ public class FractalView extends View {
   
   public void setZoom(boolean z) {
     zoom = z;
+  }
+  
+  public int getOrder() {
+    return order;
+  }
+  
+  public void setOrder(int o) {
+    order = o;
   }
   
   public void setMode(int m) {
@@ -74,6 +83,7 @@ public class FractalView extends View {
     double realmin = params.getResRatio()*r_y/2*-1;
     
     params.randomizeShiftFactor();
+    params.setOrder(order);
     params.setCoords(realmin,realmax,imagmin,imagmax);
     params.setMode(FractalConstants.MANDELBROT_MODE);
     params.setMaxIterations(FractalConstants.STARTING_MAX_ITERATIONS);
@@ -103,7 +113,7 @@ public class FractalView extends View {
           minY=(double)touched_y;
         } else {
           maxY=(double)touched_y;
-          minY=event.getY();
+          minY=Math.max(event.getY(),0);
         }
         if (event.getX() > touched_x) {
           maxX=event.getX();
@@ -130,8 +140,8 @@ public class FractalView extends View {
             minY = maxY-(inv_ratio*x_range);
           }
         }
-        
-        selection = new RectF((float)minX,(float)maxY,(float)maxX,(float)minY);
+
+        selection = new RectF(Math.max((float)minX,0),Math.min((float)maxY,params.getYRes()),Math.min((float)maxX,params.getXRes()),Math.max((float)minY,0));
         postInvalidate();
         
       } else if (event.getAction() == MotionEvent.ACTION_UP) {

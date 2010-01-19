@@ -10,13 +10,15 @@ import android.graphics.Bitmap.CompressFormat;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.Menu;
+import android.view.SubMenu;
 import android.view.MenuItem;
 import android.provider.MediaStore.Images.Media;
 import android.content.ContentValues;
 
 public class Fractoid extends Activity {
     
-  FractalView fractalView;
+  private FractalView fractalView;
+  private MenuItem item2, item5;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -31,10 +33,23 @@ public class Fractoid extends Activity {
   
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
+    
     menu.add(0, FractalConstants.RESET_IMAGE, 0, "Reset");
     menu.add(0, FractalConstants.JULIA_MODE, 0, "Julia Set Mode");
+    
+    SubMenu subMenu = menu.addSubMenu("Change Equation");
+    item2 = subMenu.add(1, FractalConstants.SECOND_ORDER, 0, "Z^2 + C");
+    item5 = subMenu.add(1, FractalConstants.FIFTH_ORDER, 0, "Z^5 + C");
+    if (fractalView.getOrder() == FractalConstants.SECOND_ORDER) {
+      item2.setChecked(true);
+    } else if (fractalView.getOrder() == FractalConstants.FIFTH_ORDER) {
+      item5.setChecked(true);
+    }
+    subMenu.setGroupCheckable(1, true, true);
+    
     menu.add(0, FractalConstants.SAVE_IMAGE, 0, "Save Image");
     menu.add(0, FractalConstants.SET_WALLPAPER, 0, "Set As Wallpaper");
+    
     return true;
   }
   
@@ -48,6 +63,22 @@ public class Fractoid extends Activity {
       fractalView.setMode(FractalConstants.JULIA_MODE);
       fractalView.setZoom(false);
       fractalView.postInvalidate();
+      return true;
+   
+    case FractalConstants.SECOND_ORDER:     
+      if (!item2.isChecked()) {
+        item2.setChecked(true);
+	fractalView.setOrder(FractalConstants.SECOND_ORDER);
+	fractalView.resetCoords();
+      }
+      return true;
+    
+    case FractalConstants.FIFTH_ORDER:
+      if (!item5.isChecked()) {
+        item5.setChecked(true);
+        fractalView.setOrder(FractalConstants.FIFTH_ORDER);
+	fractalView.resetCoords();
+      }
       return true;
 
     case FractalConstants.SAVE_IMAGE:

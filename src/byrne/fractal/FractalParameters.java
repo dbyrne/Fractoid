@@ -6,6 +6,10 @@ public class FractalParameters {
   public void setMaxIterations(int i) {maxIterations = i;}
   public int getMaxIterations() {return maxIterations;}
   
+  private int order;
+  public void setOrder(int o) {order = o;}
+  public int getOrder() {return order;}
+  
   private int xres;
   public int getXRes() {return xres;}
   public void setXRes(int xr) {xres = xr;}
