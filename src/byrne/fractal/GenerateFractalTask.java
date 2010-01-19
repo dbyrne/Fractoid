@@ -111,6 +111,14 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
           if (order == FractalConstants.SECOND_ORDER) {
             xtmp = xsq - ysq;
             y = (2*x*y) + Q;
+          } else if (order == FractalConstants.THIRD_ORDER) {
+            xtmp = x*x*x - 3*x*y*y;
+            y = -y*y*y + 3*x*x*y + Q;
+            
+          } else if (order == FractalConstants.FOURTH_ORDER) {
+            xtmp = x*x*x*x - 6*x*x*y*y + y*y*y*y;
+            y = 4*x*x*x*y - 4*x*y*y*y + Q;
+            
           } else if (order == FractalConstants.FIFTH_ORDER) {
             xtmp = x*x*x*x*x-10*x*x*x*y*y+5*x*y*y*y*y;
             y=(5*x*x*x*x*y-10*x*x*y*y*y+y*y*y*y*y) + Q;

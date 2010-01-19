@@ -18,7 +18,7 @@ import android.content.ContentValues;
 public class Fractoid extends Activity {
     
   private FractalView fractalView;
-  private MenuItem item2, item5;
+  private MenuItem item2, item3, item4, item5;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -39,9 +39,15 @@ public class Fractoid extends Activity {
     
     SubMenu subMenu = menu.addSubMenu("Change Equation");
     item2 = subMenu.add(1, FractalConstants.SECOND_ORDER, 0, "Z^2 + C");
+    item3 = subMenu.add(1, FractalConstants.THIRD_ORDER, 0, "Z^3 + C");
+    item4 = subMenu.add(1, FractalConstants.FOURTH_ORDER, 0, "Z^4 + C");
     item5 = subMenu.add(1, FractalConstants.FIFTH_ORDER, 0, "Z^5 + C");
     if (fractalView.getOrder() == FractalConstants.SECOND_ORDER) {
       item2.setChecked(true);
+    } else if (fractalView.getOrder() == FractalConstants.THIRD_ORDER) {
+      item3.setChecked(true);
+    } else if (fractalView.getOrder() == FractalConstants.FOURTH_ORDER) {
+      item4.setChecked(true);
     } else if (fractalView.getOrder() == FractalConstants.FIFTH_ORDER) {
       item5.setChecked(true);
     }
@@ -69,6 +75,22 @@ public class Fractoid extends Activity {
       if (!item2.isChecked()) {
         item2.setChecked(true);
 	fractalView.setOrder(FractalConstants.SECOND_ORDER);
+	fractalView.resetCoords();
+      }
+      return true;
+    
+    case FractalConstants.THIRD_ORDER:     
+      if (!item3.isChecked()) {
+        item3.setChecked(true);
+	fractalView.setOrder(FractalConstants.THIRD_ORDER);
+	fractalView.resetCoords();
+      }
+      return true;
+    
+    case FractalConstants.FOURTH_ORDER:     
+      if (!item4.isChecked()) {
+        item4.setChecked(true);
+	fractalView.setOrder(FractalConstants.FOURTH_ORDER);
 	fractalView.resetCoords();
       }
       return true;
