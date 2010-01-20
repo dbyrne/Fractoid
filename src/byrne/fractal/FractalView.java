@@ -17,7 +17,7 @@ public class FractalView extends View {
   private String calculationTime;
   private int order = FractalConstants.SECOND_ORDER;
   
-  FractalParameters params;
+  private FractalParameters params;
   
   public FractalView(Context context){
     super(context);
@@ -36,6 +36,10 @@ public class FractalView extends View {
   
   public void setOrder(int o) {
     order = o;
+  }
+  
+  public int getMode() {
+    return params.getMode();
   }
   
   public void setMode(int m) {

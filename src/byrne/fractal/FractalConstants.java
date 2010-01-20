@@ -11,6 +11,7 @@ public class FractalConstants {
   final static int THIRD_ORDER = 7;
   final static int FOURTH_ORDER = 8;
   final static int FIFTH_ORDER = 9;
+  final static int SIXTH_ORDER = 10;
   
   final static int STARTING_MAX_ITERATIONS = 35;
 

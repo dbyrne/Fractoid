@@ -1,7 +1,5 @@
 package byrne.fractal;
 
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.graphics.*;
 
@@ -122,6 +120,9 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
           } else if (order == FractalConstants.FIFTH_ORDER) {
             xtmp = x*x*x*x*x-10*x*x*x*y*y+5*x*y*y*y*y;
             y=(5*x*x*x*x*y-10*x*x*y*y*y+y*y*y*y*y) + Q;
+          } else if (order == FractalConstants.SIXTH_ORDER) {
+            xtmp = x*x*x*x*x*x-15*x*x*x*x*y*y+15*x*x*y*y*y*y-y*y*y*y*y*y;
+            y=(6*x*x*x*x*x*y-20*x*x*x*y*y*y+6*x*y*y*y*y*y) + Q;
           }
 
           if (mode == FractalConstants.MANDELBROT_MODE) {
