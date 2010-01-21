@@ -18,7 +18,7 @@ import android.content.ContentValues;
 public class Fractoid extends Activity {
     
   private FractalView fractalView;
-  private MenuItem item2, item3, item4, item5, item6, juliaItem;
+  private MenuItem item2, item3, item4, item5, item6, item7, juliaItem;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -53,16 +53,19 @@ public class Fractoid extends Activity {
     item4 = subMenu.add(1, FractalConstants.FOURTH_ORDER, 0, "Z^4 + C");
     item5 = subMenu.add(1, FractalConstants.FIFTH_ORDER, 0, "Z^5 + C");
     item6 = subMenu.add(1, FractalConstants.SIXTH_ORDER, 0, "Z^6 + C");
-    if (fractalView.getOrder() == FractalConstants.SECOND_ORDER) {
+    item7 = subMenu.add(1, FractalConstants.Z4Z3Z2, 0, "Z^4 - Z^3 - Z^2 + C");
+    if (fractalView.getEquation() == FractalConstants.SECOND_ORDER) {
       item2.setChecked(true);
-    } else if (fractalView.getOrder() == FractalConstants.THIRD_ORDER) {
+    } else if (fractalView.getEquation() == FractalConstants.THIRD_ORDER) {
       item3.setChecked(true);
-    } else if (fractalView.getOrder() == FractalConstants.FOURTH_ORDER) {
+    } else if (fractalView.getEquation() == FractalConstants.FOURTH_ORDER) {
       item4.setChecked(true);
-    } else if (fractalView.getOrder() == FractalConstants.FIFTH_ORDER) {
+    } else if (fractalView.getEquation() == FractalConstants.FIFTH_ORDER) {
       item5.setChecked(true);
-    } else if (fractalView.getOrder() == FractalConstants.SIXTH_ORDER) {
+    } else if (fractalView.getEquation() == FractalConstants.SIXTH_ORDER) {
       item6.setChecked(true);
+    } else if (fractalView.getEquation() == FractalConstants.Z4Z3Z2) {
+      item7.setChecked(true);
     }
     subMenu.setGroupCheckable(1, true, true);
     
@@ -89,7 +92,7 @@ public class Fractoid extends Activity {
     case FractalConstants.SECOND_ORDER:     
       if (!item2.isChecked()) {
         item2.setChecked(true);
-	fractalView.setOrder(FractalConstants.SECOND_ORDER);
+	fractalView.setEquation(FractalConstants.SECOND_ORDER);
 	setJuliaMenuEnabled(true);
 	fractalView.resetCoords();
       }
@@ -98,7 +101,7 @@ public class Fractoid extends Activity {
     case FractalConstants.THIRD_ORDER:     
       if (!item3.isChecked()) {
         item3.setChecked(true);
-	fractalView.setOrder(FractalConstants.THIRD_ORDER);
+	fractalView.setEquation(FractalConstants.THIRD_ORDER);
 	setJuliaMenuEnabled(true);
 	fractalView.resetCoords();
       }
@@ -107,7 +110,7 @@ public class Fractoid extends Activity {
     case FractalConstants.FOURTH_ORDER:     
       if (!item4.isChecked()) {
         item4.setChecked(true);
-	fractalView.setOrder(FractalConstants.FOURTH_ORDER);
+	fractalView.setEquation(FractalConstants.FOURTH_ORDER);
 	setJuliaMenuEnabled(true);
 	fractalView.resetCoords();
       }
@@ -116,7 +119,7 @@ public class Fractoid extends Activity {
     case FractalConstants.FIFTH_ORDER:
       if (!item5.isChecked()) {
         item5.setChecked(true);
-        fractalView.setOrder(FractalConstants.FIFTH_ORDER);
+        fractalView.setEquation(FractalConstants.FIFTH_ORDER);
 	setJuliaMenuEnabled(true);
 	fractalView.resetCoords();
       }
@@ -125,7 +128,16 @@ public class Fractoid extends Activity {
     case FractalConstants.SIXTH_ORDER:
       if (!item6.isChecked()) {
         item6.setChecked(true);
-        fractalView.setOrder(FractalConstants.SIXTH_ORDER);
+        fractalView.setEquation(FractalConstants.SIXTH_ORDER);
+	setJuliaMenuEnabled(true);
+	fractalView.resetCoords();
+      }
+      return true;
+   
+    case FractalConstants.Z4Z3Z2:
+      if (!item7.isChecked()) {
+        item7.setChecked(true);
+        fractalView.setEquation(FractalConstants.Z4Z3Z2);
 	setJuliaMenuEnabled(true);
 	fractalView.resetCoords();
       }

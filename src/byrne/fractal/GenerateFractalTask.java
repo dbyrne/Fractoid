@@ -15,12 +15,11 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
   }
   
   private int[] calculateColors() {
-    double red, green, blue;
     
-    double shiftFactor = params.getShiftFactor();
-
+    double red, green, blue;    
     final int numberOfColors = params.getMaxIterations()*100;
-    int[] colorIntegers = new int[numberOfColors];
+    int[] colorIntegers = new int[numberOfColors];   
+    double shiftFactor = params.getShiftFactor();
     
     for (int x = 0; x < numberOfColors; x++) {
       double data = x;
@@ -32,15 +31,14 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
       green = (green*127.0) + 127.0;
       blue = (blue*127.0) + 127.0;
       colorIntegers[x] = Color.rgb((int)red, (int)green, (int)blue);
-    }
+    }    
     
-    return colorIntegers;
-    
+    return colorIntegers;   
   }
   
   private Bitmap createBitmap() {
     
-    int order = params.getOrder();
+    int equation = params.getEquation();
     
     double realmin = params.getRealMin();
     double realmax = params.getRealMax();
@@ -106,23 +104,27 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
             break;
           }
           
-          if (order == FractalConstants.SECOND_ORDER) {
+          if (equation == FractalConstants.SECOND_ORDER) {
             xtmp = xsq - ysq;
             y = (2*x*y) + Q;
-          } else if (order == FractalConstants.THIRD_ORDER) {
+            
+          } else if (equation == FractalConstants.THIRD_ORDER) {
             xtmp = x*x*x - 3*x*y*y;
             y = -y*y*y + 3*x*x*y + Q;
             
-          } else if (order == FractalConstants.FOURTH_ORDER) {
+          } else if (equation == FractalConstants.FOURTH_ORDER) {
             xtmp = x*x*x*x - 6*x*x*y*y + y*y*y*y;
             y = 4*x*x*x*y - 4*x*y*y*y + Q;
             
-          } else if (order == FractalConstants.FIFTH_ORDER) {
+          } else if (equation == FractalConstants.FIFTH_ORDER) {
             xtmp = x*x*x*x*x-10*x*x*x*y*y+5*x*y*y*y*y;
             y=(5*x*x*x*x*y-10*x*x*y*y*y+y*y*y*y*y) + Q;
-          } else if (order == FractalConstants.SIXTH_ORDER) {
+          } else if (equation == FractalConstants.SIXTH_ORDER) {
             xtmp = x*x*x*x*x*x-15*x*x*x*x*y*y+15*x*x*y*y*y*y-y*y*y*y*y*y;
             y=(6*x*x*x*x*x*y-20*x*x*x*y*y*y+6*x*y*y*y*y*y) + Q;
+          } else if (equation == FractalConstants.Z4Z3Z2) {
+            xtmp = x*x*x*x - 6*x*x*y*y + y*y*y*y - (x*x*x - 3*x*y*y) - (xsq - ysq);
+            y = 4*x*x*x*y - 4*x*y*y*y - (-y*y*y + 3*x*x*y) - (2*x*y) + Q;
           }
 
           if (mode == FractalConstants.MANDELBROT_MODE) {

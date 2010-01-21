@@ -15,7 +15,7 @@ public class FractalView extends View {
   private double touched_x=-1, touched_y=-1;
   private GenerateFractalTask mGenerateFractalTask;
   private String calculationTime;
-  private int order = FractalConstants.SECOND_ORDER;
+  private int equation = FractalConstants.SECOND_ORDER;
   
   private FractalParameters params;
   
@@ -30,12 +30,12 @@ public class FractalView extends View {
     zoom = z;
   }
   
-  public int getOrder() {
-    return order;
+  public int getEquation() {
+    return equation;
   }
   
-  public void setOrder(int o) {
-    order = o;
+  public void setEquation(int o) {
+    equation = o;
   }
   
   public int getMode() {
@@ -87,7 +87,7 @@ public class FractalView extends View {
     double realmin = params.getResRatio()*r_y/2*-1;
     
     params.randomizeShiftFactor();
-    params.setOrder(order);
+    params.setEquation(equation);
     params.setCoords(realmin,realmax,imagmin,imagmax);
     params.setMode(FractalConstants.MANDELBROT_MODE);
     params.setMaxIterations(FractalConstants.STARTING_MAX_ITERATIONS);
