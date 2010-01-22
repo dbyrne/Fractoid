@@ -5,6 +5,8 @@ import android.graphics.*;
 import android.view.MotionEvent;
 import android.content.Context;
 import android.os.AsyncTask.Status;
+import android.util.AttributeSet; 
+import java.util.Map; 
 
 public class FractalView extends View {
     
@@ -26,6 +28,13 @@ public class FractalView extends View {
     params.setMaxIterations(FractalConstants.STARTING_MAX_ITERATIONS);
   }
   
+  public FractalView(Context context, AttributeSet attrs){
+        super(context, attrs);
+        zoom = true;
+        params = new FractalParameters();
+        params.setMaxIterations(FractalConstants.STARTING_MAX_ITERATIONS);
+  } 
+  
   public void setZoom(boolean z) {
     zoom = z;
   }
@@ -36,6 +45,15 @@ public class FractalView extends View {
   
   public void setEquation(int o) {
     equation = o;
+  }
+  
+  public int getMaxIterations() {
+    return params.getMaxIterations();
+  }
+  
+  public void setMaxIterations(int i) {
+    params.setMaxIterations(i);
+    startFractalTask();
   }
   
   public int getMode() {
@@ -78,7 +96,6 @@ public class FractalView extends View {
   }
 
   protected void resetCoords() {
-
     double imagmax = 1.4;
     double imagmin = -1.4;
 

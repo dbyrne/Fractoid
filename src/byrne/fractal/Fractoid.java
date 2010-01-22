@@ -12,21 +12,30 @@ import android.view.Window;
 import android.view.Menu;
 import android.view.SubMenu;
 import android.view.MenuItem;
+import android.view.MenuInflater;
+import android.view.View;
 import android.provider.MediaStore.Images.Media;
 import android.content.ContentValues;
+import android.widget.Button;
 
 public class Fractoid extends Activity {
     
   private FractalView fractalView;
   private MenuItem item2, item3, item4, item5, item6, item7, juliaItem;
 
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
+  @Override public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     
-    requestWindowFeature(Window.FEATURE_NO_TITLE);
-    fractalView = new FractalView(this);
-    setContentView(fractalView);
+    setContentView(R.layout.main_layout);
+     
+    final Button maxIterButton = (Button) findViewById(R.id.maxIterationButton);
+    maxIterButton.setOnClickListener(new View.OnClickListener() {
+      public void onClick(View v) {
+        fractalView.setMaxIterations(fractalView.getMaxIterations()+15);
+      }
+    });
+    
+    fractalView = (FractalView) findViewById(R.id.mFractalView);
     Eula.showEula(this);
 
   }
@@ -36,60 +45,36 @@ public class Fractoid extends Activity {
     juliaItem.setEnabled(b);
   }
   
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    
-    menu.add(0, FractalConstants.RESET_IMAGE, 0, "Reset");
-    juliaItem = menu.add(0, FractalConstants.JULIA_MODE, 0, "Julia Set Mode");
-    if (fractalView.getMode() == FractalConstants.JULIA_MODE) {
-      setJuliaMenuEnabled(false);
-    } else {
-      setJuliaMenuEnabled(true);
-    }
-    
-    SubMenu subMenu = menu.addSubMenu("Change Equation");
-    item2 = subMenu.add(1, FractalConstants.SECOND_ORDER, 0, "Z^2 + C");
-    item3 = subMenu.add(1, FractalConstants.THIRD_ORDER, 0, "Z^3 + C");
-    item4 = subMenu.add(1, FractalConstants.FOURTH_ORDER, 0, "Z^4 + C");
-    item5 = subMenu.add(1, FractalConstants.FIFTH_ORDER, 0, "Z^5 + C");
-    item6 = subMenu.add(1, FractalConstants.SIXTH_ORDER, 0, "Z^6 + C");
-    item7 = subMenu.add(1, FractalConstants.Z4Z3Z2, 0, "Z^4 - Z^3 - Z^2 + C");
-    if (fractalView.getEquation() == FractalConstants.SECOND_ORDER) {
-      item2.setChecked(true);
-    } else if (fractalView.getEquation() == FractalConstants.THIRD_ORDER) {
-      item3.setChecked(true);
-    } else if (fractalView.getEquation() == FractalConstants.FOURTH_ORDER) {
-      item4.setChecked(true);
-    } else if (fractalView.getEquation() == FractalConstants.FIFTH_ORDER) {
-      item5.setChecked(true);
-    } else if (fractalView.getEquation() == FractalConstants.SIXTH_ORDER) {
-      item6.setChecked(true);
-    } else if (fractalView.getEquation() == FractalConstants.Z4Z3Z2) {
-      item7.setChecked(true);
-    }
-    subMenu.setGroupCheckable(1, true, true);
-    
-    menu.add(0, FractalConstants.SAVE_IMAGE, 0, "Save Image");
-    menu.add(0, FractalConstants.SET_WALLPAPER, 0, "Set As Wallpaper");
+  @Override public boolean onCreateOptionsMenu(Menu menu) {
+    MenuInflater inflater = getMenuInflater();
+    inflater.inflate(R.menu.options_menu, menu);
+    juliaItem = menu.findItem(R.id.julia_button);
+    item2 = menu.findItem(R.id.z2_button);
+    item3 = menu.findItem(R.id.z3_button);
+    item4 = menu.findItem(R.id.z4_button);
+    item5 = menu.findItem(R.id.z5_button);
+    item6 = menu.findItem(R.id.z6_button);
+    item7 = menu.findItem(R.id.z4z3z2_button);
     
     return true;
   }
   
   public boolean onOptionsItemSelected(MenuItem item) {
+
     switch (item.getItemId()) {
-    case FractalConstants.RESET_IMAGE:
+    case R.id.reset_button:
       setJuliaMenuEnabled(true);
       fractalView.resetCoords();
       return true;
 
-    case FractalConstants.JULIA_MODE:
+    case R.id.julia_button:
       setJuliaMenuEnabled(false);
       fractalView.setMode(FractalConstants.JULIA_MODE);
       fractalView.setZoom(false);
       fractalView.postInvalidate();
       return true;
    
-    case FractalConstants.SECOND_ORDER:     
+    case R.id.z2_button:     
       if (!item2.isChecked()) {
         item2.setChecked(true);
 	fractalView.setEquation(FractalConstants.SECOND_ORDER);
@@ -98,7 +83,7 @@ public class Fractoid extends Activity {
       }
       return true;
     
-    case FractalConstants.THIRD_ORDER:     
+    case R.id.z3_button:     
       if (!item3.isChecked()) {
         item3.setChecked(true);
 	fractalView.setEquation(FractalConstants.THIRD_ORDER);
@@ -107,7 +92,7 @@ public class Fractoid extends Activity {
       }
       return true;
     
-    case FractalConstants.FOURTH_ORDER:     
+    case R.id.z4_button:     
       if (!item4.isChecked()) {
         item4.setChecked(true);
 	fractalView.setEquation(FractalConstants.FOURTH_ORDER);
@@ -116,7 +101,7 @@ public class Fractoid extends Activity {
       }
       return true;
     
-    case FractalConstants.FIFTH_ORDER:
+    case R.id.z5_button:
       if (!item5.isChecked()) {
         item5.setChecked(true);
         fractalView.setEquation(FractalConstants.FIFTH_ORDER);
@@ -125,7 +110,7 @@ public class Fractoid extends Activity {
       }
       return true;
     
-    case FractalConstants.SIXTH_ORDER:
+    case R.id.z6_button:
       if (!item6.isChecked()) {
         item6.setChecked(true);
         fractalView.setEquation(FractalConstants.SIXTH_ORDER);
@@ -134,7 +119,7 @@ public class Fractoid extends Activity {
       }
       return true;
    
-    case FractalConstants.Z4Z3Z2:
+    case R.id.z4z3z2_button:
       if (!item7.isChecked()) {
         item7.setChecked(true);
         fractalView.setEquation(FractalConstants.Z4Z3Z2);
@@ -143,7 +128,7 @@ public class Fractoid extends Activity {
       }
       return true;
 
-    case FractalConstants.SAVE_IMAGE:
+    case R.id.save_button:
       try {
 	ContentValues values = new ContentValues(3);
 	values.put(Media.DISPLAY_NAME, "Fractal");
@@ -159,7 +144,7 @@ public class Fractoid extends Activity {
       }
       return true;
 
-    case FractalConstants.SET_WALLPAPER:
+    case R.id.wallpaper_button:
       WallpaperManager wm = WallpaperManager.getInstance(this);
       try {
         wm.setBitmap(fractalView.getFractal());
@@ -170,4 +155,5 @@ public class Fractoid extends Activity {
     }
     return false;
   }
+  
 }
