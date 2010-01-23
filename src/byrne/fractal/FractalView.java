@@ -56,6 +56,23 @@ public class FractalView extends View {
     startFractalTask();
   }
   
+  public void zoomOut() {
+    double imagmin = params.getImagMin();
+    double imagmax = params.getImagMax();
+    double realmin = params.getRealMin();
+    double realmax = params.getRealMax();
+    double realRange = Math.abs(realmax-realmin);
+    double imagRange = Math.abs(imagmax-imagmin);
+    
+    imagmin = imagmin - (imagRange/2);
+    imagmax = imagmax + (imagRange/2);
+    realmin = realmin - (realRange/2);
+    realmax = realmax + (realRange/2);
+    
+    params.setCoords(realmin,realmax,imagmin,imagmax);
+    startFractalTask();
+  }
+  
   public int getMode() {
     return params.getMode();
   }

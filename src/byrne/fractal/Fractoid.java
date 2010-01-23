@@ -32,6 +32,14 @@ public class Fractoid extends Activity {
     setContentView(R.layout.main_layout);
     
     fractalView = (FractalView) findViewById(R.id.mFractalView);
+    
+    final Button zoomOutButton = (Button) findViewById(R.id.zoomOutButton);
+    zoomOutButton.setOnClickListener(new View.OnClickListener() {
+      public void onClick(View v) {
+	fractalView.zoomOut();
+      }
+    });
+    
     Eula.showEula(this);
 
   }
