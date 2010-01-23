@@ -4,6 +4,7 @@ import java.io.OutputStream;
 import android.net.Uri;
 import android.app.Activity;
 import android.app.WallpaperManager;
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -17,27 +18,52 @@ import android.view.View;
 import android.provider.MediaStore.Images.Media;
 import android.content.ContentValues;
 import android.widget.Button;
+import android.widget.EditText;
 
 public class Fractoid extends Activity {
     
   private FractalView fractalView;
   private MenuItem item2, item3, item4, item5, item6, item7, juliaItem;
+  final int MAX_ITERATIONS_DIALOG = 1;
 
   @Override public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     
     setContentView(R.layout.main_layout);
-     
-    final Button maxIterButton = (Button) findViewById(R.id.maxIterationButton);
-    maxIterButton.setOnClickListener(new View.OnClickListener() {
-      public void onClick(View v) {
-        fractalView.setMaxIterations(fractalView.getMaxIterations()+15);
-      }
-    });
     
     fractalView = (FractalView) findViewById(R.id.mFractalView);
     Eula.showEula(this);
 
+  }
+  
+  @Override protected Dialog onCreateDialog(int id) {
+    Dialog dialog;
+    switch(id) {
+    case MAX_ITERATIONS_DIALOG:
+        
+	dialog = new Dialog(this);
+
+	dialog.setContentView(R.layout.max_iterations_dialog);
+	dialog.setTitle("Set Max Iterations");
+	
+	final EditText maxIterationsText = (EditText) dialog.findViewById(R.id.maxIterationsText);
+	maxIterationsText.setText(Integer.toString(fractalView.getMaxIterations()));
+	
+	final Button setButton = (Button) dialog.findViewById(R.id.setButton);
+	setButton.setOnClickListener(new View.OnClickListener() {
+	  public void onClick(View v) {
+	    try {
+	       fractalView.setMaxIterations(Integer.parseInt(maxIterationsText.getText().toString()));
+	       dismissDialog(MAX_ITERATIONS_DIALOG);
+	    } catch (NumberFormatException e) {System.out.println(e);}
+	  }
+	});
+	
+        break;
+    default:
+        dialog = null;
+    }
+    return dialog;
   }
   
   public void setJuliaMenuEnabled(boolean b) {
@@ -65,6 +91,10 @@ public class Fractoid extends Activity {
     case R.id.reset_button:
       setJuliaMenuEnabled(true);
       fractalView.resetCoords();
+      return true;
+    
+    case R.id.max_iteration_button:
+      showDialog(MAX_ITERATIONS_DIALOG);
       return true;
 
     case R.id.julia_button:

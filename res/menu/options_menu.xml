@@ -2,6 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/reset_button"
           android:title="Reset"/>
+    <item android:id="@+id/max_iteration_button"
+          android:title="Change Max Iterations" />
     <item android:id="@+id/julia_button"
           android:title="Julia Set Mode"/>
     <item android:id="@+id/equation_button"
