@@ -17,7 +17,7 @@ public class FractalView extends View {
   private double touched_x=-1, touched_y=-1;
   private GenerateFractalTask mGenerateFractalTask;
   private String calculationTime;
-  private int equation = FractalConstants.SECOND_ORDER;
+  private ComplexEquation equation = ComplexEquation.SECOND_ORDER;
   
   private FractalParameters params;
   
@@ -39,12 +39,12 @@ public class FractalView extends View {
     zoom = z;
   }
   
-  public int getEquation() {
+  public ComplexEquation getEquation() {
     return equation;
   }
   
-  public void setEquation(int o) {
-    equation = o;
+  public void setEquation(ComplexEquation e) {
+    equation = e;
   }
   
   public int getMaxIterations() {

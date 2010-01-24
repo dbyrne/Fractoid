@@ -6,9 +6,9 @@ public class FractalParameters {
   public void setMaxIterations(int i) {maxIterations = i;}
   public int getMaxIterations() {return maxIterations;}
   
-  private int equation;
-  public void setEquation(int e) {equation = e;}
-  public int getEquation() {return equation;}
+  private ComplexEquation equation;
+  public void setEquation(ComplexEquation e) {equation = e;}
+  public ComplexEquation getEquation() {return equation;}
   
   private int xres;
   public int getXRes() {return xres;}

@@ -38,7 +38,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
   
   private Bitmap createBitmap() {
     
-    int equation = params.getEquation();
+    ComplexEquation equation = params.getEquation();
     
     double realmin = params.getRealMin();
     double realmax = params.getRealMax();
@@ -104,27 +104,30 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
             break;
           }
           
-          if (equation == FractalConstants.SECOND_ORDER) {
-            xtmp = xsq - ysq;
-            y = (2*x*y) + Q;
-            
-          } else if (equation == FractalConstants.THIRD_ORDER) {
-            xtmp = x*x*x - 3*x*y*y;
-            y = -y*y*y + 3*x*x*y + Q;
-            
-          } else if (equation == FractalConstants.FOURTH_ORDER) {
-            xtmp = x*x*x*x - 6*x*x*y*y + y*y*y*y;
-            y = 4*x*x*x*y - 4*x*y*y*y + Q;
-            
-          } else if (equation == FractalConstants.FIFTH_ORDER) {
-            xtmp = x*x*x*x*x-10*x*x*x*y*y+5*x*y*y*y*y;
-            y=(5*x*x*x*x*y-10*x*x*y*y*y+y*y*y*y*y) + Q;
-          } else if (equation == FractalConstants.SIXTH_ORDER) {
-            xtmp = x*x*x*x*x*x-15*x*x*x*x*y*y+15*x*x*y*y*y*y-y*y*y*y*y*y;
-            y=(6*x*x*x*x*x*y-20*x*x*x*y*y*y+6*x*y*y*y*y*y) + Q;
-          } else if (equation == FractalConstants.Z4Z3Z2) {
-            xtmp = x*x*x*x - 6*x*x*y*y + y*y*y*y - (x*x*x - 3*x*y*y) - (xsq - ysq);
-            y = 4*x*x*x*y - 4*x*y*y*y - (-y*y*y + 3*x*x*y) - (2*x*y) + Q;
+          switch (equation) {
+            case SECOND_ORDER:
+              xtmp = xsq - ysq;
+              y = (2*x*y) + Q;
+              break;
+            case THIRD_ORDER:
+              xtmp = x*x*x - 3*x*y*y;
+              y = -y*y*y + 3*x*x*y + Q;
+              break;
+            case FOURTH_ORDER:
+              xtmp = x*x*x*x - 6*x*x*y*y + y*y*y*y;
+              y = 4*x*x*x*y - 4*x*y*y*y + Q;
+              break;
+            case FIFTH_ORDER:
+              xtmp = x*x*x*x*x-10*x*x*x*y*y+5*x*y*y*y*y;
+              y=(5*x*x*x*x*y-10*x*x*y*y*y+y*y*y*y*y) + Q;
+              break;
+            case SIXTH_ORDER:
+              xtmp = x*x*x*x*x*x-15*x*x*x*x*y*y+15*x*x*y*y*y*y-y*y*y*y*y*y;
+              y=(6*x*x*x*x*x*y-20*x*x*x*y*y*y+6*x*y*y*y*y*y) + Q;
+              break;
+            case Z4Z3Z2:
+              xtmp = x*x*x*x - 6*x*x*y*y + y*y*y*y - (x*x*x - 3*x*y*y) - (xsq - ysq);
+              y = 4*x*x*x*y - 4*x*y*y*y - (-y*y*y + 3*x*x*y) - (2*x*y) + Q;
           }
 
           if (mode == FractalConstants.MANDELBROT_MODE) {

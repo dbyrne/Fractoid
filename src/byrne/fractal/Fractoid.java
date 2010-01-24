@@ -115,7 +115,7 @@ public class Fractoid extends Activity {
     case R.id.z2_button:     
       if (!item2.isChecked()) {
         item2.setChecked(true);
-	fractalView.setEquation(FractalConstants.SECOND_ORDER);
+	fractalView.setEquation(ComplexEquation.SECOND_ORDER);
 	setJuliaMenuEnabled(true);
 	fractalView.resetCoords();
       }
@@ -124,7 +124,7 @@ public class Fractoid extends Activity {
     case R.id.z3_button:     
       if (!item3.isChecked()) {
         item3.setChecked(true);
-	fractalView.setEquation(FractalConstants.THIRD_ORDER);
+	fractalView.setEquation(ComplexEquation.THIRD_ORDER);
 	setJuliaMenuEnabled(true);
 	fractalView.resetCoords();
       }
@@ -133,7 +133,7 @@ public class Fractoid extends Activity {
     case R.id.z4_button:     
       if (!item4.isChecked()) {
         item4.setChecked(true);
-	fractalView.setEquation(FractalConstants.FOURTH_ORDER);
+	fractalView.setEquation(ComplexEquation.FOURTH_ORDER);
 	setJuliaMenuEnabled(true);
 	fractalView.resetCoords();
       }
@@ -142,7 +142,7 @@ public class Fractoid extends Activity {
     case R.id.z5_button:
       if (!item5.isChecked()) {
         item5.setChecked(true);
-        fractalView.setEquation(FractalConstants.FIFTH_ORDER);
+        fractalView.setEquation(ComplexEquation.FIFTH_ORDER);
 	setJuliaMenuEnabled(true);
 	fractalView.resetCoords();
       }
@@ -151,7 +151,7 @@ public class Fractoid extends Activity {
     case R.id.z6_button:
       if (!item6.isChecked()) {
         item6.setChecked(true);
-        fractalView.setEquation(FractalConstants.SIXTH_ORDER);
+        fractalView.setEquation(ComplexEquation.SIXTH_ORDER);
 	setJuliaMenuEnabled(true);
 	fractalView.resetCoords();
       }
@@ -160,7 +160,7 @@ public class Fractoid extends Activity {
     case R.id.z4z3z2_button:
       if (!item7.isChecked()) {
         item7.setChecked(true);
-        fractalView.setEquation(FractalConstants.Z4Z3Z2);
+        fractalView.setEquation(ComplexEquation.Z4Z3Z2);
 	setJuliaMenuEnabled(true);
 	fractalView.resetCoords();
       }
