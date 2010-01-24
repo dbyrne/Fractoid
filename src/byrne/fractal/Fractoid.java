@@ -32,7 +32,6 @@ public class Fractoid extends Activity {
     setContentView(R.layout.main_layout);
     
     fractalView = (FractalView) findViewById(R.id.mFractalView);
-    
     final Button zoomOutButton = (Button) findViewById(R.id.zoomOutButton);
     zoomOutButton.setOnClickListener(new View.OnClickListener() {
       public void onClick(View v) {
@@ -107,7 +106,7 @@ public class Fractoid extends Activity {
 
     case R.id.julia_button:
       setJuliaMenuEnabled(false);
-      fractalView.setMode(FractalConstants.JULIA_MODE);
+      fractalView.setType(FractalType.JULIA);
       fractalView.setZoom(false);
       fractalView.postInvalidate();
       return true;

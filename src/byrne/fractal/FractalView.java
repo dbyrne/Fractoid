@@ -25,14 +25,12 @@ public class FractalView extends View {
     super(context);
     zoom = true;
     params = new FractalParameters();
-    params.setMaxIterations(FractalConstants.STARTING_MAX_ITERATIONS);
   }
   
   public FractalView(Context context, AttributeSet attrs){
         super(context, attrs);
         zoom = true;
         params = new FractalParameters();
-        params.setMaxIterations(FractalConstants.STARTING_MAX_ITERATIONS);
   } 
   
   public void setZoom(boolean z) {
@@ -73,12 +71,12 @@ public class FractalView extends View {
     startFractalTask();
   }
   
-  public int getMode() {
-    return params.getMode();
+  public FractalType getType() {
+    return params.getType();
   }
   
-  public void setMode(int m) {
-    params.setMode(m);
+  public void setType(FractalType t) {
+    params.setType(t);
   }
   public Bitmap getFractal() {
     return fractalBitmap;
@@ -123,8 +121,8 @@ public class FractalView extends View {
     params.randomizeShiftFactor();
     params.setEquation(equation);
     params.setCoords(realmin,realmax,imagmin,imagmax);
-    params.setMode(FractalConstants.MANDELBROT_MODE);
-    params.setMaxIterations(FractalConstants.STARTING_MAX_ITERATIONS);
+    params.setType(FractalType.MANDELBROT);
+    params.resetMaxIterations();
     
     startFractalTask();
   }
@@ -214,7 +212,7 @@ public class FractalView extends View {
         realmin = (params.getResRatio())*y_range/2*-1;
         
         params.setCoords(realmin,realmax,imagmin,imagmax);
-        params.setMaxIterations(FractalConstants.STARTING_MAX_ITERATIONS);
+        params.resetMaxIterations();
         startFractalTask();
       } else if (event.getAction() == MotionEvent.ACTION_UP) {
         setZoom(true);

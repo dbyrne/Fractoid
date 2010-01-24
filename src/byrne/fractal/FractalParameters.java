@@ -2,7 +2,10 @@ package byrne.fractal;
 
 public class FractalParameters {
   
-  private int maxIterations;
+  final int STARTING_MAX_ITERATIONS = 35;
+  private int maxIterations = STARTING_MAX_ITERATIONS;
+  
+  public void resetMaxIterations() {maxIterations=STARTING_MAX_ITERATIONS;}
   public void setMaxIterations(int i) {maxIterations = i;}
   public int getMaxIterations() {return maxIterations;}
   
@@ -20,9 +23,9 @@ public class FractalParameters {
   
   public double getResRatio() {return (double)xres/yres;}
   
-  private int mode;
-  public int getMode() {return mode;}
-  public void setMode(int m) {mode = m;}
+  private FractalType type;
+  public FractalType getType() {return type;}
+  public void setType(FractalType t) {type = t;}
   
   private double shiftFactor;
   public double getShiftFactor() {return shiftFactor;}

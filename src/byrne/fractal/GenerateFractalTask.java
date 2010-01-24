@@ -52,7 +52,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
     
     int xres = params.getXRes();
     int yres = params.getYRes();
-    int mode = params.getMode();
+    FractalType type = params.getType();
     
     Bitmap b = Bitmap.createBitmap(xres, yres, Bitmap.Config.ARGB_8888);
     Canvas c = new Canvas(b);
@@ -80,14 +80,14 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
           return b;
         this.publishProgress(b);
       }
-      if (mode == FractalConstants.MANDELBROT_MODE) {
+      if (type == FractalType.MANDELBROT) {
         Q = imagmax - row*deltaQ;
       }
 
       for (int col=0; col < xres; col++) {
-        if (mode == FractalConstants.MANDELBROT_MODE) {
+        if (type == FractalType.MANDELBROT) {
           x = y = 0.0;
-        } else if (mode == FractalConstants.JULIA_MODE) {
+        } else if (type == FractalType.JULIA) {
 
           x = realmin + (double)col * deltaP;
           y = imagmax - (double)row * deltaQ;
@@ -130,9 +130,9 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
               y = 4*x*x*x*y - 4*x*y*y*y - (-y*y*y + 3*x*x*y) - (2*x*y) + Q;
           }
 
-          if (mode == FractalConstants.MANDELBROT_MODE) {
+          if (type == FractalType.MANDELBROT) {
             x = (xtmp) + realmin + col * deltaP;
-          } else if (mode == FractalConstants.JULIA_MODE) {
+          } else if (type == FractalType.JULIA) {
             x = (xtmp) + P;
           }
         }
