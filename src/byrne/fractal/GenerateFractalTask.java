@@ -36,6 +36,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
     return colorIntegers;   
   }
   
+
   private Bitmap createBitmap() {
     
     ComplexEquation equation = params.getEquation();
@@ -63,7 +64,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
     
     int[] colorIntegers = calculateColors();
 
-    double x=-1, y=-1, xsq, ysq, mu = 1;
+    double x=-1, y=-1, mu = 1;
     int index;
     boolean lessThanMax;
 
@@ -74,78 +75,75 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
     final int PASSES = 4;
     
     for (int rpass = 0; rpass < PASSES; rpass++) {
-    for (int row=rpass; row < yres; row += PASSES) {
-      if (row % 5 == 0) {
-        if (isCancelled())
-          return b;
-        this.publishProgress(b);
-      }
-      if (type == FractalType.MANDELBROT) {
-        Q = imagmax - row*deltaQ;
-      }
-
-      for (int col=0; col < xres; col++) {
+      for (int row=rpass; row < yres; row += PASSES) {
+        if (row % 5 == 0) {
+          if (isCancelled())
+            return b;
+          this.publishProgress(b);
+        }
         if (type == FractalType.MANDELBROT) {
-          x = y = 0.0;
-        } else if (type == FractalType.JULIA) {
-
-          x = realmin + (double)col * deltaP;
-          y = imagmax - (double)row * deltaQ;
+          Q = imagmax - row*deltaQ;
         }
-        lessThanMax = false;
-        
-        for (index = 0; index < max; index++) {
-          xsq = x*x;
-          ysq = y*y;
-    
-          if (xsq + ysq > 4) {
-            lessThanMax = true;
-            mu = index - Math.log(Math.log(Math.sqrt(xsq + ysq)))/ Math.log(2.0);
-            break;
-          }
-          
-          switch (equation) {
-            case SECOND_ORDER:
-              xtmp = xsq - ysq;
-              y = (2*x*y) + Q;
-              break;
-            case THIRD_ORDER:
-              xtmp = x*x*x - 3*x*y*y;
-              y = -y*y*y + 3*x*x*y + Q;
-              break;
-            case FOURTH_ORDER:
-              xtmp = x*x*x*x - 6*x*x*y*y + y*y*y*y;
-              y = 4*x*x*x*y - 4*x*y*y*y + Q;
-              break;
-            case FIFTH_ORDER:
-              xtmp = x*x*x*x*x-10*x*x*x*y*y+5*x*y*y*y*y;
-              y=(5*x*x*x*x*y-10*x*x*y*y*y+y*y*y*y*y) + Q;
-              break;
-            case SIXTH_ORDER:
-              xtmp = x*x*x*x*x*x-15*x*x*x*x*y*y+15*x*x*y*y*y*y-y*y*y*y*y*y;
-              y=(6*x*x*x*x*x*y-20*x*x*x*y*y*y+6*x*y*y*y*y*y) + Q;
-              break;
-            case Z4Z3Z2:
-              xtmp = x*x*x*x - 6*x*x*y*y + y*y*y*y - (x*x*x - 3*x*y*y) - (xsq - ysq);
-              y = 4*x*x*x*y - 4*x*y*y*y - (-y*y*y + 3*x*x*y) - (2*x*y) + Q;
-          }
-
+  
+        for (int col=0; col < xres; col++) {
           if (type == FractalType.MANDELBROT) {
-            x = (xtmp) + realmin + col * deltaP;
+            P = realmin + col*deltaP;
+            x = y = 0.0;
           } else if (type == FractalType.JULIA) {
-            x = (xtmp) + P;
+  
+            x = realmin + (double)col * deltaP;
+            y = imagmax - (double)row * deltaQ;
           }
+          lessThanMax = false;
+          
+          double xsq, ysq;
+          for (index = 0; index < max; index++) {
+            xsq = x*x;
+            ysq = y*y;
+      
+            if (xsq + ysq > 4) {
+              lessThanMax = true;
+              mu = index - Math.log(Math.log(Math.sqrt(xsq + ysq)))/ Math.log(2.0);
+              break;
+            }
+            
+            switch (equation) {
+              case SECOND_ORDER:
+                xtmp = xsq - ysq + P;
+                y = (2*x*y) + Q;
+                break;
+              case THIRD_ORDER:
+                xtmp = x*x*x - 3*x*y*y + P;
+                y = -y*y*y + 3*x*x*y + Q;
+                break;
+              case FOURTH_ORDER:
+                xtmp = x*x*x*x - 6*x*x*y*y + y*y*y*y + P;
+                y = 4*x*x*x*y - 4*x*y*y*y + Q;
+                break;
+              case FIFTH_ORDER:
+                xtmp = x*x*x*x*x-10*x*x*x*y*y+5*x*y*y*y*y + P;
+                y=(5*x*x*x*x*y-10*x*x*y*y*y+y*y*y*y*y) + Q;
+                break;
+              case SIXTH_ORDER:
+                xtmp = x*x*x*x*x*x-15*x*x*x*x*y*y+15*x*x*y*y*y*y-y*y*y*y*y*y + P;
+                y=(6*x*x*x*x*x*y-20*x*x*x*y*y*y+6*x*y*y*y*y*y) + Q;
+                break;
+              case Z4Z3Z2:
+                xtmp = x*x*x*x - 6*x*x*y*y + y*y*y*y - (x*x*x - 3*x*y*y) - (xsq - ysq) + P;
+                y = 4*x*x*x*y - 4*x*y*y*y - (-y*y*y + 3*x*x*y) - (2*x*y) + Q;
+            }
+            x = xtmp;
+          }
+  
+          if (lessThanMax) {
+            int colorIndex = Math.max(0,((int)Math.round(mu*100)-1));
+            paint.setColor(colorIntegers[colorIndex]);
+          } else {
+            paint.setColor(Color.BLACK);
+          }
+          c.drawPoint(col,row,paint);
         }
-
-        if (lessThanMax) {
-          int colorIndex = Math.max(0,((int)Math.round(mu*100)-1));
-          paint.setColor(colorIntegers[colorIndex]);
-        } else {
-          paint.setColor(Color.BLACK);
-        }
-        c.drawPoint(col,row,paint);
       }
-    }
     }
     return b;
   }
