@@ -24,7 +24,7 @@ public class Fractoid extends Activity {
     
   private FractalView fractalView;
   private MenuItem item2, item3, item4, item5, item6, item7, juliaItem;
-  final int MAX_ITERATIONS_DIALOG = 1;
+  private final int MAX_ITERATIONS_DIALOG = 1;
 
   @Override public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
