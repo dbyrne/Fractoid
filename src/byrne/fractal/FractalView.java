@@ -37,6 +37,11 @@ public class FractalView extends View {
     zoom = z;
   }
   
+  public void setColorSet(ColorSet cs) {
+    params.setColorSet(cs);
+    startFractalTask();
+  }
+  
   public ComplexEquation getEquation() {
     return equation;
   }

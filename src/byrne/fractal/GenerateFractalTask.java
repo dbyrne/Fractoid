@@ -21,18 +21,61 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
     int[] colorIntegers = new int[numberOfColors];   
     double shiftFactor = params.getShiftFactor();
     
-    for (int x = 0; x < numberOfColors; x++) {
-      double data = x;
-      data = 2*Math.PI*(data/5000);
-      red = Math.sin(data + Math.PI*shiftFactor);
-      green = Math.cos(data + Math.PI*shiftFactor);
-      blue = -((red + green)*.707);
-      red = (red*127.0) + 127.0;
-      green = (green*127.0) + 127.0;
-      blue = (blue*127.0) + 127.0;
-      colorIntegers[x] = Color.rgb((int)red, (int)green, (int)blue);
-    }    
-    
+    switch (params.getColorSet()) {
+      case RAINBOW:
+        for (int x = 0; x < numberOfColors; x++) {
+          double data = x;
+          data = 2*Math.PI*(data/5000);
+          red = Math.sin(data + Math.PI*shiftFactor);
+          green = Math.cos(data + Math.PI*shiftFactor);
+          blue = -((red + green)*.707);
+          red = (red*127.0) + 127.0;
+          green = (green*127.0) + 127.0;
+          blue = (blue*127.0) + 127.0;
+          colorIntegers[x] = Color.rgb((int)red, (int)green, (int)blue);
+        }    
+        break;
+      
+      case RED:
+        for (int x = 0; x < numberOfColors; x++) {
+          int value = (x/2)%510;
+          int color;
+          if (value <= 255)
+            color = Math.abs(value);
+          else color = Math.abs(255-(value-255));
+          colorIntegers[x] = Color.rgb(color,0,0);
+        }
+        break;
+      
+      case GREEN:
+        for (int x = 0; x < numberOfColors; x++) {
+          int value = (x/2)%510;
+          int color;
+          if (value <= 255)
+            color = Math.abs(value);
+          else color = Math.abs(255-(value-255));
+          colorIntegers[x] = Color.rgb(0,color,0);
+        }
+        break;
+      
+      case YELLOW:
+        for (int x = 0; x < numberOfColors; x++) {
+          int value = (x/2)%510;
+          int color;
+          if (value <= 255)
+            color = Math.abs(value);
+          else color = Math.abs(255-(value-255));
+          colorIntegers[x] = Color.rgb(color,color,0);
+        }
+        break;
+        
+      case BLACK_AND_WHITE:
+        for (int x = 0; x < numberOfColors; x++) {
+          int value = (x/2)%510;
+          int color = Math.abs(255-value);
+          colorIntegers[x] = Color.rgb(color,color,color);
+        }     
+    }
     return colorIntegers;   
   }
   
@@ -97,14 +140,20 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
           lessThanMax = false;
           
           double xsq, ysq;
+          int extraIterations = 0;
           for (index = 0; index < max; index++) {
             xsq = x*x;
             ysq = y*y;
       
             if (xsq + ysq > 4) {
-              lessThanMax = true;
-              mu = index - Math.log(Math.log(Math.sqrt(xsq + ysq)))/ Math.log(2.0);
-              break;
+              if (extraIterations == 2) {
+                lessThanMax = true;
+                mu = index - Math.log(Math.log(Math.sqrt(xsq + ysq)))/ Math.log(2.0);
+                break;
+              } else {
+                extraIterations++;
+                index--;
+              }
             }
             
             switch (equation) {

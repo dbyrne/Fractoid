@@ -4,6 +4,28 @@
           android:title="Reset"/>
     <item android:id="@+id/max_iteration_button"
           android:title="Change Max Iterations" />
+    <item android:id="@+id/change_colors_button"
+          android:title="Change Colors">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item android:id="@+id/rainbow_button"
+                      android:checked="true"
+                      android:title="Rainbow"/>
+                <item android:id="@+id/black_and_white_button"
+                      android:checked="false"
+                      android:title="Black and White"/>
+                <item android:id="@+id/red_button"
+                      android:checked="false"
+                      android:title="Red"/>
+                <item android:id="@+id/green_button"
+                      android:checked="false"
+                      android:title="Green"/>
+                <item android:id="@+id/yellow_button"
+                      android:checked="false"
+                      android:title="Yellow"/>
+            </group>
+        </menu>
+    </item>
     <item android:id="@+id/julia_button"
           android:title="Julia Set Mode"/>
     <item android:id="@+id/equation_button"

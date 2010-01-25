@@ -23,7 +23,8 @@ import android.widget.EditText;
 public class Fractoid extends Activity {
     
   private FractalView fractalView;
-  private MenuItem item2, item3, item4, item5, item6, item7, juliaItem;
+  private MenuItem item2, item3, item4, item5, item6, item7;
+  private MenuItem juliaItem, itemRainbow, itemRed, itemGreen, itemYellow, itemBlackAndWhite;
   private final int MAX_ITERATIONS_DIALOG = 1;
 
   @Override public void onCreate(Bundle savedInstanceState) {
@@ -88,6 +89,11 @@ public class Fractoid extends Activity {
     item5 = menu.findItem(R.id.z5_button);
     item6 = menu.findItem(R.id.z6_button);
     item7 = menu.findItem(R.id.z4z3z2_button);
+    itemRainbow = menu.findItem(R.id.rainbow_button);
+    itemRed = menu.findItem(R.id.red_button);
+    itemGreen = menu.findItem(R.id.green_button);
+    itemYellow = menu.findItem(R.id.yellow_button);
+    itemBlackAndWhite = menu.findItem(R.id.black_and_white_button);
     
     return true;
   }
@@ -102,6 +108,31 @@ public class Fractoid extends Activity {
     
     case R.id.max_iteration_button:
       showDialog(MAX_ITERATIONS_DIALOG);
+      return true;
+    
+    case R.id.rainbow_button:
+      fractalView.setColorSet(ColorSet.RAINBOW);
+      itemRainbow.setChecked(true);
+      return true;
+  
+    case R.id.red_button:
+      fractalView.setColorSet(ColorSet.RED);
+      itemRed.setChecked(true);
+      return true;
+    
+    case R.id.green_button:
+      fractalView.setColorSet(ColorSet.GREEN);
+      itemGreen.setChecked(true);
+      return true;
+    
+    case R.id.yellow_button:
+      fractalView.setColorSet(ColorSet.YELLOW);
+      itemYellow.setChecked(true);
+      return true;
+    
+    case R.id.black_and_white_button:
+      fractalView.setColorSet(ColorSet.BLACK_AND_WHITE);
+      itemBlackAndWhite.setChecked(true);
       return true;
 
     case R.id.julia_button:

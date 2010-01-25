@@ -9,6 +9,10 @@ public class FractalParameters {
   public void setMaxIterations(int i) {maxIterations = i;}
   public int getMaxIterations() {return maxIterations;}
   
+  private ColorSet colorSet = ColorSet.RAINBOW;
+  public void setColorSet(ColorSet cs) {colorSet = cs;}
+  public ColorSet getColorSet() {return colorSet;}
+  
   private ComplexEquation equation;
   public void setEquation(ComplexEquation e) {equation = e;}
   public ComplexEquation getEquation() {return equation;}
