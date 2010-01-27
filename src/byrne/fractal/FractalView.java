@@ -86,6 +86,29 @@ public class FractalView extends View {
   public Bitmap getFractal() {
     return fractalBitmap;
   }
+  
+  public void createPhoenixSet() {
+    double imagmax = 1.4;
+    double imagmin = -1.4;
+
+    double r_y = Math.abs(imagmax - imagmin);
+    double realmax = params.getResRatio()*r_y/2;
+    double realmin = params.getResRatio()*r_y/2*-1;
+    
+    params.randomizeShiftFactor();
+    setEquation(ComplexEquation.PHOENIX);
+    setType(FractalType.JULIA);
+    
+    params.setEquation(ComplexEquation.PHOENIX);
+    params.setType(FractalType.JULIA);
+    params.setCoords(realmin,realmax,imagmin,imagmax);
+    params.setP(0.56667);
+    params.setQ(-0.5);
+    params.setMaxIterations(100);
+  
+    startFractalTask();
+    setZoom(true);
+  }
 
   public void startFractalTask() {
     calculationTime = null;
@@ -126,7 +149,10 @@ public class FractalView extends View {
     params.randomizeShiftFactor();
     params.setEquation(equation);
     params.setCoords(realmin,realmax,imagmin,imagmax);
-    params.setType(FractalType.MANDELBROT);
+    if (equation == ComplexEquation.PHOENIX)
+      params.setType(FractalType.JULIA);
+    else
+      params.setType(FractalType.MANDELBROT);
     params.resetMaxIterations();
     
     startFractalTask();
@@ -232,8 +258,12 @@ public class FractalView extends View {
       canvas.drawBitmap(fractalBitmap,0,0,null);
 
       Paint p = new Paint();
-      p.setColor(Color.WHITE);	
-      p.setTextSize(20);
+      if (params.getColorSet() == ColorSet.BLACK_AND_WHITE) {
+        p.setColor(Color.BLACK);  
+      } else {
+        p.setColor(Color.WHITE);
+      }
+      p.setTextSize(25);
 
       if (selection != null) {
         p.setStyle(Paint.Style.STROKE);
@@ -243,16 +273,16 @@ public class FractalView extends View {
       p.setStyle(Paint.Style.FILL_AND_STROKE);
       p.setStrokeWidth(1);
       if (zoom) {
-        canvas.drawText("Drag to zoom",(params.getXRes()/2)-50,params.getYRes()-5,p);
+        canvas.drawText("Drag to zoom",(params.getXRes()/2)-60,params.getYRes()-5,p);
       }
       else {
-        canvas.drawText("Touch Screen to Generate Julia Set",(params.getXRes()/2)-125,params.getYRes()-5,p);
+        canvas.drawText("Touch Screen to Generate Julia Set",(params.getXRes()/2)-175,params.getYRes()-5,p);
       }
       String maxIterString = "MaxIter: " + params.getMaxIterations();
       canvas.drawText(maxIterString,5,params.getYRes()-5,p);
       
       if (calculationTime != null) {
-        canvas.drawText(calculationTime,params.getXRes()-120,params.getYRes()-5,p);
+        canvas.drawText(calculationTime,params.getXRes()-140,params.getYRes()-5,p);
       }
       
     } else {

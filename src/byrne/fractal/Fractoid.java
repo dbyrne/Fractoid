@@ -23,8 +23,9 @@ import android.widget.EditText;
 public class Fractoid extends Activity {
     
   private FractalView fractalView;
-  private MenuItem item2, item3, item4, item5, item6, item7;
-  private MenuItem juliaItem, itemRainbow, itemRed, itemGreen, itemYellow, itemBlackAndWhite;
+  private MenuItem item2, item3, item4, item5, item6, item7, item8, itemManowar, itemPhoenix;
+  private MenuItem itemRainbow, itemRed, itemGreen, itemYellow, itemBlackAndWhite;
+  private Button juliaButton;
   private final int MAX_ITERATIONS_DIALOG = 1;
 
   @Override public void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,17 @@ public class Fractoid extends Activity {
     setContentView(R.layout.main_layout);
     
     fractalView = (FractalView) findViewById(R.id.mFractalView);
+    
+    juliaButton = (Button) findViewById(R.id.juliaButton);
+    juliaButton.setOnClickListener(new View.OnClickListener() {
+      public void onClick(View v) {
+	setJuliaButtonEnabled(false);
+	fractalView.setType(FractalType.JULIA);
+	fractalView.setZoom(false);
+	fractalView.postInvalidate();
+      }
+    });
+    
     final Button zoomOutButton = (Button) findViewById(R.id.zoomOutButton);
     zoomOutButton.setOnClickListener(new View.OnClickListener() {
       public void onClick(View v) {
@@ -74,21 +86,27 @@ public class Fractoid extends Activity {
     return dialog;
   }
   
-  public void setJuliaMenuEnabled(boolean b) {
-    juliaItem.setVisible(b);
-    juliaItem.setEnabled(b);
+  public void setJuliaButtonEnabled(boolean b) {   
+    if (b) {
+      juliaButton.setVisibility(View.VISIBLE);     
+    } else {
+      juliaButton.setVisibility(View.INVISIBLE);
+    }
+    juliaButton.setEnabled(b);
   }
   
   @Override public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.options_menu, menu);
-    juliaItem = menu.findItem(R.id.julia_button);
     item2 = menu.findItem(R.id.z2_button);
     item3 = menu.findItem(R.id.z3_button);
     item4 = menu.findItem(R.id.z4_button);
     item5 = menu.findItem(R.id.z5_button);
     item6 = menu.findItem(R.id.z6_button);
     item7 = menu.findItem(R.id.z4z3z2_button);
+    item8 = menu.findItem(R.id.z6z2_button);
+    itemManowar = menu.findItem(R.id.manowar_button);
+    itemPhoenix = menu.findItem(R.id.phoenix_button);
     itemRainbow = menu.findItem(R.id.rainbow_button);
     itemRed = menu.findItem(R.id.red_button);
     itemGreen = menu.findItem(R.id.green_button);
@@ -102,7 +120,8 @@ public class Fractoid extends Activity {
 
     switch (item.getItemId()) {
     case R.id.reset_button:
-      setJuliaMenuEnabled(true);
+      if (!itemPhoenix.isChecked())
+	setJuliaButtonEnabled(true);
       fractalView.resetCoords();
       return true;
     
@@ -134,19 +153,12 @@ public class Fractoid extends Activity {
       fractalView.setColorSet(ColorSet.BLACK_AND_WHITE);
       itemBlackAndWhite.setChecked(true);
       return true;
-
-    case R.id.julia_button:
-      setJuliaMenuEnabled(false);
-      fractalView.setType(FractalType.JULIA);
-      fractalView.setZoom(false);
-      fractalView.postInvalidate();
-      return true;
    
     case R.id.z2_button:     
       if (!item2.isChecked()) {
         item2.setChecked(true);
 	fractalView.setEquation(ComplexEquation.SECOND_ORDER);
-	setJuliaMenuEnabled(true);
+	setJuliaButtonEnabled(true);
 	fractalView.resetCoords();
       }
       return true;
@@ -155,7 +167,7 @@ public class Fractoid extends Activity {
       if (!item3.isChecked()) {
         item3.setChecked(true);
 	fractalView.setEquation(ComplexEquation.THIRD_ORDER);
-	setJuliaMenuEnabled(true);
+	setJuliaButtonEnabled(true);
 	fractalView.resetCoords();
       }
       return true;
@@ -164,7 +176,7 @@ public class Fractoid extends Activity {
       if (!item4.isChecked()) {
         item4.setChecked(true);
 	fractalView.setEquation(ComplexEquation.FOURTH_ORDER);
-	setJuliaMenuEnabled(true);
+	setJuliaButtonEnabled(true);
 	fractalView.resetCoords();
       }
       return true;
@@ -173,7 +185,7 @@ public class Fractoid extends Activity {
       if (!item5.isChecked()) {
         item5.setChecked(true);
         fractalView.setEquation(ComplexEquation.FIFTH_ORDER);
-	setJuliaMenuEnabled(true);
+	setJuliaButtonEnabled(true);
 	fractalView.resetCoords();
       }
       return true;
@@ -182,7 +194,7 @@ public class Fractoid extends Activity {
       if (!item6.isChecked()) {
         item6.setChecked(true);
         fractalView.setEquation(ComplexEquation.SIXTH_ORDER);
-	setJuliaMenuEnabled(true);
+	setJuliaButtonEnabled(true);
 	fractalView.resetCoords();
       }
       return true;
@@ -191,10 +203,34 @@ public class Fractoid extends Activity {
       if (!item7.isChecked()) {
         item7.setChecked(true);
         fractalView.setEquation(ComplexEquation.Z4Z3Z2);
-	setJuliaMenuEnabled(true);
+	setJuliaButtonEnabled(true);
 	fractalView.resetCoords();
       }
       return true;
+    
+    case R.id.z6z2_button:
+      if (!item8.isChecked()) {
+        item8.setChecked(true);
+        fractalView.setEquation(ComplexEquation.Z6Z2);
+	setJuliaButtonEnabled(true);
+	fractalView.resetCoords();
+      }
+      return true;
+    
+    case R.id.manowar_button:
+      if (!itemManowar.isChecked()) {
+	itemManowar.setChecked(true);
+	fractalView.setEquation(ComplexEquation.MANOWAR);
+	setJuliaButtonEnabled(true);
+	fractalView.resetCoords();
+      }
+      
+    case R.id.phoenix_button:
+      if (!itemPhoenix.isChecked()) {
+	itemPhoenix.setChecked(true);
+	setJuliaButtonEnabled(false);
+	fractalView.createPhoenixSet();
+      }
 
     case R.id.save_button:
       try {

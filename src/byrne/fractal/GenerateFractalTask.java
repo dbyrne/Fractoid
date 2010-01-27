@@ -107,7 +107,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
     
     int[] colorIntegers = calculateColors();
 
-    double x=-1, y=-1, mu = 1;
+    double x=-1, y=-1, prev_x = -1, prev_y =-1,tmp_prev_x,tmp_prev_y, mu = 1;
     int index;
     boolean lessThanMax;
 
@@ -132,10 +132,13 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
           if (type == FractalType.MANDELBROT) {
             P = realmin + col*deltaP;
             x = y = 0.0;
+            prev_x = prev_y = 0.0;
           } else if (type == FractalType.JULIA) {
   
             x = realmin + (double)col * deltaP;
             y = imagmax - (double)row * deltaQ;
+            prev_x = x;
+            prev_y = y;
           }
           lessThanMax = false;
           
@@ -180,6 +183,27 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
               case Z4Z3Z2:
                 xtmp = x*x*x*x - 6*x*x*y*y + y*y*y*y - (x*x*x - 3*x*y*y) - (xsq - ysq) + P;
                 y = 4*x*x*x*y - 4*x*y*y*y - (-y*y*y + 3*x*x*y) - (2*x*y) + Q;
+                break;
+              case Z6Z2:
+                xtmp = x*x*x*x*x*x-15*x*x*x*x*y*y+15*x*x*y*y*y*y-y*y*y*y*y*y - (xsq - ysq) + P;
+                y = (6*x*x*x*x*x*y-20*x*x*x*y*y*y+6*x*y*y*y*y*y) - (2*x*y) + Q;
+                break;
+              case MANOWAR:
+                tmp_prev_x = x;
+                tmp_prev_y = y;
+                xtmp = (xsq - ysq) + prev_x + P;
+                y = (2*x*y) + prev_y + Q;
+                prev_x = tmp_prev_x;
+                prev_y = tmp_prev_y;
+                break;
+              case PHOENIX:
+                tmp_prev_x = x;
+                tmp_prev_y = y;
+                xtmp = (xsq - ysq) + P + Q*prev_x;
+                y = (2*x*y) + Q*prev_y;
+                prev_x = tmp_prev_x;
+                prev_y = tmp_prev_y;
+                break;
             }
             x = xtmp;
           }

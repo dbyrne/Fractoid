@@ -6,5 +6,8 @@ public enum ComplexEquation {
   FOURTH_ORDER,
   FIFTH_ORDER,
   SIXTH_ORDER,
-  Z4Z3Z2
+  Z4Z3Z2,
+  Z6Z2,
+  MANOWAR,
+  PHOENIX
 }
