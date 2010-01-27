@@ -224,13 +224,16 @@ public class Fractoid extends Activity {
 	setJuliaButtonEnabled(true);
 	fractalView.resetCoords();
       }
+      return true;
       
     case R.id.phoenix_button:
       if (!itemPhoenix.isChecked()) {
 	itemPhoenix.setChecked(true);
+	fractalView.setEquation(ComplexEquation.PHOENIX);
 	setJuliaButtonEnabled(false);
-	fractalView.createPhoenixSet();
+	fractalView.resetCoords();
       }
+      return true;
 
     case R.id.save_button:
       try {

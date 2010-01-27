@@ -86,29 +86,6 @@ public class FractalView extends View {
   public Bitmap getFractal() {
     return fractalBitmap;
   }
-  
-  public void createPhoenixSet() {
-    double imagmax = 1.4;
-    double imagmin = -1.4;
-
-    double r_y = Math.abs(imagmax - imagmin);
-    double realmax = params.getResRatio()*r_y/2;
-    double realmin = params.getResRatio()*r_y/2*-1;
-    
-    params.randomizeShiftFactor();
-    setEquation(ComplexEquation.PHOENIX);
-    setType(FractalType.JULIA);
-    
-    params.setEquation(ComplexEquation.PHOENIX);
-    params.setType(FractalType.JULIA);
-    params.setCoords(realmin,realmax,imagmin,imagmax);
-    params.setP(0.56667);
-    params.setQ(-0.5);
-    params.setMaxIterations(100);
-  
-    startFractalTask();
-    setZoom(true);
-  }
 
   public void startFractalTask() {
     calculationTime = null;
@@ -149,11 +126,16 @@ public class FractalView extends View {
     params.randomizeShiftFactor();
     params.setEquation(equation);
     params.setCoords(realmin,realmax,imagmin,imagmax);
-    if (equation == ComplexEquation.PHOENIX)
+    if (equation == ComplexEquation.PHOENIX) {
       params.setType(FractalType.JULIA);
-    else
+      params.setP(0.5666667);
+      params.setQ(-0.5);
+      params.setMaxIterations(100);
+    }
+    else {
       params.setType(FractalType.MANDELBROT);
-    params.resetMaxIterations();
+      params.resetMaxIterations();
+    }
     
     startFractalTask();
   }
