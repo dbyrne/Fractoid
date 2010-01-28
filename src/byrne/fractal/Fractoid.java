@@ -6,6 +6,8 @@ import android.app.Activity;
 import android.app.WallpaperManager;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ActivityNotFoundException;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.os.Bundle;
@@ -80,10 +82,29 @@ public class Fractoid extends Activity {
 	});
 	
         break;
+      
     default:
         dialog = null;
     }
     return dialog;
+  }
+  
+  public Uri saveImage() {
+    Uri uri = null;
+    try{
+      ContentValues values = new ContentValues(3);
+      values.put(Media.DISPLAY_NAME, "Fractal");
+      values.put(Media.DESCRIPTION, "Generated using Fractoid");
+      values.put(Media.MIME_TYPE, "image/png");
+      uri = getContentResolver().insert(Media.EXTERNAL_CONTENT_URI, values);
+      OutputStream os = getContentResolver().openOutputStream(uri);
+      fractalView.getFractal().compress(CompressFormat.PNG, 100, os);
+      os.flush();
+      os.close();
+    } catch (Exception e) {
+      System.out.println(e);
+    }
+    return uri;
   }
   
   public void setJuliaButtonEnabled(boolean b) {   
@@ -235,20 +256,53 @@ public class Fractoid extends Activity {
       }
       return true;
 
-    case R.id.save_button:
+    case R.id.share_button:
+	
+      boolean success = true;
+      String message = "#Fractoid";
+      Uri fractal = saveImage();
+      
+      Intent intent = new Intent("com.twidroidpro.SendTweet");
+      intent.putExtra("com.twidroidpro.extra.MESSAGE", message);
+      intent.putExtra(Intent.EXTRA_STREAM,fractal);
+      intent.setType("application/twitter");
+      
       try {
-	ContentValues values = new ContentValues(3);
-	values.put(Media.DISPLAY_NAME, "Fractal");
-	values.put(Media.DESCRIPTION, "Generated using Fractoid");
-	values.put(Media.MIME_TYPE, "image/png");
-	Uri uri = getContentResolver().insert(Media.EXTERNAL_CONTENT_URI, values);
-        OutputStream os = getContentResolver().openOutputStream(uri);
-	fractalView.getFractal().compress(CompressFormat.PNG, 100, os);
-	os.flush();
-        os.close();
-      } catch (Exception e) {
-        System.out.println(e);
+	startActivityForResult(intent, 1);
+      } catch(ActivityNotFoundException e) {
+	success = false;
       }
+      
+      if (!success) {
+	success = true;
+	intent = new Intent("com.twidroid.SendTweet");
+        intent.putExtra("com.twidroid.extra.MESSAGE", message);
+	intent.putExtra(Intent.EXTRA_STREAM,fractal);
+	intent.setType("application/twitter");
+	try {
+	  startActivityForResult(intent, 1);
+	} catch(ActivityNotFoundException e) {
+	  success = false;
+	}
+      }
+      
+      if (!success) {
+	success = true;
+	try {
+	  intent = new Intent(Intent.ACTION_SEND);
+	  intent.putExtra(Intent.EXTRA_TEXT, message);
+	  intent.putExtra(Intent.EXTRA_STREAM,fractal);
+	  intent.setType("image/png");
+	  startActivity(Intent.createChooser(intent,"Twidroid not found. Pick an App:"));
+	} catch(ActivityNotFoundException e) {
+	  
+	}
+      }
+      
+      return true;
+
+    case R.id.save_button:
+      saveImage();
       return true;
 
     case R.id.wallpaper_button:

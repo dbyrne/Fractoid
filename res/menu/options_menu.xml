@@ -53,6 +53,8 @@
             </group>
         </menu>
     </item>
+    <item android:id="@+id/share_button"
+          android:title="Tweet Fractal"/>
     <item android:id="@+id/save_button"
           android:title="Save Image"/>
     <item android:id="@+id/wallpaper_button"

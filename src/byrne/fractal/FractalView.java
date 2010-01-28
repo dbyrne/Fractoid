@@ -128,7 +128,7 @@ public class FractalView extends View {
     params.setCoords(realmin,realmax,imagmin,imagmax);
     if (equation == ComplexEquation.PHOENIX) {
       params.setType(FractalType.JULIA);
-      params.setP(0.5666667);
+      params.setP(0.56666667);
       params.setQ(-0.5);
       params.setMaxIterations(100);
     }
