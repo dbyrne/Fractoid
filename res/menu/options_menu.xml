@@ -1,4 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+This file is part of Fractoid
+Copyright (C) 2010 David Byrne
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/reset_button"
           android:title="Reset"/>
@@ -11,6 +30,9 @@
                 <item android:id="@+id/rainbow_button"
                       android:checked="true"
                       android:title="Rainbow"/>
+                <item android:id="@+id/winter_button"
+                      android:checked="false"
+                      android:title="Winter"/>
                 <item android:id="@+id/black_and_white_button"
                       android:checked="false"
                       android:title="Black and White"/>
@@ -45,8 +67,6 @@
                       android:title="Sextic Mandelbrot: Z(n)^6 + C"/>
                 <item android:id="@+id/manowar_button"
                       android:title="Manowar: Z(n)^2 + Z(n-1) + C"/>
-                 <item android:id="@+id/csinz_button"
-                      android:title="C * sin(Z(n))"/>
                 <item android:id="@+id/z4z3z2_button"
                       android:title="Z(n)^4 - Z(n)^3 - Z(n)^2 + C"/>
                 <item android:id="@+id/z6z2_button"

@@ -1,3 +1,21 @@
+/*
+This file is part of Fractoid
+Copyright (C) 2010 David Byrne
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 package byrne.fractal;
 
 import java.io.OutputStream;
@@ -17,21 +35,23 @@ import android.view.SubMenu;
 import android.view.MenuItem;
 import android.view.MenuInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.provider.MediaStore.Images.Media;
 import android.content.ContentValues;
 import android.widget.Button;
 import android.widget.EditText;
 
 public class Fractoid extends Activity {
-    
+
   private FractalView fractalView;
   private MenuItem item2, item3, item4, item5, item6, item7, item8, itemManowar, itemPhoenix;
-  private MenuItem itemRainbow, itemRed, itemGreen, itemYellow, itemBlackAndWhite;
+  private MenuItem itemRainbow, itemRed, itemGreen, itemYellow, itemBlackAndWhite, itemWinter;
   private Button juliaButton;
   private final int MAX_ITERATIONS_DIALOG = 1;
 
   @Override public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     
     setContentView(R.layout.main_layout);
     
@@ -56,6 +76,11 @@ public class Fractoid extends Activity {
     
     Eula.showEula(this);
 
+  }
+  
+  @Override public void onResume() {
+    super.onResume();
+    getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
   }
   
   @Override protected Dialog onCreateDialog(int id) {
@@ -116,6 +141,15 @@ public class Fractoid extends Activity {
     juliaButton.setEnabled(b);
   }
   
+  public void switchEquation(MenuItem item, ComplexEquation e) {
+    if (!item.isChecked()) {
+      item.setChecked(true);
+      fractalView.setEquation(e);
+      setJuliaButtonEnabled(true);
+      fractalView.resetCoords();
+    }
+  }
+  
   @Override public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.options_menu, menu);
@@ -129,6 +163,7 @@ public class Fractoid extends Activity {
     itemManowar = menu.findItem(R.id.manowar_button);
     itemPhoenix = menu.findItem(R.id.phoenix_button);
     itemRainbow = menu.findItem(R.id.rainbow_button);
+    itemWinter = menu.findItem(R.id.winter_button);
     itemRed = menu.findItem(R.id.red_button);
     itemGreen = menu.findItem(R.id.green_button);
     itemYellow = menu.findItem(R.id.yellow_button);
@@ -154,6 +189,11 @@ public class Fractoid extends Activity {
       fractalView.setColorSet(ColorSet.RAINBOW);
       itemRainbow.setChecked(true);
       return true;
+    
+    case R.id.winter_button:
+      fractalView.setColorSet(ColorSet.WINTER);
+      itemWinter.setChecked(true);
+      return true;
   
     case R.id.red_button:
       fractalView.setColorSet(ColorSet.RED);
@@ -175,76 +215,36 @@ public class Fractoid extends Activity {
       itemBlackAndWhite.setChecked(true);
       return true;
    
-    case R.id.z2_button:     
-      if (!item2.isChecked()) {
-        item2.setChecked(true);
-	fractalView.setEquation(ComplexEquation.SECOND_ORDER);
-	setJuliaButtonEnabled(true);
-	fractalView.resetCoords();
-      }
+    case R.id.z2_button:          
+      switchEquation(item2,ComplexEquation.SECOND_ORDER);  
       return true;
     
-    case R.id.z3_button:     
-      if (!item3.isChecked()) {
-        item3.setChecked(true);
-	fractalView.setEquation(ComplexEquation.THIRD_ORDER);
-	setJuliaButtonEnabled(true);
-	fractalView.resetCoords();
-      }
+    case R.id.z3_button:
+      switchEquation(item3,ComplexEquation.THIRD_ORDER);
       return true;
     
-    case R.id.z4_button:     
-      if (!item4.isChecked()) {
-        item4.setChecked(true);
-	fractalView.setEquation(ComplexEquation.FOURTH_ORDER);
-	setJuliaButtonEnabled(true);
-	fractalView.resetCoords();
-      }
+    case R.id.z4_button:
+      switchEquation(item4,ComplexEquation.FOURTH_ORDER);
       return true;
     
     case R.id.z5_button:
-      if (!item5.isChecked()) {
-        item5.setChecked(true);
-        fractalView.setEquation(ComplexEquation.FIFTH_ORDER);
-	setJuliaButtonEnabled(true);
-	fractalView.resetCoords();
-      }
+      switchEquation(item5,ComplexEquation.FIFTH_ORDER);
       return true;
     
     case R.id.z6_button:
-      if (!item6.isChecked()) {
-        item6.setChecked(true);
-        fractalView.setEquation(ComplexEquation.SIXTH_ORDER);
-	setJuliaButtonEnabled(true);
-	fractalView.resetCoords();
-      }
+      switchEquation(item6,ComplexEquation.SIXTH_ORDER);
       return true;
    
     case R.id.z4z3z2_button:
-      if (!item7.isChecked()) {
-        item7.setChecked(true);
-        fractalView.setEquation(ComplexEquation.Z4Z3Z2);
-	setJuliaButtonEnabled(true);
-	fractalView.resetCoords();
-      }
+      switchEquation(item7,ComplexEquation.Z4Z3Z2);
       return true;
     
     case R.id.z6z2_button:
-      if (!item8.isChecked()) {
-        item8.setChecked(true);
-        fractalView.setEquation(ComplexEquation.Z6Z2);
-	setJuliaButtonEnabled(true);
-	fractalView.resetCoords();
-      }
+      switchEquation(item8,ComplexEquation.Z6Z2);
       return true;
     
     case R.id.manowar_button:
-      if (!itemManowar.isChecked()) {
-	itemManowar.setChecked(true);
-	fractalView.setEquation(ComplexEquation.MANOWAR);
-	setJuliaButtonEnabled(true);
-	fractalView.resetCoords();
-      }
+      switchEquation(itemManowar,ComplexEquation.MANOWAR);
       return true;
       
     case R.id.phoenix_button:

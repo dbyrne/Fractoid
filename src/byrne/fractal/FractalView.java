@@ -1,3 +1,21 @@
+/*
+This file is part of Fractoid
+Copyright (C) 2010 David Byrne
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 package byrne.fractal;
 
 import android.view.View;
@@ -6,7 +24,6 @@ import android.view.MotionEvent;
 import android.content.Context;
 import android.os.AsyncTask.Status;
 import android.util.AttributeSet; 
-import java.util.Map; 
 
 public class FractalView extends View {
     
@@ -150,7 +167,9 @@ public class FractalView extends View {
     double realmax = params.getRealMax();
     double realmin = params.getRealMin();
     double imagmin = params.getImagMin();
-    double imagmax = params.getImagMax();
+    double imagmax = params.getImagMax();    
+    double x_range = (double)Math.abs(realmax-realmin);
+    double y_range = (double)Math.abs(imagmax-imagmin); 
 
     if (zoom) {
       if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -171,22 +190,22 @@ public class FractalView extends View {
           maxX=(double)touched_x;
           minX=event.getX();
         }
-        double x_range = Math.abs(maxX-minX);
-        double y_range = Math.abs(maxY-minY);
+        double touched_x_range = Math.abs(maxX-minX);
+        double touched_y_range = Math.abs(maxY-minY);
         double inv_ratio = (double)params.getYRes()/params.getXRes();
-        double sel_ratio = x_range/y_range;
+        double sel_ratio = touched_x_range/touched_y_range;
 
         if (params.getResRatio() > sel_ratio) {
           if (maxX == event.getX()) {
-            maxX = minX+(params.getResRatio()*y_range);
+            maxX = minX+(params.getResRatio()*touched_y_range);
           } else {
-            minX = maxX-(params.getResRatio()*y_range);
+            minX = maxX-(params.getResRatio()*touched_y_range);
           }
         } else {
           if (maxY == event.getY()) {
-            maxY = minY+(inv_ratio*x_range);
+            maxY = minY+(inv_ratio*touched_x_range);
           } else {
-            minY = maxY-(inv_ratio*x_range);
+            minY = maxY-(inv_ratio*touched_x_range);
           }
         }
 
@@ -194,9 +213,6 @@ public class FractalView extends View {
         postInvalidate();
         
       } else if (event.getAction() == MotionEvent.ACTION_UP) {
-
-        double x_range = (double)Math.abs(realmax-realmin);
-        double y_range = (double)Math.abs(imagmax-imagmin);  
 
         realmax = realmin + (maxX/params.getXRes()) * x_range;		
         realmin = realmin + (minX/params.getXRes()) * x_range;
@@ -211,8 +227,6 @@ public class FractalView extends View {
     } else if (!zoom) {
       if (event.getAction() == MotionEvent.ACTION_DOWN) {
         
-        double x_range = (double)Math.abs(realmax-realmin);
-        double y_range = (double)Math.abs(imagmax-imagmin);
         touched_x = event.getX();
         touched_y = event.getY();
         params.setP(realmin + ((touched_x/params.getXRes())*x_range));

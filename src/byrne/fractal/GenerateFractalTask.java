@@ -1,3 +1,21 @@
+/*
+This file is part of Fractoid
+Copyright (C) 2010 David Byrne
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 package byrne.fractal;
 
 import android.os.AsyncTask;
@@ -36,6 +54,16 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
         }    
         break;
       
+      case WINTER:
+        for (int x = 0; x < numberOfColors; x++) {
+          int value = (x/3)%510;
+          int color;
+          if (value <= 255)
+            color = Math.abs(value);
+          else color = Math.abs(255-(value-255));
+          colorIntegers[x] = Color.rgb(255-color,255-color,255-color/3);
+        }
+        break;
       case RED:
         for (int x = 0; x < numberOfColors; x++) {
           int value = (x/2)%510;
@@ -165,28 +193,28 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
                 y = (2*x*y) + Q;
                 break;
               case THIRD_ORDER:
-                xtmp = x*x*x - 3*x*y*y + P;
-                y = -y*y*y + 3*x*x*y + Q;
+                xtmp = xsq*x - 3*x*ysq + P;
+                y = -ysq*y + 3*xsq*y + Q;
                 break;
               case FOURTH_ORDER:
-                xtmp = x*x*x*x - 6*x*x*y*y + y*y*y*y + P;
-                y = 4*x*x*x*y - 4*x*y*y*y + Q;
+                xtmp = xsq*xsq - 6*xsq*ysq + ysq*ysq + P;
+                y = 4*xsq*x*y - 4*x*ysq*y + Q;
                 break;
               case FIFTH_ORDER:
-                xtmp = x*x*x*x*x-10*x*x*x*y*y+5*x*y*y*y*y + P;
-                y=(5*x*x*x*x*y-10*x*x*y*y*y+y*y*y*y*y) + Q;
+                xtmp = xsq*xsq*x-10*xsq*x*ysq+5*x*ysq*ysq + P;
+                y=(5*xsq*xsq*y-10*xsq*ysq*y+ysq*ysq*y) + Q;
                 break;
               case SIXTH_ORDER:
-                xtmp = x*x*x*x*x*x-15*x*x*x*x*y*y+15*x*x*y*y*y*y-y*y*y*y*y*y + P;
-                y=(6*x*x*x*x*x*y-20*x*x*x*y*y*y+6*x*y*y*y*y*y) + Q;
+                xtmp = xsq*xsq*xsq-15*xsq*xsq*ysq+15*xsq*ysq*ysq-ysq*ysq*ysq + P;
+                y=(6*xsq*xsq*x*y-20*xsq*x*ysq*y+6*x*ysq*ysq*y) + Q;
                 break;
               case Z4Z3Z2:
-                xtmp = x*x*x*x - 6*x*x*y*y + y*y*y*y - (x*x*x - 3*x*y*y) - (xsq - ysq) + P;
-                y = 4*x*x*x*y - 4*x*y*y*y - (-y*y*y + 3*x*x*y) - (2*x*y) + Q;
+                xtmp = xsq*xsq - 6*xsq*ysq + ysq*ysq - (xsq*x - 3*x*ysq) - (xsq - ysq) + P;
+                y = 4*xsq*x*y - 4*x*ysq*y - (-ysq*y + 3*xsq*y) - (2*x*y) + Q;
                 break;
               case Z6Z2:
-                xtmp = x*x*x*x*x*x-15*x*x*x*x*y*y+15*x*x*y*y*y*y-y*y*y*y*y*y - (xsq - ysq) + P;
-                y = (6*x*x*x*x*x*y-20*x*x*x*y*y*y+6*x*y*y*y*y*y) - (2*x*y) + Q;
+                xtmp = xsq*xsq*xsq-15*xsq*xsq*ysq+15*xsq*ysq*ysq-ysq*ysq*ysq - (xsq - ysq) + P;
+                y = (6*xsq*xsq*x*y-20*xsq*x*ysq*y+6*x*ysq*ysq*y) - (2*x*y) + Q;
                 break;
               case MANOWAR:
                 tmp_prev_x = x;
