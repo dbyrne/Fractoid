@@ -141,6 +141,13 @@ public class Fractoid extends Activity {
     juliaButton.setEnabled(b);
   }
   
+  public void switchColorSet(MenuItem item, ColorSet cs) {
+    if (!item.isChecked()) {
+      fractalView.setColorSet(cs);
+      item.setChecked(true);
+    }
+  }
+  
   public void switchEquation(MenuItem item, ComplexEquation e) {
     if (!item.isChecked()) {
       item.setChecked(true);
@@ -186,18 +193,15 @@ public class Fractoid extends Activity {
       return true;
     
     case R.id.rainbow_button:
-      fractalView.setColorSet(ColorSet.RAINBOW);
-      itemRainbow.setChecked(true);
+      switchColorSet(itemRainbow,ColorSet.RAINBOW);
       return true;
     
     case R.id.winter_button:
-      fractalView.setColorSet(ColorSet.WINTER);
-      itemWinter.setChecked(true);
+      switchColorSet(itemWinter,ColorSet.WINTER);
       return true;
   
     case R.id.red_button:
-      fractalView.setColorSet(ColorSet.RED);
-      itemRed.setChecked(true);
+      switchColorSet(itemRed,ColorSet.RED);
       return true;
     
     case R.id.green_button:
@@ -206,13 +210,11 @@ public class Fractoid extends Activity {
       return true;
     
     case R.id.yellow_button:
-      fractalView.setColorSet(ColorSet.YELLOW);
-      itemYellow.setChecked(true);
+      switchColorSet(itemYellow,ColorSet.YELLOW);
       return true;
     
     case R.id.black_and_white_button:
-      fractalView.setColorSet(ColorSet.BLACK_AND_WHITE);
-      itemBlackAndWhite.setChecked(true);
+      switchColorSet(itemBlackAndWhite,ColorSet.BLACK_AND_WHITE);
       return true;
    
     case R.id.z2_button:          
