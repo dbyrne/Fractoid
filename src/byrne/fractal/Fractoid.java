@@ -116,6 +116,7 @@ public class Fractoid extends Activity {
   }
   
   public Uri saveImage() {
+    //TODO Display an error dialog if user tries to save while image is being rendered
     Uri uri = null;
     try{
       ContentValues values = new ContentValues(3);
@@ -249,8 +250,12 @@ public class Fractoid extends Activity {
     case R.id.manowar_button:
       switchEquation(itemManowar,ComplexEquation.MANOWAR);
       return true;
-      
+    
     case R.id.phoenix_button:
+      /*
+      The mandelbrot fractal for this equation is ugly so
+      we only allow the user to explore the Julia version
+      */
       if (!itemPhoenix.isChecked()) {
 	itemPhoenix.setChecked(true);
 	fractalView.setEquation(ComplexEquation.PHOENIX);
@@ -260,7 +265,7 @@ public class Fractoid extends Activity {
       return true;
 
     case R.id.share_button:
-	
+      //TODO Find a way to share image without saving it first
       Uri fractal = saveImage();
       try {
 	Intent intent = new Intent(Intent.ACTION_SEND);
@@ -276,6 +281,7 @@ public class Fractoid extends Activity {
       return true;
 
     case R.id.wallpaper_button:
+      //TODO Display an error dialog if user tries to set Wallpaper while image is being rendered
       WallpaperManager wm = WallpaperManager.getInstance(this);
       try {
         wm.setBitmap(fractalView.getFractal());

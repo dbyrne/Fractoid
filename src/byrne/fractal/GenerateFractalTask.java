@@ -178,8 +178,10 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
             ysq = y*y;
       
             if (xsq + ysq > 4) {
-              if (extraIterations == 2) {
+              //a few extra iterations improves color smoothing
+              if (extraIterations == 2) { 
                 lessThanMax = true;
+                //TODO Color smoothing needs to be improved, especially for higher order equations.
                 mu = index - Math.log(Math.log(Math.sqrt(xsq + ysq)))/ Math.log(2.0);
                 break;
               } else {
@@ -188,6 +190,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
               }
             }
             
+            //TODO Refactoring needed. Maybe change ComplexEquation to an abstract class?
             switch (equation) {
               case SECOND_ORDER:
                 xtmp = xsq - ysq + P;
@@ -243,6 +246,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
           } else {
             paint.setColor(Color.BLACK);
           }
+          //TODO Store results so color changes don't require recalculation
           c.drawPoint(col,row,paint);
         }
       }

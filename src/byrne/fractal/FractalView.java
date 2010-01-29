@@ -144,7 +144,12 @@ public class FractalView extends View {
     params.randomizeShiftFactor();
     params.setEquation(equation);
     params.setCoords(realmin,realmax,imagmin,imagmax);
+    
     if (equation == ComplexEquation.PHOENIX) {
+      /*
+      The mandelbrot fractal for this equation is ugly so
+      we only allow the user to explore the Julia version
+      */
       params.setType(FractalType.JULIA);
       params.setP(0.56666667);
       params.setQ(-0.5);
@@ -237,7 +242,7 @@ public class FractalView extends View {
         imagmin = -1.4;
         y_range = (double)Math.abs(imagmax-imagmin);
         realmax = (params.getResRatio())*y_range/2;
-        realmin = (params.getResRatio())*y_range/2*-1;
+        realmin = (params.getResRatio())*-y_range/2;
         
         params.setCoords(realmin,realmax,imagmin,imagmax);
         params.resetMaxIterations();
