@@ -45,9 +45,8 @@ import android.widget.EditText;
 public class Fractoid extends Activity {
 
   private FractalView fractalView;
-  private MenuItem item2, item3, item4, item5, item6, item7, item8, itemManowar, itemPhoenix;
-  private MenuItem itemRainbow, itemRed, itemGreen, itemYellow, itemBlackAndWhite, itemWinter, itemSummer;
   private Button juliaButton;
+  MenuItem itemPhoenix;
   private final int MAX_ITERATIONS_DIALOG = 1;
 
   @Override public void onCreate(Bundle savedInstanceState) {
@@ -162,23 +161,7 @@ public class Fractoid extends Activity {
   @Override public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.options_menu, menu);
-    item2 = menu.findItem(R.id.z2_button);
-    item3 = menu.findItem(R.id.z3_button);
-    item4 = menu.findItem(R.id.z4_button);
-    item5 = menu.findItem(R.id.z5_button);
-    item6 = menu.findItem(R.id.z6_button);
-    item7 = menu.findItem(R.id.z4z3z2_button);
-    item8 = menu.findItem(R.id.z6z2_button);
-    itemManowar = menu.findItem(R.id.manowar_button);
     itemPhoenix = menu.findItem(R.id.phoenix_button);
-    itemRainbow = menu.findItem(R.id.rainbow_button);
-    itemWinter = menu.findItem(R.id.winter_button);
-    itemSummer = menu.findItem(R.id.summer_button);
-    itemRed = menu.findItem(R.id.red_button);
-    itemGreen = menu.findItem(R.id.green_button);
-    itemYellow = menu.findItem(R.id.yellow_button);
-    itemBlackAndWhite = menu.findItem(R.id.black_and_white_button);
-    
     return true;
   }
   
@@ -196,64 +179,72 @@ public class Fractoid extends Activity {
       return true;
     
     case R.id.rainbow_button:
-      switchColorSet(itemRainbow,ColorSet.RAINBOW);
+      switchColorSet(item,ColorSet.RAINBOW);
       return true;
     
     case R.id.winter_button:
-      switchColorSet(itemWinter,ColorSet.WINTER);
+      switchColorSet(item,ColorSet.WINTER);
       return true;
     
     case R.id.summer_button:
-      switchColorSet(itemSummer,ColorSet.SUMMER);
+      switchColorSet(item,ColorSet.SUMMER);
+      return true;
+    
+    case R.id.ocean_reef_button:
+      switchColorSet(item,ColorSet.OCEAN_REEF);
+      return true;
+    
+    case R.id.night_sky_button:
+      switchColorSet(item,ColorSet.NIGHT_SKY);
       return true;
   
     case R.id.red_button:
-      switchColorSet(itemRed,ColorSet.RED);
+      switchColorSet(item,ColorSet.RED);
       return true;
     
     case R.id.green_button:
       fractalView.setColorSet(ColorSet.GREEN);
-      itemGreen.setChecked(true);
+      item.setChecked(true);
       return true;
     
     case R.id.yellow_button:
-      switchColorSet(itemYellow,ColorSet.YELLOW);
+      switchColorSet(item,ColorSet.YELLOW);
       return true;
     
     case R.id.black_and_white_button:
-      switchColorSet(itemBlackAndWhite,ColorSet.BLACK_AND_WHITE);
+      switchColorSet(item,ColorSet.BLACK_AND_WHITE);
       return true;
    
     case R.id.z2_button:          
-      switchEquation(item2,ComplexEquation.SECOND_ORDER);  
+      switchEquation(item,ComplexEquation.SECOND_ORDER);  
       return true;
     
     case R.id.z3_button:
-      switchEquation(item3,ComplexEquation.THIRD_ORDER);
+      switchEquation(item,ComplexEquation.THIRD_ORDER);
       return true;
     
     case R.id.z4_button:
-      switchEquation(item4,ComplexEquation.FOURTH_ORDER);
+      switchEquation(item,ComplexEquation.FOURTH_ORDER);
       return true;
     
     case R.id.z5_button:
-      switchEquation(item5,ComplexEquation.FIFTH_ORDER);
+      switchEquation(item,ComplexEquation.FIFTH_ORDER);
       return true;
     
     case R.id.z6_button:
-      switchEquation(item6,ComplexEquation.SIXTH_ORDER);
+      switchEquation(item,ComplexEquation.SIXTH_ORDER);
       return true;
    
     case R.id.z4z3z2_button:
-      switchEquation(item7,ComplexEquation.Z4Z3Z2);
+      switchEquation(item,ComplexEquation.Z4Z3Z2);
       return true;
     
     case R.id.z6z2_button:
-      switchEquation(item8,ComplexEquation.Z6Z2);
+      switchEquation(item,ComplexEquation.Z6Z2);
       return true;
     
     case R.id.manowar_button:
-      switchEquation(itemManowar,ComplexEquation.MANOWAR);
+      switchEquation(item,ComplexEquation.MANOWAR);
       return true;
     
     case R.id.phoenix_button:
@@ -296,6 +287,5 @@ public class Fractoid extends Activity {
       return true;
     }
     return false;
-  }
-  
+  } 
 }

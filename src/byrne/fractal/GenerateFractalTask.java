@@ -77,6 +77,28 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
         }
         break;
       
+      case NIGHT_SKY:
+        for (int x = 0; x < numberOfColors; x++) {
+          int value = x%510;
+          int color;
+          if (value <= 255)
+            color = Math.abs(value);
+          else color = Math.abs(255-(value-255));
+          colorIntegers[x] = Color.rgb(color/2,color,127+color/2);
+        }
+        break;
+      
+      case OCEAN_REEF:
+        for (int x = 0; x < numberOfColors; x++) {
+          int value = x%510;
+          int color;
+          if (value <= 255)
+            color = Math.abs(value);
+          else color = Math.abs(255-(value-255));
+          colorIntegers[x] = Color.rgb(color,128-color/2,255-color);
+        }
+        break;
+      
       case RED:
         for (int x = 0; x < numberOfColors; x++) {
           int value = x%510;
