@@ -54,8 +54,10 @@
         </menu>
     </item>
     <item android:id="@+id/share_button"
-          android:title="Tweet Fractal"/>
+          android:icon="@android:drawable/ic_menu_share"
+          android:title="Share Fractal"/>
     <item android:id="@+id/save_button"
+          android:icon="@android:drawable/ic_menu_save"
           android:title="Save Image"/>
     <item android:id="@+id/wallpaper_button"
           android:title="Set As Wallpaper"/>

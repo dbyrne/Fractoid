@@ -258,46 +258,13 @@ public class Fractoid extends Activity {
 
     case R.id.share_button:
 	
-      boolean success = true;
-      String message = "#Fractoid";
       Uri fractal = saveImage();
-      
-      Intent intent = new Intent("com.twidroidpro.SendTweet");
-      intent.putExtra("com.twidroidpro.extra.MESSAGE", message);
-      intent.putExtra(Intent.EXTRA_STREAM,fractal);
-      intent.setType("application/twitter");
-      
       try {
-	startActivityForResult(intent, 1);
-      } catch(ActivityNotFoundException e) {
-	success = false;
-      }
-      
-      if (!success) {
-	success = true;
-	intent = new Intent("com.twidroid.SendTweet");
-        intent.putExtra("com.twidroid.extra.MESSAGE", message);
+	Intent intent = new Intent(Intent.ACTION_SEND);
 	intent.putExtra(Intent.EXTRA_STREAM,fractal);
-	intent.setType("application/twitter");
-	try {
-	  startActivityForResult(intent, 1);
-	} catch(ActivityNotFoundException e) {
-	  success = false;
-	}
-      }
-      
-      if (!success) {
-	success = true;
-	try {
-	  intent = new Intent(Intent.ACTION_SEND);
-	  intent.putExtra(Intent.EXTRA_TEXT, message);
-	  intent.putExtra(Intent.EXTRA_STREAM,fractal);
-	  intent.setType("image/png");
-	  startActivity(Intent.createChooser(intent,"Twidroid not found. Pick an App:"));
-	} catch(ActivityNotFoundException e) {
-	  
-	}
-      }
+	intent.setType("image/png");
+	startActivity(Intent.createChooser(intent,"Pick an Application"));
+      } catch(ActivityNotFoundException e) {}
       
       return true;
 
