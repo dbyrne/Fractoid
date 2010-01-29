@@ -46,7 +46,7 @@ public class Fractoid extends Activity {
 
   private FractalView fractalView;
   private MenuItem item2, item3, item4, item5, item6, item7, item8, itemManowar, itemPhoenix;
-  private MenuItem itemRainbow, itemRed, itemGreen, itemYellow, itemBlackAndWhite, itemWinter;
+  private MenuItem itemRainbow, itemRed, itemGreen, itemYellow, itemBlackAndWhite, itemWinter, itemSummer;
   private Button juliaButton;
   private final int MAX_ITERATIONS_DIALOG = 1;
 
@@ -173,6 +173,7 @@ public class Fractoid extends Activity {
     itemPhoenix = menu.findItem(R.id.phoenix_button);
     itemRainbow = menu.findItem(R.id.rainbow_button);
     itemWinter = menu.findItem(R.id.winter_button);
+    itemSummer = menu.findItem(R.id.summer_button);
     itemRed = menu.findItem(R.id.red_button);
     itemGreen = menu.findItem(R.id.green_button);
     itemYellow = menu.findItem(R.id.yellow_button);
@@ -200,6 +201,10 @@ public class Fractoid extends Activity {
     
     case R.id.winter_button:
       switchColorSet(itemWinter,ColorSet.WINTER);
+      return true;
+    
+    case R.id.summer_button:
+      switchColorSet(itemSummer,ColorSet.SUMMER);
       return true;
   
     case R.id.red_button:

@@ -34,6 +34,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <item android:id="@+id/winter_button"
                       android:checked="false"
                       android:title="Winter"/>
+                <item android:id="@+id/summer_button"
+                      android:checked="false"
+                      android:title="Summer"/>
                 <item android:id="@+id/black_and_white_button"
                       android:checked="false"
                       android:title="Black and White"/>
