@@ -134,9 +134,18 @@ public class FractalView extends View {
   }
 
   protected void resetCoords() {
-    double imagmax = 1.4;
-    double imagmin = -1.4;
-
+    
+    double imagmax, imagmin;
+    
+    if (equation == ComplexEquation.BURNING_SHIP) {
+      //This equation needs a special range to be centered
+      imagmax = 2.1;
+      imagmin = -0.7;
+    } else {
+      imagmax = 1.4;
+      imagmin = -1.4;    
+    }
+    
     double r_y = Math.abs(imagmax - imagmin);
     double realmax = params.getResRatio()*r_y/2;
     double realmin = params.getResRatio()*r_y/2*-1;

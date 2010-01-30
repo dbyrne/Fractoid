@@ -27,6 +27,7 @@ public enum ComplexEquation {
   SIXTH_ORDER(6),
   Z4Z3Z2(4),
   Z6Z2(6),
+  BURNING_SHIP(2),
   MANOWAR(2),
   PHOENIX(2);
   

@@ -142,7 +142,6 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
     return colorIntegers;   
   }
   
-
   private Bitmap createBitmap() {
     
     ComplexEquation equation = params.getEquation();
@@ -213,10 +212,9 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
             ysq = y*y;
       
             if (xsq + ysq > 4) {
-              //a few extra iterations improves color smoothing
+              //a few extra iterations improves color smoothing - why don't some equations don't work when a higher number is used?
               if (extraIterations == 2) { 
                 lessThanMax = true;
-                //TODO Color smoothing needs to be improved, especially for higher order equations.
                 mu = index + 2 - (Math.log(Math.log(Math.sqrt(xsq + ysq))/ Math.log(2.0))/Math.log(power));
                 break;
               } else {
@@ -254,6 +252,10 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
               case Z6Z2:
                 xtmp = xsq*xsq*xsq-15*xsq*xsq*ysq+15*xsq*ysq*ysq-ysq*ysq*ysq - (xsq - ysq) + P;
                 y = (6*xsq*xsq*x*y-20*xsq*x*ysq*y+6*x*ysq*ysq*y) - (2*x*y) + Q;
+                break;
+              case BURNING_SHIP:
+                xtmp = xsq - ysq + P;
+                y = (2*Math.abs(x)*Math.abs(y)) - Q;
                 break;
               case MANOWAR:
                 tmp_prev_x = x;
