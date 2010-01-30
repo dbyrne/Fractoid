@@ -146,6 +146,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
   private Bitmap createBitmap() {
     
     ComplexEquation equation = params.getEquation();
+    int power = equation.getPower();
     
     double realmin = params.getRealMin();
     double realmax = params.getRealMax();
@@ -216,7 +217,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
               if (extraIterations == 2) { 
                 lessThanMax = true;
                 //TODO Color smoothing needs to be improved, especially for higher order equations.
-                mu = index - Math.log(Math.log(Math.sqrt(xsq + ysq)))/ Math.log(2.0);
+                mu = index + 2 - (Math.log(Math.log(Math.sqrt(xsq + ysq))/ Math.log(2.0))/Math.log(power));
                 break;
               } else {
                 extraIterations++;
@@ -275,7 +276,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
           }
   
           if (lessThanMax) {
-            int colorIndex = Math.max(0,((int)Math.round(mu*10)-1));
+            int colorIndex = Math.max(0,((int)Math.round(mu*10)-1))%(max*10);
             paint.setColor(colorIntegers[colorIndex]);
           } else {
             paint.setColor(Color.BLACK);
