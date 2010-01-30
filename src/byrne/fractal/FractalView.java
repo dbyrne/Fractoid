@@ -35,8 +35,7 @@ public class FractalView extends View {
   private double touched_x=-1, touched_y=-1;
   private GenerateFractalTask mGenerateFractalTask;
   private String calculationTime;
-  private ComplexEquation equation = ComplexEquation.SECOND_ORDER;
-  
+  private ComplexEquation equation = ComplexEquation.SECOND_ORDER;  
   private FractalParameters params;
   
   public FractalView(Context context){

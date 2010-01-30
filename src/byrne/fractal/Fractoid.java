@@ -153,7 +153,15 @@ public class Fractoid extends Activity {
     if (!item.isChecked()) {
       item.setChecked(true);
       fractalView.setEquation(e);
-      setJuliaButtonEnabled(true);
+      if (item == itemPhoenix) {
+	/*
+	The mandelbrot fractal for this equation is ugly so
+	we only allow the user to explore the Julia version
+        */
+	setJuliaButtonEnabled(false);
+      } else {
+	setJuliaButtonEnabled(true);
+      }
       fractalView.resetCoords();
     }
   }
@@ -252,16 +260,7 @@ public class Fractoid extends Activity {
       return true;
     
     case R.id.phoenix_button:
-      /*
-      The mandelbrot fractal for this equation is ugly so
-      we only allow the user to explore the Julia version
-      */
-      if (!itemPhoenix.isChecked()) {
-	itemPhoenix.setChecked(true);
-	fractalView.setEquation(ComplexEquation.PHOENIX);
-	setJuliaButtonEnabled(false);
-	fractalView.resetCoords();
-      }
+      switchEquation(item,ComplexEquation.PHOENIX);
       return true;
 
     case R.id.share_button:

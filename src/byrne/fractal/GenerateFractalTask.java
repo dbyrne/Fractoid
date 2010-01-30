@@ -297,12 +297,10 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
   @Override protected Bitmap doInBackground(Void... unused) {   
     return createBitmap();
   }
-  
   @Override protected void onProgressUpdate(Bitmap... b) {
     fractalView.setFractal(b[0]);
     fractalView.invalidate();
   }
-  
   @Override protected void onPostExecute(Bitmap bitmap) {
     fractalView.setFractal(bitmap);
     fractalView.setTime(System.currentTimeMillis()-startTime);
