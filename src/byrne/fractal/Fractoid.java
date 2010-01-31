@@ -41,6 +41,10 @@ import android.provider.MediaStore.Images.Media;
 import android.content.ContentValues;
 import android.widget.Button;
 import android.widget.EditText;
+import byrne.fractal.MultiTouchController;
+import byrne.fractal.MultiTouchController.MultiTouchObjectCanvas;
+import byrne.fractal.MultiTouchController.PointInfo;
+import byrne.fractal.MultiTouchController.PositionAndScale;
 
 public class Fractoid extends Activity {
 
@@ -67,10 +71,10 @@ public class Fractoid extends Activity {
       }
     });
     
-    final Button zoomOutButton = (Button) findViewById(R.id.zoomOutButton);
-    zoomOutButton.setOnClickListener(new View.OnClickListener() {
+    final Button recalculateButton = (Button) findViewById(R.id.recalculateButton);
+    recalculateButton.setOnClickListener(new View.OnClickListener() {
       public void onClick(View v) {
-	fractalView.zoomOut();
+	fractalView.recalculate();
       }
     });
     

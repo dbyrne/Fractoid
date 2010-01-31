@@ -21,39 +21,43 @@ package byrne.fractal;
 
 import android.view.View;
 import android.graphics.*;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.MotionEvent;
 import android.content.Context;
 import android.os.AsyncTask.Status;
-import android.util.AttributeSet; 
+import android.util.AttributeSet;
+import android.content.res.Resources;
+import android.content.Context;
+import android.content.res.Configuration;
+import android.util.AttributeSet;
+import byrne.fractal.MultiTouchController.*;
 
-public class FractalView extends View {
+public class FractalView extends View implements MultiTouchObjectCanvas<FractalView.Img> {
     
   private double minY,maxY,minX,maxX;
-  private Bitmap fractalBitmap;
-  private RectF selection;
-  private boolean zoom;
-  private double touched_x=-1, touched_y=-1;
+  private Img fractalBitmap;
   private GenerateFractalTask mGenerateFractalTask;
   private String calculationTime;
   private ComplexEquation equation = ComplexEquation.SECOND_ORDER;  
   private FractalParameters params;
+  private MultiTouchController<FractalView.Img> multiTouchController;
+  private Resources res;
+  private boolean setFull = false, zoom = true;
   
   public FractalView(Context context){
     super(context);
-    zoom = true;
+    res = context.getResources();
+    multiTouchController = new MultiTouchController<FractalView.Img>(this, res);
     params = new FractalParameters();
   }
   
   public FractalView(Context context, AttributeSet attrs){
         super(context, attrs);
-        zoom = true;
+        res = context.getResources();
+        multiTouchController = new MultiTouchController<FractalView.Img>(this, res);
         params = new FractalParameters();
-  } 
-  
-  public void setZoom(boolean z) {
-    zoom = z;
   }
-  
+    
   public void setColorSet(ColorSet cs) {
     params.setColorSet(cs);
     startFractalTask();
@@ -67,6 +71,10 @@ public class FractalView extends View {
     equation = e;
   }
   
+  public void setZoom(boolean z) {
+    zoom = z;
+  }
+  
   public int getMaxIterations() {
     return params.getMaxIterations();
   }
@@ -76,7 +84,8 @@ public class FractalView extends View {
     startFractalTask();
   }
   
-  public void zoomOut() {
+  public void recalculate() {
+    
     double imagmin = params.getImagMin();
     double imagmax = params.getImagMax();
     double realmin = params.getRealMin();
@@ -84,11 +93,35 @@ public class FractalView extends View {
     double realRange = Math.abs(realmax-realmin);
     double imagRange = Math.abs(imagmax-imagmin);
     
-    imagmin = imagmin - (imagRange/2);
-    imagmax = imagmax + (imagRange/2);
-    realmin = realmin - (realRange/2);
-    realmax = realmax + (realRange/2);
+    double centerX = (double)fractalBitmap.getCenterX();
+    double centerY = (double)fractalBitmap.getCenterY();
+    double scale = (double)fractalBitmap.getScale();
     
+    double xres = (double)params.getXRes();
+    double yres = (double)params.getYRes();
+
+    double offsetX = realmin + realRange/2;
+    double offsetY = imagmin + imagRange/2;
+    
+    realmin = realmin - offsetX;
+    realmax = realmax - offsetX;
+    imagmin = imagmin - offsetY;
+    imagmax = imagmax - offsetY;
+    
+    double image_y_center = (imagmin + (centerY/yres)*imagRange)/scale;
+    double image_x_center = (realmax - (centerX/xres)*realRange)/scale;
+    
+    imagmax = image_y_center + (imagRange/2)/scale;
+    imagmin = image_y_center - (imagRange/2)/scale;
+    realmin = image_x_center - (realRange/2)/scale; 
+    realmax = image_x_center + (realRange/2)/scale;
+
+    realmin = realmin + offsetX;
+    realmax = realmax + offsetX;
+    imagmin = imagmin + offsetY;
+    imagmax = imagmax + offsetY;
+
+    params.setMaxIterations(params.getMaxIterations()+15);
     params.setCoords(realmin,realmax,imagmin,imagmax);
     startFractalTask();
   }
@@ -101,10 +134,12 @@ public class FractalView extends View {
     params.setType(t);
   }
   public Bitmap getFractal() {
-    return fractalBitmap;
+    return fractalBitmap.getDrawable().getBitmap();
   }
 
   public void startFractalTask() {
+    setFull = true;
+    
     calculationTime = null;
     if (mGenerateFractalTask != null && mGenerateFractalTask.getStatus() == Status.RUNNING) {
       mGenerateFractalTask.cancel(true);
@@ -114,7 +149,14 @@ public class FractalView extends View {
   }
 
   public void setFractal(Bitmap fa) {
-    fractalBitmap = fa;
+    BitmapDrawable bd = new BitmapDrawable(res, fa);
+    if (setFull) {    
+      fractalBitmap = new Img(bd, res);
+      fractalBitmap.setFullScreen();
+      setFull = false;
+    } else {
+      fractalBitmap.setDrawable(bd);
+    }
   }
   
   public void setTime(long t) {
@@ -167,7 +209,7 @@ public class FractalView extends View {
       params.setType(FractalType.MANDELBROT);
       params.resetMaxIterations();
     }
-    
+    setZoom(true);
     startFractalTask();
   }
       
@@ -177,95 +219,74 @@ public class FractalView extends View {
   }
   
   @Override public boolean onTouchEvent (MotionEvent event) {
-
-    double realmax = params.getRealMax();
-    double realmin = params.getRealMin();
-    double imagmin = params.getImagMin();
-    double imagmax = params.getImagMax();    
-    double x_range = (double)Math.abs(realmax-realmin);
-    double y_range = (double)Math.abs(imagmax-imagmin); 
-
-    if (zoom) {
+    if (!zoom) {
       if (event.getAction() == MotionEvent.ACTION_DOWN) {
-        touched_x = event.getX();
-        touched_y = event.getY();
-      } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
-        if (event.getY() > touched_y) {
-          maxY=event.getY();
-          minY=(double)touched_y;
-        } else {
-          maxY=(double)touched_y;
-          minY=Math.max(event.getY(),0);
-        }
-        if (event.getX() > touched_x) {
-          maxX=event.getX();
-          minX=(double)touched_x;
-        } else {
-          maxX=(double)touched_x;
-          minX=event.getX();
-        }
-        double touched_x_range = Math.abs(maxX-minX);
-        double touched_y_range = Math.abs(maxY-minY);
-        double inv_ratio = (double)params.getYRes()/params.getXRes();
-        double sel_ratio = touched_x_range/touched_y_range;
-
-        if (params.getResRatio() > sel_ratio) {
-          if (maxX == event.getX()) {
-            maxX = minX+(params.getResRatio()*touched_y_range);
-          } else {
-            minX = maxX-(params.getResRatio()*touched_y_range);
-          }
-        } else {
-          if (maxY == event.getY()) {
-            maxY = minY+(inv_ratio*touched_x_range);
-          } else {
-            minY = maxY-(inv_ratio*touched_x_range);
-          }
-        }
-
-        selection = new RectF(Math.max((float)minX,0),Math.min((float)maxY,params.getYRes()),Math.min((float)maxX,params.getXRes()),Math.max((float)minY,0));
-        postInvalidate();
-        
-      } else if (event.getAction() == MotionEvent.ACTION_UP) {
-
-        realmax = realmin + (maxX/params.getXRes()) * x_range;		
-        realmin = realmin + (minX/params.getXRes()) * x_range;
-        imagmin = imagmax - (maxY/params.getYRes()) * y_range;
-        imagmax = imagmax - (minY/params.getYRes()) * y_range;
-        selection = null;
-        
-        params.setCoords(realmin,realmax,imagmin,imagmax);
-        params.setMaxIterations(params.getMaxIterations() + 15);
-        startFractalTask();
-      }
-    } else if (!zoom) {
-      if (event.getAction() == MotionEvent.ACTION_DOWN) {
-        
-        touched_x = event.getX();
-        touched_y = event.getY();
-        params.setP(realmin + ((touched_x/params.getXRes())*x_range));
-        params.setQ(imagmax - ((touched_y/params.getYRes())*y_range));
-
+        double imagmin = params.getImagMin();
+        double imagmax = params.getImagMax();
+        double realmin = params.getRealMin();
+        double realmax = params.getRealMax();
+        double realRange = Math.abs(realmax-realmin);
+        double imagRange = Math.abs(imagmax-imagmin);
+        params.setP(realmin + ((event.getX()/params.getXRes())*realRange));
+        params.setQ(imagmax - ((event.getY()/params.getYRes())*imagRange));
         imagmax = 1.4;
         imagmin = -1.4;
-        y_range = (double)Math.abs(imagmax-imagmin);
-        realmax = (params.getResRatio())*y_range/2;
-        realmin = (params.getResRatio())*-y_range/2;
-        
-        params.setCoords(realmin,realmax,imagmin,imagmax);
+        imagRange = Math.abs(imagmax-imagmin);
+        realmax = params.getResRatio()*imagRange/2;
+        realmin = params.getResRatio()*-imagRange/2;
+        System.out.println(realmin);
+        System.out.println(realmax);
+        params.setCoords(realmin, realmax, imagmin, imagmax);
         params.resetMaxIterations();
         startFractalTask();
       } else if (event.getAction() == MotionEvent.ACTION_UP) {
         setZoom(true);
       }
-    } 
-    return true;
+      return true;
+    } else {
+      return multiTouchController.onTouchEvent(event);
+    }
   }
+  
+  
+  @Override
+  public Img getDraggableObjectAtPoint(PointInfo pt) {
+    System.out.println("getDraggableObjectAtPoint:" + fractalBitmap);
+    return fractalBitmap;
+  }
+  
+  	/**
+	 * Select an object for dragging. Called whenever an object is found to be under the point (non-null is returned by
+	 * getDraggableObjectAtPoint()) and a drag operation is starting. Called with null when drag op ends.
+	 */
+  @Override public void selectObject(Img img, PointInfo touchPoint) {
+    invalidate();
+  }
+
+  /** Get the current position and scale of the selected image. Called whenever a drag starts or is reset. */
+  @Override
+  public void getPositionAndScale(Img img, PositionAndScale objPosAndScaleOut) {
+    objPosAndScaleOut.set(img.getCenterX(), img.getCenterY(), img.getScale());
+  }
+
+  /** Set the position and scale of the dragged/stretched image. */
+  @Override
+  public boolean setPositionAndScale(Img img, PositionAndScale newImgPosAndScale, PointInfo touchPoint) {
+    float x = newImgPosAndScale.getXOff();
+    float y = newImgPosAndScale.getYOff();
+    float scale = newImgPosAndScale.getScale();
+    boolean ok = img.setPos(x, y, scale);
+    if (ok)
+      invalidate();
+    return ok;
+  }
+
 
   @Override protected void onDraw(Canvas canvas) {
     super.onDraw(canvas);
     if (fractalBitmap != null) {
-      canvas.drawBitmap(fractalBitmap,0,0,null);
+
+      fractalBitmap.draw(canvas);
 
       Paint p = new Paint();
       if (params.getColorSet() == ColorSet.BLACK_AND_WHITE) {
@@ -273,20 +294,15 @@ public class FractalView extends View {
       } else {
         p.setColor(Color.WHITE);
       }
+      
       p.setTextSize(25);
-
-      if (selection != null) {
-        p.setStyle(Paint.Style.STROKE);
-        p.setStrokeWidth(2);
-        canvas.drawRect(selection,p);
-      }
       p.setStyle(Paint.Style.FILL_AND_STROKE);
       p.setStrokeWidth(1);
-      if (zoom) {
-        canvas.drawText("Drag to zoom",(params.getXRes()/2)-60,params.getYRes()-5,p);
-      }
-      else {
+
+      if (!zoom) {
         canvas.drawText("Touch Screen to Generate Julia Set",(params.getXRes()/2)-175,params.getYRes()-5,p);
+      } else {
+        canvas.drawText("Pinch to Zoom",(params.getXRes()/2)-100,params.getYRes()-5,p);
       }
       String maxIterString = "MaxIter: " + params.getMaxIterations();
       canvas.drawText(maxIterString,5,params.getYRes()-5,p);
@@ -297,6 +313,97 @@ public class FractalView extends View {
       
     } else {
       resetCoords();
+    }
+  }
+  
+  class Img {
+    private int resId;
+    private BitmapDrawable drawable;
+    private boolean firstLoad;
+    private int width, height, displayWidth, displayHeight;
+    private float centerX, centerY, scale;
+    private float minX, maxX, minY, maxY;
+    private static final float SCREEN_MARGIN = 100;
+   
+    public Img(BitmapDrawable bd, Resources res) {
+      this.drawable = bd;
+      this.firstLoad = true;
+    }
+
+    public void setFullScreen() {
+      width = params.getXRes();
+      height = params.getYRes();
+      displayHeight = params.getYRes();
+      displayWidth = params.getXRes();
+      setPos(params.getXRes()/2.0f, params.getYRes()/2.0f, 1.0f);
+    }
+
+    /** Set the position and scale of an image in screen coordinates */
+    private boolean setPos(float centerX, float centerY, float scale) {
+      
+      float ws = (width / 2) * scale, hs = (height / 2) * scale;
+      float newMinX = centerX - ws, newMinY = centerY - hs, newMaxX = centerX + ws, newMaxY = centerY + hs;
+      if (newMinX > displayWidth - SCREEN_MARGIN || newMaxX < SCREEN_MARGIN || newMinY > displayHeight - SCREEN_MARGIN || newMaxY < SCREEN_MARGIN)
+        return false;
+      
+      this.centerX = centerX;
+      this.centerY = centerY;
+      this.scale = scale;
+      this.minX = newMinX;
+      this.minY = newMinY;
+      this.maxX = newMaxX;
+      this.maxY = newMaxY;
+      
+      return true;
+    }
+
+    public void draw(Canvas canvas) {
+      drawable.setBounds((int) minX, (int) minY, (int) maxX, (int) maxY);
+      drawable.draw(canvas);
+    }
+  
+    public BitmapDrawable getDrawable() {
+      return drawable;
+    }
+  
+    public void setDrawable(BitmapDrawable bd) {
+      drawable = bd;
+    }
+  
+    public int getWidth() {
+      return width;
+    }
+  
+    public int getHeight() {
+      return height;
+    }
+  
+    public float getCenterX() {
+      return centerX;
+    }
+  
+    public float getCenterY() {
+      return centerY;
+    }
+  
+    public float getScale() {
+      return scale;
+    }
+  
+    public float getMinX() {
+      return minX;
+    }
+  
+    public float getMaxX() {
+      return maxX;
+    }
+  
+    public float getMinY() {
+      return minY;
+    }
+  
+    public float getMaxY() {
+      return maxY;
     }
   }
 }
