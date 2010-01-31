@@ -234,8 +234,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
         imagRange = Math.abs(imagmax-imagmin);
         realmax = params.getResRatio()*imagRange/2;
         realmin = params.getResRatio()*-imagRange/2;
-        System.out.println(realmin);
-        System.out.println(realmax);
+
         params.setCoords(realmin, realmax, imagmin, imagmax);
         params.resetMaxIterations();
         startFractalTask();
@@ -246,8 +245,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     } else {
       return multiTouchController.onTouchEvent(event);
     }
-  }
-  
+  }  
   
   @Override
   public Img getDraggableObjectAtPoint(PointInfo pt) {
@@ -255,10 +253,10 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     return fractalBitmap;
   }
   
-  	/**
-	 * Select an object for dragging. Called whenever an object is found to be under the point (non-null is returned by
-	 * getDraggableObjectAtPoint()) and a drag operation is starting. Called with null when drag op ends.
-	 */
+  /**
+  * Select an object for dragging. Called whenever an object is found to be under the point (non-null is returned by
+  * getDraggableObjectAtPoint()) and a drag operation is starting. Called with null when drag op ends.
+   */
   @Override public void selectObject(Img img, PointInfo touchPoint) {
     invalidate();
   }
@@ -281,7 +279,6 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     return ok;
   }
 
-
   @Override protected void onDraw(Canvas canvas) {
     super.onDraw(canvas);
     if (fractalBitmap != null) {
@@ -295,15 +292,18 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
         p.setColor(Color.WHITE);
       }
       
-      p.setTextSize(25);
+      
       p.setStyle(Paint.Style.FILL_AND_STROKE);
       p.setStrokeWidth(1);
 
+      p.setTextSize(35);
       if (!zoom) {
-        canvas.drawText("Touch Screen to Generate Julia Set",(params.getXRes()/2)-175,params.getYRes()-5,p);
+        canvas.drawText("Touch to Generate Julia Set",(params.getXRes()/2)-200,params.getYRes()-5,p);
       } else {
-        canvas.drawText("Pinch to Zoom",(params.getXRes()/2)-100,params.getYRes()-5,p);
+        canvas.drawText("Pinch to Zoom",(params.getXRes()/2)-120,params.getYRes()-5,p);
       }
+      p.setTextSize(25);
+      
       String maxIterString = "MaxIter: " + params.getMaxIterations();
       canvas.drawText(maxIterString,5,params.getYRes()-5,p);
       
@@ -317,9 +317,8 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   }
   
   class Img {
-    private int resId;
+
     private BitmapDrawable drawable;
-    private boolean firstLoad;
     private int width, height, displayWidth, displayHeight;
     private float centerX, centerY, scale;
     private float minX, maxX, minY, maxY;
@@ -327,7 +326,6 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
    
     public Img(BitmapDrawable bd, Resources res) {
       this.drawable = bd;
-      this.firstLoad = true;
     }
 
     public void setFullScreen() {
