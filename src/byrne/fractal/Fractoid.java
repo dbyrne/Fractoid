@@ -71,13 +71,6 @@ public class Fractoid extends Activity {
       }
     });
     
-    final Button recalculateButton = (Button) findViewById(R.id.recalculateButton);
-    recalculateButton.setOnClickListener(new View.OnClickListener() {
-      public void onClick(View v) {
-	fractalView.recalculate();
-      }
-    });
-    
     Eula.showEula(this);
 
   }

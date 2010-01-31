@@ -35,7 +35,7 @@ import byrne.fractal.MultiTouchController.*;
 public class FractalView extends View implements MultiTouchObjectCanvas<FractalView.Img> {
     
   private double minY,maxY,minX,maxX;
-  private Img fractalBitmap;
+  private Img fractalBitmap, backgroundBitmap;
   private GenerateFractalTask mGenerateFractalTask;
   private String calculationTime;
   private ComplexEquation equation = ComplexEquation.SECOND_ORDER;  
@@ -209,6 +209,9 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
       params.setType(FractalType.MANDELBROT);
       params.resetMaxIterations();
     }
+    
+    backgroundBitmap = null;
+    
     setZoom(true);
     startFractalTask();
   }
@@ -237,6 +240,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
 
         params.setCoords(realmin, realmax, imagmin, imagmax);
         params.resetMaxIterations();
+        backgroundBitmap = null;
         startFractalTask();
       } else if (event.getAction() == MotionEvent.ACTION_UP) {
         setZoom(true);
@@ -249,7 +253,6 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   
   @Override
   public Img getDraggableObjectAtPoint(PointInfo pt) {
-    System.out.println("getDraggableObjectAtPoint:" + fractalBitmap);
     return fractalBitmap;
   }
   
@@ -258,6 +261,12 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   * getDraggableObjectAtPoint()) and a drag operation is starting. Called with null when drag op ends.
    */
   @Override public void selectObject(Img img, PointInfo touchPoint) {
+    if (img == null) {
+      backgroundBitmap = fractalBitmap;
+      recalculate();
+    } else {
+      backgroundBitmap = null;
+    }
     invalidate();
   }
 
@@ -281,6 +290,10 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
 
   @Override protected void onDraw(Canvas canvas) {
     super.onDraw(canvas);
+    if (backgroundBitmap != null) {
+      backgroundBitmap.draw(canvas);
+    }
+    
     if (fractalBitmap != null) {
 
       fractalBitmap.draw(canvas);

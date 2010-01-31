@@ -181,6 +181,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
     final int PASSES = 4;
     
     for (int rpass = 0; rpass < PASSES; rpass++) {
+      
       for (int row=rpass; row < yres; row += PASSES) {
         if (row % 5 == 0) {
           if (isCancelled())
