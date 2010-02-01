@@ -178,16 +178,18 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
     double deltaQ = (imagmax - imagmin)/yres;
     
     final int max = params.getMaxIterations();
-    final int PASSES = 4;
+    final int PASSES = 5;
+    int updateCount=0;
     
     for (int rpass = 0; rpass < PASSES; rpass++) {
-      
       for (int row=rpass; row < yres; row += PASSES) {
-        if (row % 5 == 0) {
+        updateCount++;
+        if (updateCount % 5 == 0) {
           if (isCancelled())
             return b;
           this.publishProgress(b);
         }
+        
         if (type == FractalType.MANDELBROT) {
           Q = imagmax - row*deltaQ;
         }

@@ -60,6 +60,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     
   public void setColorSet(ColorSet cs) {
     params.setColorSet(cs);
+    backgroundBitmap = null;
     startFractalTask();
   }
   
@@ -120,8 +121,8 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     realmax = realmax + offsetX;
     imagmin = imagmin + offsetY;
     imagmax = imagmax + offsetY;
-
-    params.setMaxIterations(params.getMaxIterations()+15);
+    if (fractalBitmap.getScale() > 1)
+      params.setMaxIterations(params.getMaxIterations()+10);
     params.setCoords(realmin,realmax,imagmin,imagmax);
     startFractalTask();
   }
@@ -251,7 +252,33 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     }
   }  
   
+  public void mergeBitmaps() {
+    Bitmap composite = Bitmap.createBitmap(params.getXRes(), params.getYRes(), Bitmap.Config.ARGB_8888);
+    Canvas canvas = new Canvas(composite);
+    
+    if (backgroundBitmap != null) {
+      backgroundBitmap.draw(canvas);
+    }
+    
+    fractalBitmap.draw(canvas);
+    
+    BitmapDrawable bd = new BitmapDrawable(res, composite);
+    
+    fractalBitmap.setDrawable(bd);
+    
+  }
+  
   @Override public Img getDraggableObjectAtPoint(PointInfo pt) {
+    
+    if (mGenerateFractalTask != null && mGenerateFractalTask.getStatus() == Status.RUNNING) {
+      try {
+        mGenerateFractalTask.cancel(true);
+        mGenerateFractalTask.get();
+      } catch(Exception e) {}
+    }
+    
+    mergeBitmaps();
+    
     return fractalBitmap;
   }
   
@@ -296,7 +323,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
       fractalBitmap.draw(canvas);
 
       Paint p = new Paint();
-      if (params.getColorSet() == ColorSet.BLACK_AND_WHITE) {
+      if (params.getColorSet() == ColorSet.BLACK_AND_WHITE || params.getColorSet() == ColorSet.WINTER) {
         p.setColor(Color.BLACK);  
       } else {
         p.setColor(Color.WHITE);
