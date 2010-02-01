@@ -215,7 +215,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
             ysq = y*y;
       
             if (xsq + ysq > 4) {
-              //a few extra iterations improves color smoothing - why don't some equations don't work when a higher number is used?
+              //a few extra iterations improves color smoothing - why don't some equations work when a higher number is used?
               if (extraIterations == 2) { 
                 lessThanMax = true;
                 mu = index + 2 - (Math.log(Math.log(Math.sqrt(xsq + ysq))/ Math.log(2.0))/Math.log(power));

@@ -323,8 +323,10 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
       fractalBitmap.draw(canvas);
 
       Paint p = new Paint();
-      if (params.getColorSet() == ColorSet.BLACK_AND_WHITE || params.getColorSet() == ColorSet.WINTER) {
-        p.setColor(Color.BLACK);  
+      if (params.getColorSet() == ColorSet.BLACK_AND_WHITE ||
+          params.getColorSet() == ColorSet.WINTER ||
+          params.getColorSet() == ColorSet.NIGHT_SKY) {
+        p.setColor(Color.RED);  
       } else {
         p.setColor(Color.WHITE);
       }

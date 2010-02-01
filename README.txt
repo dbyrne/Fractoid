@@ -1,10 +1,8 @@
 Fractoid - A fractal generator for the Android platform
-Copyright (C) 2010 David Byrne
-david.r.byrne@gmail.com
 
-CONTRIBUTORS
-Main Author - David Byrne
-MultiTouch Controller - Luke Hutchison
+CREDITS
+Copyright (C) 2010 David Byrne <david.r.byrne@gmail.com>
+MultiTouch Controller - Luke Hutchison <luke.hutch@mit.edu>
 
 INSTALLATION
 If you have the Android SDK installed, there should
