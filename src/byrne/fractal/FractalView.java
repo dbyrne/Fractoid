@@ -268,7 +268,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     
   }
   
-  @Override public Img getDraggableObjectAtPoint(PointInfo pt) {
+  public Img getDraggableObjectAtPoint(PointInfo pt) {
     
     if (mGenerateFractalTask != null && mGenerateFractalTask.getStatus() == Status.RUNNING) {
       try {
@@ -286,7 +286,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   * Select an object for dragging. Called whenever an object is found to be under the point (non-null is returned by
   * getDraggableObjectAtPoint()) and a drag operation is starting. Called with null when drag op ends.
    */
-  @Override public void selectObject(Img img, PointInfo touchPoint) {
+  public void selectObject(Img img, PointInfo touchPoint) {
     if (img == null) {
       backgroundBitmap = fractalBitmap;
       recalculate();
@@ -297,12 +297,12 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   }
 
   /** Get the current position and scale of the selected image. Called whenever a drag starts or is reset. */
-  @Override public void getPositionAndScale(Img img, PositionAndScale objPosAndScaleOut) {
+  public void getPositionAndScale(Img img, PositionAndScale objPosAndScaleOut) {
     objPosAndScaleOut.set(img.getCenterX(), img.getCenterY(), img.getScale());
   }
 
   /** Set the position and scale of the dragged/stretched image. */
-  @Override public boolean setPositionAndScale(Img img, PositionAndScale newImgPosAndScale, PointInfo touchPoint) {
+  public boolean setPositionAndScale(Img img, PositionAndScale newImgPosAndScale, PointInfo touchPoint) {
     float x = newImgPosAndScale.getXOff();
     float y = newImgPosAndScale.getYOff();
     float scale = newImgPosAndScale.getScale();
