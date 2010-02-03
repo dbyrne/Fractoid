@@ -184,7 +184,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
     for (int rpass = 0; rpass < PASSES; rpass++) {
       for (int row=rpass; row < yres; row += PASSES) {
         updateCount++;
-        if (updateCount % 5 == 0) {
+        if (updateCount % 8 == 0) {
           if (isCancelled())
             return b;
           this.publishProgress(b);

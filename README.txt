@@ -4,6 +4,8 @@ CREDITS
 Copyright (C) 2010 David Byrne <david.r.byrne@gmail.com>
 MultiTouch Controller - Luke Hutchison <luke.hutch@mit.edu>
 
+Special thanks to Jeffrey Blattman for his valuable user feedback.
+
 INSTALLATION
 If you have the Android SDK installed, there should
 be only one step to get this project working.  Copy

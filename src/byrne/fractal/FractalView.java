@@ -248,9 +248,12 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
       }
       return true;
     } else {
-      return multiTouchController.onTouchEvent(event);
+      if (fractalBitmap != null)
+        return multiTouchController.onTouchEvent(event);
+      else
+        return true;
     }
-  }  
+  }
   
   public void mergeBitmaps() {
     Bitmap composite = Bitmap.createBitmap(params.getXRes(), params.getYRes(), Bitmap.Config.ARGB_8888);
@@ -258,23 +261,19 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     
     if (backgroundBitmap != null) {
       backgroundBitmap.draw(canvas);
+      backgroundBitmap = null;
     }
     
     fractalBitmap.draw(canvas);
-    
     BitmapDrawable bd = new BitmapDrawable(res, composite);
-    
     fractalBitmap.setDrawable(bd);
-    
+    fractalBitmap.setFullScreen();
   }
   
   public Img getDraggableObjectAtPoint(PointInfo pt) {
     
     if (mGenerateFractalTask != null && mGenerateFractalTask.getStatus() == Status.RUNNING) {
-      try {
-        mGenerateFractalTask.cancel(true);
-        mGenerateFractalTask.get();
-      } catch(Exception e) {}
+      mGenerateFractalTask.cancel(true);
     }
     
     mergeBitmaps();
@@ -290,8 +289,6 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     if (img == null) {
       backgroundBitmap = fractalBitmap;
       recalculate();
-    } else {
-      backgroundBitmap = null;
     }
     invalidate();
   }
