@@ -1,4 +1,4 @@
-Fractoid - A fractal generator for the Android platform
+Fractoid - A fractal explorer for the Android platform
 
 CREDITS
 Copyright (C) 2010 David Byrne <david.r.byrne@gmail.com>
