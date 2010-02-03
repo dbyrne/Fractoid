@@ -27,10 +27,12 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
   FractalParameters params;
   FractalView fractalView;
   long startTime;
+  NativeLib mNativeLib;
   
   public GenerateFractalTask(FractalParameters p, FractalView fv) {
     params = p;
     fractalView = fv;
+    mNativeLib = new NativeLib();
   }
   
   private int[] calculateColors() {
@@ -143,6 +145,8 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
   }
   
   private Bitmap createBitmap() {
+    
+    System.out.println(mNativeLib.getHelloWorld());
     
     ComplexEquation equation = params.getEquation();
     int power = equation.getPower();
@@ -308,5 +312,12 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
     fractalView.setFractal(bitmap);
     fractalView.setTime(System.currentTimeMillis()-startTime);
     fractalView.invalidate();
+  }  
+}
+class NativeLib {
+  public native String getHelloWorld();
+    
+  static {
+    System.loadLibrary("FractalMath");
   }
 }
