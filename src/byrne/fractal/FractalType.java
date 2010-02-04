@@ -20,5 +20,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package byrne.fractal;
 
 public enum FractalType {
-  MANDELBROT, JULIA
+  MANDELBROT(1), JULIA(2);
+  
+  private int native_integer;
+  FractalType(int i) {
+    native_integer = i;
+  }
+  public int getInt() {
+    return native_integer;
+  }
 }

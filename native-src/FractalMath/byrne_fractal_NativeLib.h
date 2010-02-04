@@ -9,11 +9,11 @@ extern "C" {
 #endif
 /*
  * Class:     byrne_fractal_NativeLib
- * Method:    getHelloWorld
- * Signature: ()Ljava/lang/String;
+ * Method:    getFractalRow
+ * Signature: (IIIIIIIDDDDDD)[I
  */
-JNIEXPORT jstring JNICALL Java_byrne_fractal_NativeLib_getHelloWorld
-  (JNIEnv *, jobject);
+JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
+  (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jint, jdouble, jdouble, jdouble, jdouble, jdouble, jdouble);
 
 #ifdef __cplusplus
 }
