@@ -195,8 +195,8 @@ public class Fractoid extends Activity {
       switchColorSet(item,ColorSet.SUMMER);
       return true;
     
-    case R.id.ocean_reef_button:
-      switchColorSet(item,ColorSet.OCEAN_REEF);
+    case R.id.orange_button:
+      switchColorSet(item,ColorSet.ORANGE);
       return true;
     
     case R.id.night_sky_button:

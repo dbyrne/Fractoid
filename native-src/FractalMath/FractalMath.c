@@ -1,5 +1,6 @@
 #include "byrne_fractal_NativeLib.h"
 #include <math.h>
+#include <android/log.h>
 
 #ifndef maxVal
   #define maxVal( a, b ) ( ((a) > (b)) ? (a) : (b) )
@@ -129,9 +130,8 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
     } else {
       fractalRow[col] = -1;
     }
-    //TODO Store results so color changes don't require recalculation
-
   }
+  //__android_log_write(ANDROID_LOG_DEBUG,"FRACTOID_DEBUG","Hello");
   (*env)->SetIntArrayRegion(env, result, 0, xres, fractalRow);
   return result;
 }
