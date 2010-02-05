@@ -27,10 +27,12 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
   FractalParameters params;
   FractalView fractalView;
   long startTime;
+  NativeLib mNativeLib;
   
   public GenerateFractalTask(FractalParameters p, FractalView fv) {
     params = p;
     fractalView = fv;
+    mNativeLib = new NativeLib();
   }
   
   private int[] calculateColors() {
@@ -144,6 +146,8 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
   
   private Bitmap createBitmap() {
     
+    
+    
     ComplexEquation equation = params.getEquation();
     int power = equation.getPower();
     
@@ -169,6 +173,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
     paint.setStrokeWidth(1);
     
     int[] colorIntegers = calculateColors();
+    int[] rowColors;
 
     double x=-1, y=-1, prev_x = -1, prev_y =-1,tmp_prev_x,tmp_prev_y, mu = 1;
     int index;
@@ -183,106 +188,20 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
     
     for (int rpass = 0; rpass < PASSES; rpass++) {
       for (int row=rpass; row < yres; row += PASSES) {
+        
         updateCount++;
         if (updateCount % 8 == 0) {
           if (isCancelled())
             return b;
           this.publishProgress(b);
-        }
-        
-        if (type == FractalType.MANDELBROT) {
-          Q = imagmax - row*deltaQ;
-        }
-  
+        }        
+        rowColors = mNativeLib.getFractalRow(row,xres,yres,
+                                             power,max,equation.getInt(),type.getInt(),P,Q,
+                                             realmin,realmax,imagmin,imagmax);  
         for (int col=0; col < xres; col++) {
-          if (type == FractalType.MANDELBROT) {
-            P = realmin + col*deltaP;
-            x = y = 0.0;
-            prev_x = prev_y = 0.0;
-          } else if (type == FractalType.JULIA) {
-  
-            x = realmin + (double)col * deltaP;
-            y = imagmax - (double)row * deltaQ;
-            prev_x = x;
-            prev_y = y;
-          }
-          lessThanMax = false;
           
-          double xsq, ysq;
-          int extraIterations = 0;
-          for (index = 0; index < max; index++) {
-            xsq = x*x;
-            ysq = y*y;
-      
-            if (xsq + ysq > 4) {
-              //a few extra iterations improves color smoothing - why don't some equations work when a higher number is used?
-              if (extraIterations == 2) { 
-                lessThanMax = true;
-                mu = index + 2 - (Math.log(Math.log(Math.sqrt(xsq + ysq))/ Math.log(2.0))/Math.log(power));
-                break;
-              } else {
-                extraIterations++;
-                index--;
-              }
-            }
-            
-            //TODO Refactoring needed. Maybe change ComplexEquation to an abstract class?
-            switch (equation) {
-              case SECOND_ORDER:
-                xtmp = xsq - ysq + P;
-                y = (2*x*y) + Q;
-                break;
-              case THIRD_ORDER:
-                xtmp = xsq*x - 3*x*ysq + P;
-                y = -ysq*y + 3*xsq*y + Q;
-                break;
-              case FOURTH_ORDER:
-                xtmp = xsq*xsq - 6*xsq*ysq + ysq*ysq + P;
-                y = 4*xsq*x*y - 4*x*ysq*y + Q;
-                break;
-              case FIFTH_ORDER:
-                xtmp = xsq*xsq*x-10*xsq*x*ysq+5*x*ysq*ysq + P;
-                y=(5*xsq*xsq*y-10*xsq*ysq*y+ysq*ysq*y) + Q;
-                break;
-              case SIXTH_ORDER:
-                xtmp = xsq*xsq*xsq-15*xsq*xsq*ysq+15*xsq*ysq*ysq-ysq*ysq*ysq + P;
-                y=(6*xsq*xsq*x*y-20*xsq*x*ysq*y+6*x*ysq*ysq*y) + Q;
-                break;
-              case Z4Z3Z2:
-                xtmp = xsq*xsq - 6*xsq*ysq + ysq*ysq - (xsq*x - 3*x*ysq) - (xsq - ysq) + P;
-                y = 4*xsq*x*y - 4*x*ysq*y - (-ysq*y + 3*xsq*y) - (2*x*y) + Q;
-                break;
-              case Z6Z2:
-                xtmp = xsq*xsq*xsq-15*xsq*xsq*ysq+15*xsq*ysq*ysq-ysq*ysq*ysq - (xsq - ysq) + P;
-                y = (6*xsq*xsq*x*y-20*xsq*x*ysq*y+6*x*ysq*ysq*y) - (2*x*y) + Q;
-                break;
-              case BURNING_SHIP:
-                xtmp = xsq - ysq + P;
-                y = (2*Math.abs(x)*Math.abs(y)) - Q;
-                break;
-              case MANOWAR:
-                tmp_prev_x = x;
-                tmp_prev_y = y;
-                xtmp = (xsq - ysq) + prev_x + P;
-                y = (2*x*y) + prev_y + Q;
-                prev_x = tmp_prev_x;
-                prev_y = tmp_prev_y;
-                break;
-              case PHOENIX:
-                tmp_prev_x = x;
-                tmp_prev_y = y;
-                xtmp = (xsq - ysq) + P + Q*prev_x;
-                y = (2*x*y) + Q*prev_y;
-                prev_x = tmp_prev_x;
-                prev_y = tmp_prev_y;
-                break;
-            }
-            x = xtmp;
-          }
-  
-          if (lessThanMax) {
-            int colorIndex = Math.max(0,((int)Math.round(mu*10)-1))%(max*10);
-            paint.setColor(colorIntegers[colorIndex]);
+          if (rowColors[col] >= 0) {
+            paint.setColor(colorIntegers[rowColors[col]]);
           } else {
             paint.setColor(Color.BLACK);
           }
@@ -308,5 +227,23 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
     fractalView.setFractal(bitmap);
     fractalView.setTime(System.currentTimeMillis()-startTime);
     fractalView.invalidate();
+  }  
+}
+class NativeLib {
+  public native int[] getFractalRow(int row,
+                                    int xres,
+                                    int yres,
+                                    int power,
+                                    int max,
+                                    int equation,
+                                    int type,
+                                    double P,
+                                    double Q,
+                                    double realmin,
+                                    double realmax,
+                                    double imagmin,
+                                    double imagmax);
+  static {
+    System.loadLibrary("FractalMath");
   }
 }

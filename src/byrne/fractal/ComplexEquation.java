@@ -20,21 +20,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package byrne.fractal;
 
 public enum ComplexEquation {
-  SECOND_ORDER(2),
-  THIRD_ORDER(3),
-  FOURTH_ORDER(4),
-  FIFTH_ORDER(5),
-  SIXTH_ORDER(6),
-  Z4Z3Z2(4),
-  Z6Z2(6),
-  BURNING_SHIP(2),
-  MANOWAR(2),
-  PHOENIX(2);
+  SECOND_ORDER(1,2),
+  THIRD_ORDER(2,3),
+  FOURTH_ORDER(3,4),
+  FIFTH_ORDER(4,5),
+  SIXTH_ORDER(5,6),
+  Z4Z3Z2(6,4),
+  Z6Z2(7,6),
+  BURNING_SHIP(8,2),
+  MANOWAR(9,2),
+  PHOENIX(10,2);
   
-  private int power;
+  private int power, native_integer;
   
-  ComplexEquation(int p) {
+  ComplexEquation(int i, int p) {
+    native_integer = i;
     power = p;
+  }
+  
+  int getInt() {
+    return native_integer;
   }
   
   int getPower() {
