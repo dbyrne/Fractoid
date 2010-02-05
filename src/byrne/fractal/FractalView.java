@@ -131,9 +131,6 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     return params.getType();
   }
   
-  public void setType(FractalType t) {
-    params.setType(t);
-  }
   public Bitmap getFractal() {
     return fractalBitmap.getDrawable().getBitmap();
   }
@@ -241,6 +238,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
 
         params.setCoords(realmin, realmax, imagmin, imagmax);
         params.resetMaxIterations();
+        params.setType(FractalType.JULIA);
         backgroundBitmap = null;
         startFractalTask();
       } else if (event.getAction() == MotionEvent.ACTION_UP) {

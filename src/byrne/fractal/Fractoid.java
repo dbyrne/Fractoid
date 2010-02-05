@@ -65,7 +65,6 @@ public class Fractoid extends Activity {
     juliaButton.setOnClickListener(new View.OnClickListener() {
       public void onClick(View v) {
 	setJuliaButtonEnabled(false);
-	fractalView.setType(FractalType.JULIA);
 	fractalView.setZoom(false);
 	fractalView.postInvalidate();
       }
@@ -167,10 +166,16 @@ public class Fractoid extends Activity {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.options_menu, menu);
     itemPhoenix = menu.findItem(R.id.phoenix_button);
+
     return true;
   }
   
   public boolean onOptionsItemSelected(MenuItem item) {
+    
+    if (fractalView.getType() == FractalType.MANDELBROT) {
+      setJuliaButtonEnabled(true);
+      fractalView.setZoom(true);
+    }
 
     switch (item.getItemId()) {
     case R.id.reset_button:
