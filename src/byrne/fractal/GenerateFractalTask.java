@@ -184,7 +184,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
     final int max = params.getMaxIterations();
     final int PASSES = 2;
     int updateCount=0;
-    int hop = 0;
+    int state = 0;
     
     for (int rpass = 0; rpass < PASSES; rpass++) {
       paint.setStrokeWidth(PASSES-rpass);
@@ -198,20 +198,22 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
         }
         if (row % 2 == 0) {
           if (rpass == 0) {
-            hop = 2;
+            state = 2;
           } else {
-            hop = 1;
+            state = 1;
           }
         } else {
-          hop = 0;
+          state = 0;
         }
-        rowColors = mNativeLib.getFractalRow(row,xres,yres,hop,
+        rowColors = mNativeLib.getFractalRow(row,xres,yres,state,
                                              power,max,equation.getInt(),type.getInt(),P,Q,
-                                             realmin,realmax,imagmin,imagmax);  
-          int step = 1;
-          if (hop > 0)
-            step = 2;
-          for(int col=(hop%2); col < xres; col = col+step) {
+                                             realmin,realmax,imagmin,imagmax);
+        
+        //TODO Find a more elegant way to handle 2x2 and 1x1 rendering
+        int step = 1;
+        if (state > 0)
+          step = 2;
+        for(int col=(state%2); col < xres; col = col+step) {
           
           if (rowColors[col] >= 0) {
             paint.setColor(colorIntegers[rowColors[col]]);
@@ -246,7 +248,7 @@ class NativeLib {
   public native int[] getFractalRow(int row,
                                     int xres,
                                     int yres,
-                                    int hop,
+                                    int state,
                                     int power,
                                     int max,
                                     int equation,

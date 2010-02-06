@@ -57,6 +57,7 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
     Q = imagmax - row*deltaQ;
 
   jint col, step = 1;
+  //TODO Find a more elegant way to handle 2x2 and 1x1 rendering
   if (state > 0)
     step = 2;
   for(col=(state%2); col < xres; col = col+step) {
