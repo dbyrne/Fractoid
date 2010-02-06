@@ -33,7 +33,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
 (JNIEnv * env, jobject obj,
- jint row, jint xres, jint yres,
+ jint row, jint xres, jint yres, jint state,
  jint power, jint max, jint equation, jint fractalType, jdouble P, jdouble Q,
  jdouble realmin, jdouble realmax,
  jdouble imagmin, jdouble imagmax) {
@@ -56,8 +56,10 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
   if (fractalType == 1)
     Q = imagmax - row*deltaQ;
 
-  jint col;
-  for(col=0; col < xres; col++) {
+  jint col, step = 1;
+  if (state > 0)
+    step = 2;
+  for(col=(state%2); col < xres; col = col+step) {
     
     if (fractalType == 1) {
   

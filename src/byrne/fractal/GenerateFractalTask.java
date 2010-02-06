@@ -141,7 +141,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
           colorIntegers[x] = Color.rgb(color,color,color);
         }     
     }
-    return colorIntegers;   
+    return colorIntegers;
   }
   
   private Bitmap createBitmap() {
@@ -170,7 +170,6 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
     
     Paint paint = new Paint();
     paint.setStyle(Paint.Style.FILL_AND_STROKE);
-    paint.setStrokeWidth(1);
     
     int[] colorIntegers = calculateColors();
     int[] rowColors;
@@ -183,22 +182,36 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
     double deltaQ = (imagmax - imagmin)/yres;
     
     final int max = params.getMaxIterations();
-    final int PASSES = 5;
+    final int PASSES = 2;
     int updateCount=0;
+    int hop = 0;
     
     for (int rpass = 0; rpass < PASSES; rpass++) {
-      for (int row=rpass; row < yres; row += PASSES) {
+      paint.setStrokeWidth(PASSES-rpass);
+      for (int row=0; row < yres; row += PASSES-rpass) {
         
         updateCount++;
-        if (updateCount % 8 == 0) {
+        if (updateCount % 15 == 0) {
           if (isCancelled())
             return b;
           this.publishProgress(b);
-        }        
-        rowColors = mNativeLib.getFractalRow(row,xres,yres,
+        }
+        if (row % 2 == 0) {
+          if (rpass == 0) {
+            hop = 2;
+          } else {
+            hop = 1;
+          }
+        } else {
+          hop = 0;
+        }
+        rowColors = mNativeLib.getFractalRow(row,xres,yres,hop,
                                              power,max,equation.getInt(),type.getInt(),P,Q,
                                              realmin,realmax,imagmin,imagmax);  
-        for (int col=0; col < xres; col++) {
+          int step = 1;
+          if (hop > 0)
+            step = 2;
+          for(int col=(hop%2); col < xres; col = col+step) {
           
           if (rowColors[col] >= 0) {
             paint.setColor(colorIntegers[rowColors[col]]);
@@ -233,6 +246,7 @@ class NativeLib {
   public native int[] getFractalRow(int row,
                                     int xres,
                                     int yres,
+                                    int hop,
                                     int power,
                                     int max,
                                     int equation,
