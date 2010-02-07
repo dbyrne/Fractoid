@@ -3,6 +3,7 @@ Fractoid - A fractal explorer for the Android platform
 CREDITS
 Copyright (C) 2010 David Byrne <david.r.byrne@gmail.com>
 MultiTouch Controller - Luke Hutchison <luke.hutch@mit.edu>
+Logo Design - Rhea dela Cruz <rhea.delacruz@gmail.com>
 Special thanks to Jeffrey Blattman for his valuable user feedback.
 
 INSTALLATION
