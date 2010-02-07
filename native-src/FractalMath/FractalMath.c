@@ -45,24 +45,24 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
  jdouble imagmin, jdouble imagmax) {
   
   jintArray result;
-  jdouble xtmp=0,x=-1,y=-1,prev_x=-1,prev_y=-1,tmp_prev_x,tmp_prev_y,mu=1,xsq,ysq;
-  jint index;
-  jint lessThanMax;
+  double xtmp=0,x=-1,y=-1,prev_x=-1,prev_y=-1,tmp_prev_x,tmp_prev_y,mu=1,xsq,ysq;
+  int index;
+  int lessThanMax;
   
   result = (*env)->NewIntArray(env, xres);
   if (result == NULL) {
     return NULL; /* out of memory error thrown */
   }
 
-  jint fractalRow[xres];
+  int fractalRow[xres];
 
-  jdouble deltaP = (realmax - realmin)/xres;
-  jdouble deltaQ = (imagmax - imagmin)/yres;
+  double deltaP = (realmax - realmin)/xres;
+  double deltaQ = (imagmax - imagmin)/yres;
   
   if (fractalType == 1) //Mandelbrot
     Q = imagmax - row*deltaQ;
 
-  jint col, step = 1;
+  int col, step = 1;
   //TODO Find a more elegant way to handle 2x2 and 1x1 rendering
   if (state > 0)
     step = 2;
@@ -82,7 +82,7 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
 
     lessThanMax = 0;
 
-    jint extraIterations = 0;
+    int extraIterations = 0;
     double distance = 999;
     for (index = 0; index < max; index++) {
       
