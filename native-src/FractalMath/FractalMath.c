@@ -86,7 +86,7 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
     double distance = 999;
     for (index = 0; index < max; index++) {
       
-      if (alg == 2 && fractalType == 2) { //Gaussian Integer & Julia
+      if ((alg == 2 || alg == 3) && fractalType == 2) { //Gaussian Integer & Julia
         int gint_x = round(x);
         int gint_y = round(y);
         distance = minVal(distance,sqrt((x - gint_x)*(x-gint_x) + (y-gint_y)*(y-gint_y)));
@@ -95,21 +95,17 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
       xsq = x*x;
       ysq = y*y;
 
-      if (xsq + ysq > 4) {
+      if ((alg==1 || alg == 2) && xsq + ysq > 4) { //Escape Time
         //a few extra iterations improves color smoothing - why don't some equations work when a higher number is used?
-        if (alg == 1) { //Escape Time
-          if (extraIterations == 2) { 
-            lessThanMax = 1;
-            mu = index + 2 - (log(log(sqrt(xsq + ysq))/ log(2.0))/log(power));
-            break;
-          } else {
-            extraIterations++;
-            index--;
-          }
-        } else { //Gaussian Integer
-          lessThanMax = 1;
-          mu = (distance/sqrt(2))*150;
+        if (alg == 2)
           break;
+        if (extraIterations == 2) { 
+          lessThanMax = 1;
+          mu = index + 2 - (log(log(sqrt(xsq + ysq))/ log(2.0))/log(power));
+          break;
+        } else {
+          extraIterations++;
+          index--;
         }
       }
       
@@ -166,15 +162,18 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
       }
       x = xtmp;
       
-      if (alg == 2 && fractalType == 1) { //Gaussian Integer & Mandelbrot
+      if ((alg == 2 || alg ==3) && fractalType == 1) { //Gaussian Integer & Mandelbrot
         int gint_x = round(x);
         int gint_y = round(y);
         distance = minVal(distance,sqrt((x - gint_x)*(x-gint_x) + (y-gint_y)*(y-gint_y)));
       }
       
     }
-
-    if (lessThanMax == 1) {
+    
+    if (alg == 2 || alg==3) { //Gaussian Integer
+          mu = (distance/sqrt(2))*150;
+          fractalRow[col] = maxVal(0,((int)round(mu*10)-1))%(max*10);
+    } else if (lessThanMax == 1) {
       //char s[20];
       //sprintf(s,"%d",mu);
       //__android_log_write(ANDROID_LOG_DEBUG,"FRACTOID_DEBUG",s);

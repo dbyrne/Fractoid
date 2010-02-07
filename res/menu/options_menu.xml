@@ -94,8 +94,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <item android:id="@+id/escape_time_button"
                       android:checked="true"
                       android:title="Escape-Time"/>
-                <item android:id="@+id/gaussian_integer_button"
-                      android:title="Gaussian Integer"/>
+                <item android:id="@+id/gaussian_bailout_button"
+                      android:title="Gaussian Integer with Bailout (faster)"/>
+                <item android:id="@+id/gaussian_true_button"
+                      android:title="True Gaussian Integer (slower)"/>
             </group>
         </menu>
     </item>    

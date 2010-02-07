@@ -21,7 +21,7 @@ package byrne.fractal;
 
 public class FractalParameters {
   
-  final int STARTING_MAX_ITERATIONS = 35;
+  final int STARTING_MAX_ITERATIONS = 40;
   private int maxIterations = STARTING_MAX_ITERATIONS;
   
   public void resetMaxIterations() {maxIterations=STARTING_MAX_ITERATIONS;}

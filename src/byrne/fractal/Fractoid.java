@@ -275,8 +275,11 @@ public class Fractoid extends Activity {
     case R.id.escape_time_button:
       switchAlgorithm(item,Algorithm.ESCAPE_TIME);
       return true;
-    case R.id.gaussian_integer_button:
-      switchAlgorithm(item,Algorithm.GAUSSIAN_INTEGER);
+    case R.id.gaussian_bailout_button:
+      switchAlgorithm(item,Algorithm.GAUSSIAN_BAILOUT);
+      return true;
+        case R.id.gaussian_true_button:
+      switchAlgorithm(item,Algorithm.GAUSSIAN_TRUE);
       return true;
 
     case R.id.share_button:
