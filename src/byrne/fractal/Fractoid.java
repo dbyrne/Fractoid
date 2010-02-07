@@ -145,6 +145,13 @@ public class Fractoid extends Activity {
     }
   }
   
+  public void switchAlgorithm(MenuItem item, Algorithm alg) {
+    if (!item.isChecked()) {
+      fractalView.setAlgorithm(alg);
+      item.setChecked(true);
+    }
+  }
+  
   public void switchEquation(MenuItem item, ComplexEquation e) {
     if (!item.isChecked()) {
       item.setChecked(true);
@@ -263,6 +270,13 @@ public class Fractoid extends Activity {
     
     case R.id.phoenix_button:
       switchEquation(item,ComplexEquation.PHOENIX);
+      return true;
+    
+    case R.id.escape_time_button:
+      switchAlgorithm(item,Algorithm.ESCAPE_TIME);
+      return true;
+    case R.id.gaussian_integer_button:
+      switchAlgorithm(item,Algorithm.GAUSSIAN_INTEGER);
       return true;
 
     case R.id.share_button:

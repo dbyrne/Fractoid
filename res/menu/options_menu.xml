@@ -87,6 +87,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </group>
         </menu>
     </item>
+    <item android:id="@+id/algorithm_button"
+          android:title="Change Algorithm">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item android:id="@+id/escape_time_button"
+                      android:checked="true"
+                      android:title="Escape-Time"/>
+                <item android:id="@+id/gaussian_integer_button"
+                      android:title="Gaussian Integer"/>
+            </group>
+        </menu>
+    </item>    
+    
+    
     <item android:id="@+id/share_button"
           android:icon="@android:drawable/ic_menu_share"
           android:title="Share Fractal"/>

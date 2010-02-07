@@ -64,6 +64,12 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     startFractalTask();
   }
   
+  public void setAlgorithm(Algorithm alg) {
+    params.setAlgorithm(alg);
+    backgroundBitmap = null;
+    startFractalTask();
+  }
+  
   public ComplexEquation getEquation() {
     return equation;
   }

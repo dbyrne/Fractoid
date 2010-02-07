@@ -150,6 +150,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
     
     ComplexEquation equation = params.getEquation();
     int power = equation.getPower();
+    Algorithm alg = params.getAlgorithm();
     
     double realmin = params.getRealMin();
     double realmax = params.getRealMax();
@@ -205,9 +206,9 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
         } else {
           state = 0;
         }
-        rowColors = mNativeLib.getFractalRow(row,xres,yres,state,
-                                             power,max,equation.getInt(),type.getInt(),P,Q,
-                                             realmin,realmax,imagmin,imagmax);
+        rowColors = mNativeLib.getFractalRow(row,xres,yres,state,power,max,
+                                             equation.getInt(),type.getInt(),alg.getInt(),
+                                             P,Q,realmin,realmax,imagmin,imagmax);
         
         //TODO Find a more elegant way to handle 2x2 and 1x1 rendering
         int step = 1;
@@ -253,6 +254,7 @@ class NativeLib {
                                     int max,
                                     int equation,
                                     int type,
+                                    int alg,
                                     double P,
                                     double Q,
                                     double realmin,

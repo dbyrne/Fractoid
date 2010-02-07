@@ -20,9 +20,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "byrne_fractal_NativeLib.h"
 #include <math.h>
 #include <android/log.h>
+#include <stdio.h>
 
 #ifndef maxVal
   #define maxVal( a, b ) ( ((a) > (b)) ? (a) : (b) )
+#endif
+
+#ifndef minVal
+  #define minVal( a, b ) ( ((a) > (b)) ? (b) : (a) )
 #endif
 
 #ifndef abs
@@ -34,7 +39,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
 (JNIEnv * env, jobject obj,
  jint row, jint xres, jint yres, jint state,
- jint power, jint max, jint equation, jint fractalType, jdouble P, jdouble Q,
+ jint power, jint max, jint equation, jint fractalType, jint alg,
+ jdouble P, jdouble Q,
  jdouble realmin, jdouble realmax,
  jdouble imagmin, jdouble imagmax) {
   
@@ -53,7 +59,7 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
   jdouble deltaP = (realmax - realmin)/xres;
   jdouble deltaQ = (imagmax - imagmin)/yres;
   
-  if (fractalType == 1)
+  if (fractalType == 1) //Mandelbrot
     Q = imagmax - row*deltaQ;
 
   jint col, step = 1;
@@ -62,14 +68,14 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
     step = 2;
   for(col=(state%2); col < xres; col = col+step) {
     
-    if (fractalType == 1) {
+    if (fractalType == 1) { //Mandelbrot
   
       P = realmin + col*deltaP;
       x = y = 0.0;
       prev_x = prev_y = 0.0;
-    } else {
+    } else { //Julia
       x = realmin + (double)col * deltaP;
-      y = imagmax - (double)row *deltaQ;
+      y = imagmax - (double)row * deltaQ;
       prev_x = x;
       prev_y = y;
     }
@@ -77,19 +83,33 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
     lessThanMax = 0;
 
     jint extraIterations = 0;
+    double distance = 999;
     for (index = 0; index < max; index++) {
+      
+      if (alg == 2 && fractalType == 2) { //Gaussian Integer & Julia
+        int gint_x = round(x);
+        int gint_y = round(y);
+        distance = minVal(distance,sqrt((x - gint_x)*(x-gint_x) + (y-gint_y)*(y-gint_y)));
+      }
+      
       xsq = x*x;
       ysq = y*y;
 
       if (xsq + ysq > 4) {
         //a few extra iterations improves color smoothing - why don't some equations work when a higher number is used?
-        if (extraIterations == 2) { 
+        if (alg == 1) { //Escape Time
+          if (extraIterations == 2) { 
+            lessThanMax = 1;
+            mu = index + 2 - (log(log(sqrt(xsq + ysq))/ log(2.0))/log(power));
+            break;
+          } else {
+            extraIterations++;
+            index--;
+          }
+        } else { //Gaussian Integer
           lessThanMax = 1;
-          mu = index + 2 - (log(log(sqrt(xsq + ysq))/ log(2.0))/log(power));
+          mu = (distance/sqrt(2))*150;
           break;
-        } else {
-          extraIterations++;
-          index--;
         }
       }
       
@@ -145,15 +165,25 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
           break;
       }
       x = xtmp;
+      
+      if (alg == 2 && fractalType == 1) { //Gaussian Integer & Mandelbrot
+        int gint_x = round(x);
+        int gint_y = round(y);
+        distance = minVal(distance,sqrt((x - gint_x)*(x-gint_x) + (y-gint_y)*(y-gint_y)));
+      }
+      
     }
 
     if (lessThanMax == 1) {
+      //char s[20];
+      //sprintf(s,"%d",mu);
+      //__android_log_write(ANDROID_LOG_DEBUG,"FRACTOID_DEBUG",s);
       fractalRow[col] = maxVal(0,((int)round(mu*10)-1))%(max*10);
     } else {
       fractalRow[col] = -1;
     }
   }
-  //__android_log_write(ANDROID_LOG_DEBUG,"FRACTOID_DEBUG","Hello");
+  
   (*env)->SetIntArrayRegion(env, result, 0, xres, fractalRow);
   return result;
 }

@@ -32,6 +32,10 @@ public class FractalParameters {
   public void setColorSet(ColorSet cs) {colorSet = cs;}
   public ColorSet getColorSet() {return colorSet;}
   
+  private Algorithm alg = Algorithm.ESCAPE_TIME;
+  public void setAlgorithm(Algorithm a) {alg = a;}
+  public Algorithm getAlgorithm() {return alg;}
+  
   private ComplexEquation equation;
   public void setEquation(ComplexEquation e) {equation = e;}
   public ComplexEquation getEquation() {return equation;}
