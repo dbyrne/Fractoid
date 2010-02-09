@@ -83,10 +83,20 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
     lessThanMax = 0;
 
     int extraIterations = 0;
-    double distance = 999;
+    double distance;
+    if (alg == 2)
+      distance = 99;
+    else
+      distance = 0;
+      
+    
     for (index = 0; index < max; index++) {
       
-      if ((alg == 2 || alg == 3) && fractalType == 2) { //Gaussian Integer & Julia
+      if (alg == 3 && fractalType == 2) { //Gaussian Integer Average & Julia
+        int gint_x = round(x);
+        int gint_y = round(y);
+        distance += sqrt((x - gint_x)*(x-gint_x) + (y-gint_y)*(y-gint_y));
+      } else if (alg == 2 && fractalType == 2) { //Gaussian Integer Minimum & Julia
         int gint_x = round(x);
         int gint_y = round(y);
         distance = minVal(distance,sqrt((x - gint_x)*(x-gint_x) + (y-gint_y)*(y-gint_y)));
@@ -95,9 +105,9 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
       xsq = x*x;
       ysq = y*y;
 
-      if ((alg==1 || alg == 2) && xsq + ysq > 4) { //Escape Time
+      if ((alg==1 && xsq + ysq > 4) || (xsq + ysq > 16)) { //Escape Time
         //a few extra iterations improves color smoothing - why don't some equations work when a higher number is used?
-        if (alg == 2)
+        if (alg == 2 || alg == 3)
           break;
         if (extraIterations == 2) { 
           lessThanMax = 1;
@@ -162,17 +172,23 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
       }
       x = xtmp;
       
-      if ((alg == 2 || alg ==3) && fractalType == 1) { //Gaussian Integer & Mandelbrot
+      if (alg == 3 && fractalType == 1) { //Gaussian Integer Average & Mandelbrot
+        int gint_x = round(x);
+        int gint_y = round(y);
+        distance += sqrt((x - gint_x)*(x-gint_x) + (y-gint_y)*(y-gint_y));
+      } else if (alg == 2 && fractalType == 1) { //Gaussian Integer Minimum & Mandelbrot
         int gint_x = round(x);
         int gint_y = round(y);
         distance = minVal(distance,sqrt((x - gint_x)*(x-gint_x) + (y-gint_y)*(y-gint_y)));
-      }
-      
+      }      
     }
     
-    if (alg == 2 || alg==3) { //Gaussian Integer
-          mu = (distance/sqrt(2))*150;
-          fractalRow[col] = maxVal(0,((int)round(mu*10)-1))%(max*10);
+    if (alg==3) { //Gaussian Integer average
+      mu = (distance/index)*300;
+      fractalRow[col] = maxVal(0,((int)round(mu*10)-1))%(max*10);
+    } else if (alg==2) {
+       mu = (distance/sqrt(2))*150;
+      fractalRow[col] = maxVal(0,((int)round(mu*10)-1))%(max*10);
     } else if (lessThanMax == 1) {
       //char s[20];
       //sprintf(s,"%d",mu);
