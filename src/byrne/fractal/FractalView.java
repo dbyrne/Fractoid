@@ -43,7 +43,6 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   private MultiTouchController<FractalView.Img> multiTouchController;
   private Resources res;
   private boolean setFull = false, zoom = true;
-  private int[][] values;
   private ColorSet colorSet = ColorSet.RAINBOW;
   
   public FractalView(Context context){
@@ -172,8 +171,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   public void setColorSet(ColorSet cs) {
     colorSet = cs;
     calculateColors(1001);
-    setFractal(paintBitmap());
-    invalidate();
+    startFractalTask();
   }
   
   public void setAlgorithm(Algorithm alg) {
@@ -184,11 +182,11 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   
     private Bitmap paintBitmap() {
     int[] colors = params.getColorSet();
+    int[][] values = params.getValues();
     Bitmap b = Bitmap.createBitmap(params.getXRes(), params.getYRes(), Bitmap.Config.ARGB_8888);
     Canvas c = new Canvas(b);
     Paint p = new Paint();
     p.setStyle(Paint.Style.FILL_AND_STROKE);
-    p.setStrokeWidth(1);
     
     int max = 0, min = 9999;
     
@@ -205,27 +203,28 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     
     int range = max-min+1;   
     
-    for (int col = 0; col < params.getXRes(); col++) {
-      for (int row = 0; row < params.getYRes(); row++) {
-        int cint = values[col][row];
-        if (cint >= 0) {
-          int i = Math.round(((float)(cint-min)/range)*1000);
-          p.setColor(colors[i]);
-          c.drawPoint(col,row,p);
+    for (int rpass = 0; rpass < 2; rpass++) {
+      p.setStrokeWidth(2-rpass);
+      for (int row=0; row < params.getYRes(); row += 2-rpass) {
+        for (int col=0; col < params.getXRes(); col++) {
+          int cint = values[row][col];
+          if (cint >= 0) {
+            int i = Math.round(((float)(cint-min)/range)*1000);
+            p.setColor(colors[i]);
+            c.drawPoint(col,row,p);
+          }
+          else if (cint == -1) {
+            p.setColor(Color.BLACK);
+            c.drawPoint(col,row,p);
+          }
         }
-        else if (cint == -1) {
-          p.setColor(Color.BLACK);
-          c.drawPoint(col,row,p);
-        }
-        
-        
       }
     }
     return b;
   }
   
   public void setValues(int[][] v) {
-    values = v;
+    params.setValues(v);
   }
   
   public ComplexEquation getEquation() {

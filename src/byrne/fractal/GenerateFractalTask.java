@@ -65,7 +65,10 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, int[][]> {
     Canvas c = new Canvas(b);
     
     int[] rowColors;
-    int[][] fractalValues = new int[xres][yres];
+    int[][] fractalValues = params.getValues();
+    System.out.println(fractalValues.length);
+    System.out.println(fractalValues[0].length);
+    System.out.println(fractalValues[0][0]);
 
     double x=-1, y=-1, prev_x = -1, prev_y =-1,tmp_prev_x,tmp_prev_y, mu = 1;
     int index;
@@ -99,7 +102,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, int[][]> {
         } else {
           state = 0;
         }
-        rowColors = mNativeLib.getFractalRow(row,xres,yres,state,power,max,
+        rowColors = mNativeLib.getFractalRow(row,xres,yres,state,fractalValues[row],power,max,
                                              equation.getInt(),type.getInt(),alg.getInt(),
                                              P,Q,realmin,realmax,imagmin,imagmax);
         
@@ -114,7 +117,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, int[][]> {
           } else {
             paint.setColor(Color.BLACK);
           }
-          fractalValues[col][row] = rowColors[col];
+          fractalValues[row][col] = rowColors[col];
           //TODO Store results so color changes don't require recalculation
           c.drawPoint(col,row,paint);
         }
@@ -145,6 +148,7 @@ class NativeLib {
                                     int xres,
                                     int yres,
                                     int state,
+                                    int[] rowValues,
                                     int power,
                                     int max,
                                     int equation,

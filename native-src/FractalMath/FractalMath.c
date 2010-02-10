@@ -38,7 +38,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
 (JNIEnv * env, jobject obj,
- jint row, jint xres, jint yres, jint state,
+ jint row, jint xres, jint yres, jint state, jintArray rowValues,
  jint power, jint max, jint equation, jint fractalType, jint alg,
  jdouble P, jdouble Q,
  jdouble realmin, jdouble realmax,
@@ -48,6 +48,8 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
   double xtmp=0,x=-1,y=-1,prev_x=-1,prev_y=-1,tmp_prev_x,tmp_prev_y,mu=1,xsq,ysq;
   int index;
   int lessThanMax;
+  
+  jint* rowVals = (*env)->GetIntArrayElements(env, rowValues, NULL);
   
   result = (*env)->NewIntArray(env, xres);
   if (result == NULL) {
@@ -67,7 +69,10 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
   if (state > 0)
     step = 2;
   for(col=(state%2); col < xres; col = col+step) {
-    
+    if (rowVals[col] != -2) {
+      fractalRow[col] = rowVals[col];
+      continue;
+    }
     if (fractalType == 1) { //Mandelbrot
   
       P = realmin + col*deltaP;
@@ -197,6 +202,7 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
     }
   }
   
+  (*env)->ReleaseIntArrayElements(env, rowValues, rowVals, 0);
   (*env)->SetIntArrayRegion(env, result, 0, xres, fractalRow);
   return result;
 }
