@@ -42,7 +42,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   private FractalParameters params;
   private MultiTouchController<FractalView.Img> multiTouchController;
   private Resources res;
-  private boolean setFull = false, zoom = true;
+  private boolean setFull = false, zoom = true, noZoom = false;
   private ColorSet colorSet = ColorSet.RAINBOW;
   
   public FractalView(Context context){
@@ -180,7 +180,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     startFractalTask();
   }
   
-    private Bitmap paintBitmap() {
+    public void calibrateColors() {
     int[] colors = params.getColorSet();
     int[][] values = params.getValues();
     Bitmap b = Bitmap.createBitmap(params.getXRes(), params.getYRes(), Bitmap.Config.ARGB_8888);
@@ -220,7 +220,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
         }
       }
     }
-    return b;
+    setFractal(b);
   }
   
   public void setValues(int[][] v) {
@@ -249,7 +249,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   }
   
   public void recalculate() {
-    
+
     double imagmin = params.getImagMin();
     double imagmax = params.getImagMax();
     double realmin = params.getRealMin();
@@ -288,6 +288,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
       params.setMaxIterations(params.getMaxIterations()+10);
     params.setCoords(realmin,realmax,imagmin,imagmax);
     startFractalTask();
+
   }
   
   public FractalType getType() {
@@ -410,11 +411,18 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
       }
       return true;
     } else {
-      if (fractalBitmap != null)
-        return multiTouchController.onTouchEvent(event);
-      else
-        return true;
+      if (fractalBitmap != null) {
+        if (mGenerateFractalTask == null ||
+            mGenerateFractalTask.getStatus() != Status.FINISHED ||
+            mGenerateFractalTask.isCancelled() == true) {
+          return multiTouchController.onTouchEvent(event);
+        } else {
+          System.out.println(mGenerateFractalTask.getStatus());
+          mGenerateFractalTask.cancel(true);
+        }
+      }
     }
+    return true;
   }
   
   public void mergeBitmaps() {
@@ -432,6 +440,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     fractalBitmap.setFullScreen();
   }
   
+  /** See if there is a draggable object at the current point. Returns the object at the point, or null if nothing to drag. */
   public Img getDraggableObjectAtPoint(PointInfo pt) {
     
     if (mGenerateFractalTask != null && mGenerateFractalTask.getStatus() == Status.RUNNING) {
@@ -449,8 +458,10 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
    */
   public void selectObject(Img img, PointInfo touchPoint) {
     if (img == null) {
+      noZoom = true;
       backgroundBitmap = fractalBitmap;
       recalculate();
+      noZoom = false;
     }
     invalidate();
   }

@@ -66,9 +66,6 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, int[][]> {
     
     int[] rowColors;
     int[][] fractalValues = params.getValues();
-    System.out.println(fractalValues.length);
-    System.out.println(fractalValues[0].length);
-    System.out.println(fractalValues[0][0]);
 
     double x=-1, y=-1, prev_x = -1, prev_y =-1,tmp_prev_x,tmp_prev_y, mu = 1;
     int index;

@@ -49,7 +49,7 @@ import byrne.fractal.MultiTouchController.PositionAndScale;
 public class Fractoid extends Activity {
 
   private FractalView fractalView;
-  private Button juliaButton;
+  private Button juliaButton, calibrateButton;
   MenuItem itemPhoenix;
   private final int MAX_ITERATIONS_DIALOG = 1;
 
@@ -66,6 +66,14 @@ public class Fractoid extends Activity {
       public void onClick(View v) {
 	setJuliaButtonEnabled(false);
 	fractalView.setZoom(false);
+	fractalView.postInvalidate();
+      }
+    });
+
+    calibrateButton = (Button) findViewById(R.id.calibrateButton);
+    calibrateButton.setOnClickListener(new View.OnClickListener() {
+      public void onClick(View v) {
+	fractalView.calibrateColors();
 	fractalView.postInvalidate();
       }
     });
