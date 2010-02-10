@@ -23,14 +23,15 @@ public class FractalParameters {
   
   final int STARTING_MAX_ITERATIONS = 40;
   private int maxIterations = STARTING_MAX_ITERATIONS;
+  private int[][] values;
   
   public void resetMaxIterations() {maxIterations=STARTING_MAX_ITERATIONS;}
   public void setMaxIterations(int i) {maxIterations = i;}
   public int getMaxIterations() {return maxIterations;}
   
-  private ColorSet colorSet = ColorSet.RAINBOW;
-  public void setColorSet(ColorSet cs) {colorSet = cs;}
-  public ColorSet getColorSet() {return colorSet;}
+  private int[] colorSet;
+  public void setColorSet(int[] cs) {colorSet = cs;}
+  public int[] getColorSet() {return colorSet;}
   
   private Algorithm alg = Algorithm.ESCAPE_TIME;
   public void setAlgorithm(Algorithm a) {alg = a;}

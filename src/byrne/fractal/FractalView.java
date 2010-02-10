@@ -43,6 +43,8 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   private MultiTouchController<FractalView.Img> multiTouchController;
   private Resources res;
   private boolean setFull = false, zoom = true;
+  private int[][] values;
+  private ColorSet colorSet = ColorSet.RAINBOW;
   
   public FractalView(Context context){
     super(context);
@@ -57,17 +59,173 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
         multiTouchController = new MultiTouchController<FractalView.Img>(this, res);
         params = new FractalParameters();
   }
+
+  private void calculateColors(int numberOfColors) {
     
+    double red, green, blue;
+    int[] colorIntegers = new int[numberOfColors];   
+    double shiftFactor = params.getShiftFactor();
+    
+    switch (colorSet) {
+      case RAINBOW:
+        for (int x = 0; x < numberOfColors; x++) {
+          double data = x;
+          data = 2*Math.PI*(data/500);
+          red = Math.sin(data + Math.PI*shiftFactor);
+          green = Math.cos(data + Math.PI*shiftFactor);
+          blue = -((red + green)*.707);
+          red = (red*127.0) + 127.0;
+          green = (green*127.0) + 127.0;
+          blue = (blue*127.0) + 127.0;
+          colorIntegers[x] = Color.rgb((int)red, (int)green, (int)blue);
+        }    
+        break;
+      
+      case WINTER:
+        for (int x = 0; x < numberOfColors; x++) {
+          int value = x%510;
+          int color;
+          if (value <= 255)
+            color = Math.abs(value);
+          else color = Math.abs(255-(value-255));
+          colorIntegers[x] = Color.rgb(255-color,255-color,255-color/3);
+        }
+        break;
+      
+      case SUMMER:
+        for (int x = 0; x < numberOfColors; x++) {
+          int value = x%510;
+          int color;
+          if (value <= 255)
+            color = Math.abs(value);
+          else color = Math.abs(255-(value-255));
+          colorIntegers[x] = Color.rgb(255-color/3,255-color,128-color/2);
+        }
+        break;
+      
+      case NIGHT_SKY:
+        for (int x = 0; x < numberOfColors; x++) {
+          int value = x%510;
+          int color;
+          if (value <= 255)
+            color = Math.abs(value);
+          else color = Math.abs(255-(value-255));
+          colorIntegers[x] = Color.rgb(color/2,color,127+color/2);
+        }
+        break;
+      
+      case ORANGE:
+        for (int x = 0; x < numberOfColors; x++) {
+          int value = x%510;
+          int color;
+          if (value <= 255)
+            color = Math.abs(value);
+          else color = Math.abs(255-(value-255));
+          colorIntegers[x] = Color.rgb(color,color/2,0);
+        }
+        break;
+      
+      case RED:
+        for (int x = 0; x < numberOfColors; x++) {
+          int value = x%510;
+          int color;
+          if (value <= 255)
+            color = Math.abs(value);
+          else color = Math.abs(255-(value-255));
+          colorIntegers[x] = Color.rgb(color,0,0);
+        }
+        break;
+      
+      case GREEN:
+        for (int x = 0; x < numberOfColors; x++) {
+          int value = x%510;
+          int color;
+          if (value <= 255)
+            color = Math.abs(value);
+          else color = Math.abs(255-(value-255));
+          colorIntegers[x] = Color.rgb(0,color,0);
+        }
+        break;
+      
+      case YELLOW:
+        for (int x = 0; x < numberOfColors; x++) {
+          int value = x%510;
+          int color;
+          if (value <= 255)
+            color = Math.abs(value);
+          else color = Math.abs(255-(value-255));
+          colorIntegers[x] = Color.rgb(color,color,0);
+        }
+        break;
+        
+      case BLACK_AND_WHITE:
+        for (int x = 0; x < numberOfColors; x++) {
+          int value = x%510;
+          int color = Math.abs(255-value);
+          colorIntegers[x] = Color.rgb(color,color,color);
+        }     
+    }
+    params.setColorSet(colorIntegers);
+  }
+
+
   public void setColorSet(ColorSet cs) {
-    params.setColorSet(cs);
-    backgroundBitmap = null;
-    startFractalTask();
+    colorSet = cs;
+    calculateColors(1001);
+    setFractal(paintBitmap());
+    invalidate();
   }
   
   public void setAlgorithm(Algorithm alg) {
     params.setAlgorithm(alg);
     backgroundBitmap = null;
     startFractalTask();
+  }
+  
+    private Bitmap paintBitmap() {
+    int[] colors = params.getColorSet();
+    Bitmap b = Bitmap.createBitmap(params.getXRes(), params.getYRes(), Bitmap.Config.ARGB_8888);
+    Canvas c = new Canvas(b);
+    Paint p = new Paint();
+    p.setStyle(Paint.Style.FILL_AND_STROKE);
+    p.setStrokeWidth(1);
+    
+    int max = 0, min = 9999;
+    
+    for (int[] colValues : values) {
+      for (int val : colValues) {
+        if (val != -1) {
+          if (val > max)
+            max = val;
+          else if (val < min)
+            min = val;
+        }
+      }
+    }
+    
+    int range = max-min+1;   
+    
+    for (int col = 0; col < params.getXRes(); col++) {
+      for (int row = 0; row < params.getYRes(); row++) {
+        int cint = values[col][row];
+        if (cint >= 0) {
+          int i = Math.round(((float)(cint-min)/range)*1000);
+          p.setColor(colors[i]);
+          c.drawPoint(col,row,p);
+        }
+        else if (cint == -1) {
+          p.setColor(Color.BLACK);
+          c.drawPoint(col,row,p);
+        }
+        
+        
+      }
+    }
+    return b;
+  }
+  
+  public void setValues(int[][] v) {
+    values = v;
   }
   
   public ComplexEquation getEquation() {
@@ -148,6 +306,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     if (mGenerateFractalTask != null && mGenerateFractalTask.getStatus() == Status.RUNNING) {
       mGenerateFractalTask.cancel(true);
     }
+    calculateColors(1001);
     mGenerateFractalTask = new GenerateFractalTask(params,this);
     mGenerateFractalTask.execute();
   }
@@ -324,9 +483,9 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
       fractalBitmap.draw(canvas);
 
       Paint p = new Paint();
-      if (params.getColorSet() == ColorSet.BLACK_AND_WHITE ||
-          params.getColorSet() == ColorSet.WINTER ||
-          params.getColorSet() == ColorSet.NIGHT_SKY) {
+      if (colorSet == ColorSet.BLACK_AND_WHITE ||
+          colorSet == ColorSet.WINTER ||
+          colorSet == ColorSet.NIGHT_SKY) {
         p.setColor(Color.RED);  
       } else {
         p.setColor(Color.WHITE);

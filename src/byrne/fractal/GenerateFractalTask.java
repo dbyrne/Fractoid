@@ -22,7 +22,7 @@ package byrne.fractal;
 import android.os.AsyncTask;
 import android.graphics.*;
 
-public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
+public class GenerateFractalTask extends AsyncTask<Void, Bitmap, int[][]> {
   
   FractalParameters params;
   FractalView fractalView;
@@ -34,124 +34,14 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
   public GenerateFractalTask(FractalParameters p, FractalView fv) {
     params = p;
     fractalView = fv;
-    colors = calculateColors(1001);
+    colors = params.getColorSet();
     paint = new Paint();
     paint.setStyle(Paint.Style.FILL_AND_STROKE);
     
     mNativeLib = new NativeLib();
   }
-  
-  private int[] calculateColors(int numberOfColors) {
     
-    double red, green, blue;
-    int[] colorIntegers = new int[numberOfColors];   
-    double shiftFactor = params.getShiftFactor();
-    
-    switch (params.getColorSet()) {
-      case RAINBOW:
-        for (int x = 0; x < numberOfColors; x++) {
-          double data = x;
-          data = 2*Math.PI*(data/500);
-          red = Math.sin(data + Math.PI*shiftFactor);
-          green = Math.cos(data + Math.PI*shiftFactor);
-          blue = -((red + green)*.707);
-          red = (red*127.0) + 127.0;
-          green = (green*127.0) + 127.0;
-          blue = (blue*127.0) + 127.0;
-          colorIntegers[x] = Color.rgb((int)red, (int)green, (int)blue);
-        }    
-        break;
-      
-      case WINTER:
-        for (int x = 0; x < numberOfColors; x++) {
-          int value = x%510;
-          int color;
-          if (value <= 255)
-            color = Math.abs(value);
-          else color = Math.abs(255-(value-255));
-          colorIntegers[x] = Color.rgb(255-color,255-color,255-color/3);
-        }
-        break;
-      
-      case SUMMER:
-        for (int x = 0; x < numberOfColors; x++) {
-          int value = x%510;
-          int color;
-          if (value <= 255)
-            color = Math.abs(value);
-          else color = Math.abs(255-(value-255));
-          colorIntegers[x] = Color.rgb(255-color/3,255-color,128-color/2);
-        }
-        break;
-      
-      case NIGHT_SKY:
-        for (int x = 0; x < numberOfColors; x++) {
-          int value = x%510;
-          int color;
-          if (value <= 255)
-            color = Math.abs(value);
-          else color = Math.abs(255-(value-255));
-          colorIntegers[x] = Color.rgb(color/2,color,127+color/2);
-        }
-        break;
-      
-      case ORANGE:
-        for (int x = 0; x < numberOfColors; x++) {
-          int value = x%510;
-          int color;
-          if (value <= 255)
-            color = Math.abs(value);
-          else color = Math.abs(255-(value-255));
-          colorIntegers[x] = Color.rgb(color,color/2,0);
-        }
-        break;
-      
-      case RED:
-        for (int x = 0; x < numberOfColors; x++) {
-          int value = x%510;
-          int color;
-          if (value <= 255)
-            color = Math.abs(value);
-          else color = Math.abs(255-(value-255));
-          colorIntegers[x] = Color.rgb(color,0,0);
-        }
-        break;
-      
-      case GREEN:
-        for (int x = 0; x < numberOfColors; x++) {
-          int value = x%510;
-          int color;
-          if (value <= 255)
-            color = Math.abs(value);
-          else color = Math.abs(255-(value-255));
-          colorIntegers[x] = Color.rgb(0,color,0);
-        }
-        break;
-      
-      case YELLOW:
-        for (int x = 0; x < numberOfColors; x++) {
-          int value = x%510;
-          int color;
-          if (value <= 255)
-            color = Math.abs(value);
-          else color = Math.abs(255-(value-255));
-          colorIntegers[x] = Color.rgb(color,color,0);
-        }
-        break;
-        
-      case BLACK_AND_WHITE:
-        for (int x = 0; x < numberOfColors; x++) {
-          int value = x%510;
-          int color = Math.abs(255-value);
-          colorIntegers[x] = Color.rgb(color,color,color);
-        }     
-    }
-    return colorIntegers;
-  }
-  
-  private Bitmap createBitmap() {
-    
-    
+  private int[][] createBitmap() {
     
     ComplexEquation equation = params.getEquation();
     int power = equation.getPower();
@@ -195,8 +85,9 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
         
         updateCount++;
         if (updateCount % 15 == 0) {
-          if (isCancelled())
-            return b;
+          if (isCancelled()) {
+            return fractalValues;
+          }
           this.publishProgress(b);
         }
         if (row % 2 == 0) {
@@ -219,7 +110,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
         for(int col=(state%2); col < xres; col = col+step) {
           
           if (rowColors[col] >= 0) {
-            paint.setColor(colors[rowColors[col]]);
+            paint.setColor(colors[rowColors[col]/10]);
           } else {
             paint.setColor(Color.BLACK);
           }
@@ -229,62 +120,22 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
         }
       }
     }
-    return paintBitmap(fractalValues,xres,yres);
-  }
-  
-  private Bitmap paintBitmap(int[][] values, int xres, int yres) {
-    
-    Bitmap b = Bitmap.createBitmap(xres, yres, Bitmap.Config.ARGB_8888);
-    Canvas c = new Canvas(b);
-
-    paint.setStrokeWidth(1);
-    
-    int max = 0, min = 9999;
-    
-    for (int[] colValues : values) {
-      for (int val : colValues) {
-        if (val != -1) {
-          if (val > max)
-            max = val;
-          else if (val < min)
-            min = val;
-        }
-      }
-    }
-    
-    int range = max-min+1;   
-    
-    for (int col = 0; col < xres; col++) {
-      for (int row = 0; row < yres; row++) {
-        int cint = values[col][row];
-        if (cint >= 0) {
-          int i = Math.round(((float)(cint-min)/range)*1000);
-          paint.setColor(colors[i]);
-          c.drawPoint(col,row,paint);
-        }
-        else if (cint == -1) {
-          paint.setColor(Color.BLACK);
-          c.drawPoint(col,row,paint);
-        }
-        
-        
-      }
-    }
-    return b;
+    this.publishProgress(b);
+    return fractalValues;
   }
   
   @Override protected void onPreExecute() {
     startTime = System.currentTimeMillis();
   }
-  @Override protected Bitmap doInBackground(Void... unused) {   
+  @Override protected int[][] doInBackground(Void... unused) {   
     return createBitmap();
   }
   @Override protected void onProgressUpdate(Bitmap... b) {
     fractalView.setFractal(b[0]);
     fractalView.invalidate();
   }
-  @Override protected void onPostExecute(Bitmap bitmap) {
-    fractalView.setFractal(bitmap);
+  @Override protected void onPostExecute(int[][] v) {
+    fractalView.setValues(v);
     fractalView.setTime(System.currentTimeMillis()-startTime);
     fractalView.invalidate();
   }  
