@@ -184,16 +184,14 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
     }
     
     if (alg==3) { //Gaussian Integer average
-      mu = (distance/index)*300;
-      fractalRow[col] = maxVal(0,((int)round(mu*10)-1))%(max*10);
+      fractalRow[col] = maxVal(0,(int)(((distance/index)/sqrt(2))*1000));
     } else if (alg==2) {
-       mu = (distance/sqrt(2))*150;
-      fractalRow[col] = maxVal(0,((int)round(mu*10)-1))%(max*10);
+      fractalRow[col] = maxVal(0,(int)((distance/sqrt(2))*1000));
     } else if (lessThanMax == 1) {
       //char s[20];
       //sprintf(s,"%d",mu);
       //__android_log_write(ANDROID_LOG_DEBUG,"FRACTOID_DEBUG",s);
-      fractalRow[col] = maxVal(0,((int)round(mu*10)-1))%(max*10);
+      fractalRow[col] = maxVal(0,(int)((mu/max)*1000));
     } else {
       fractalRow[col] = -1;
     }

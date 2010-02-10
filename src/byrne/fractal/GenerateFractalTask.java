@@ -28,10 +28,16 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
   FractalView fractalView;
   long startTime;
   NativeLib mNativeLib;
+  Paint paint;
+  int[] colors;
   
   public GenerateFractalTask(FractalParameters p, FractalView fv) {
     params = p;
     fractalView = fv;
+    colors = calculateColors(1001);
+    paint = new Paint();
+    paint.setStyle(Paint.Style.FILL_AND_STROKE);
+    
     mNativeLib = new NativeLib();
   }
   
@@ -168,10 +174,6 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
     Bitmap b = Bitmap.createBitmap(xres, yres, Bitmap.Config.ARGB_8888);
     Canvas c = new Canvas(b);
     
-    Paint paint = new Paint();
-    paint.setStyle(Paint.Style.FILL_AND_STROKE);
-    
-    int[] colorIntegers = calculateColors(params.getMaxIterations()*10);
     int[] rowColors;
     int[][] fractalValues = new int[xres][yres];
 
@@ -217,7 +219,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
         for(int col=(state%2); col < xres; col = col+step) {
           
           if (rowColors[col] >= 0) {
-            paint.setColor(colorIntegers[rowColors[col]]);
+            paint.setColor(colors[rowColors[col]]);
           } else {
             paint.setColor(Color.BLACK);
           }
@@ -227,16 +229,15 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
         }
       }
     }
-    return paintBitmap(fractalValues,xres,yres,1);
+    return paintBitmap(fractalValues,xres,yres);
   }
   
-  private Bitmap paintBitmap(int[][] values, int xres, int yres, int strokeWidth) {
+  private Bitmap paintBitmap(int[][] values, int xres, int yres) {
     
     Bitmap b = Bitmap.createBitmap(xres, yres, Bitmap.Config.ARGB_8888);
     Canvas c = new Canvas(b);
-    Paint paint = new Paint();
-    paint.setStyle(Paint.Style.FILL_AND_STROKE);
-    paint.setStrokeWidth(strokeWidth);
+
+    paint.setStrokeWidth(1);
     
     int max = 0, min = 9999;
     
@@ -251,18 +252,13 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
       }
     }
     
-    int range = max-min+1;
-    System.out.println("Minimum: " + min);
-    System.out.println("Maximum: " + max);
-    System.out.println("Range: " + range);
-
-    int[] colors = calculateColors(511);    
+    int range = max-min+1;   
     
     for (int col = 0; col < xres; col++) {
       for (int row = 0; row < yres; row++) {
         int cint = values[col][row];
         if (cint >= 0) {
-          int i = Math.round(((float)(cint-min)/range)*510);
+          int i = Math.round(((float)(cint-min)/range)*1000);
           paint.setColor(colors[i]);
           c.drawPoint(col,row,paint);
         }
