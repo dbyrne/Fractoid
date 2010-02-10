@@ -35,10 +35,9 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
     mNativeLib = new NativeLib();
   }
   
-  private int[] calculateColors() {
+  private int[] calculateColors(int numberOfColors) {
     
-    double red, green, blue;    
-    final int numberOfColors = params.getMaxIterations()*10;
+    double red, green, blue;
     int[] colorIntegers = new int[numberOfColors];   
     double shiftFactor = params.getShiftFactor();
     
@@ -172,8 +171,9 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
     Paint paint = new Paint();
     paint.setStyle(Paint.Style.FILL_AND_STROKE);
     
-    int[] colorIntegers = calculateColors();
+    int[] colorIntegers = calculateColors(params.getMaxIterations()*10);
     int[] rowColors;
+    int[][] fractalValues = new int[xres][yres];
 
     double x=-1, y=-1, prev_x = -1, prev_y =-1,tmp_prev_x,tmp_prev_y, mu = 1;
     int index;
@@ -221,9 +221,57 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
           } else {
             paint.setColor(Color.BLACK);
           }
+          fractalValues[col][row] = rowColors[col];
           //TODO Store results so color changes don't require recalculation
           c.drawPoint(col,row,paint);
         }
+      }
+    }
+    return paintBitmap(fractalValues,xres,yres,1);
+  }
+  
+  private Bitmap paintBitmap(int[][] values, int xres, int yres, int strokeWidth) {
+    
+    Bitmap b = Bitmap.createBitmap(xres, yres, Bitmap.Config.ARGB_8888);
+    Canvas c = new Canvas(b);
+    Paint paint = new Paint();
+    paint.setStyle(Paint.Style.FILL_AND_STROKE);
+    paint.setStrokeWidth(strokeWidth);
+    
+    int max = 0, min = 9999;
+    
+    for (int[] colValues : values) {
+      for (int val : colValues) {
+        if (val != -1) {
+          if (val > max)
+            max = val;
+          else if (val < min)
+            min = val;
+        }
+      }
+    }
+    
+    int range = max-min+1;
+    System.out.println("Minimum: " + min);
+    System.out.println("Maximum: " + max);
+    System.out.println("Range: " + range);
+
+    int[] colors = calculateColors(511);    
+    
+    for (int col = 0; col < xres; col++) {
+      for (int row = 0; row < yres; row++) {
+        int cint = values[col][row];
+        if (cint >= 0) {
+          int i = Math.round(((float)(cint-min)/range)*510);
+          paint.setColor(colors[i]);
+          c.drawPoint(col,row,paint);
+        }
+        else if (cint == -1) {
+          paint.setColor(Color.BLACK);
+          c.drawPoint(col,row,paint);
+        }
+        
+        
       }
     }
     return b;
