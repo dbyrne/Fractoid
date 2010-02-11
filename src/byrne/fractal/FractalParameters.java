@@ -29,11 +29,6 @@ public class FractalParameters {
   public int[][] getValues() {
     if (values == null) {
       values = new int[yres][xres];
-      for (int col = 0; col < xres; col++) {
-        for (int row = 0; row < yres; row++) {
-          values[row][col] = -2;
-        }
-      }
     }
     return values;
   }
