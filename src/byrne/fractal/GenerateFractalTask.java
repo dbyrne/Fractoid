@@ -110,7 +110,10 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, int[][]> {
         for(int col=(state%2); col < xres; col = col+step) {
           
           if (rowColors[col] >= 0) {
-            paint.setColor(colors[rowColors[col]/10]);
+            if (params.getAlgorithm() == Algorithm.ESCAPE_TIME)
+              paint.setColor(colors[(rowColors[col]%10200)/10]);  
+            else
+              paint.setColor(colors[rowColors[col]/10]);
           } else {
             paint.setColor(Color.BLACK);
           }
@@ -136,7 +139,9 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, int[][]> {
   }
   @Override protected void onPostExecute(int[][] v) {
     fractalView.setValues(v);
+    fractalView.clearBackground();
     fractalView.setTime(System.currentTimeMillis()-startTime);
+    fractalView.turnCalibrateButtonOn();
     fractalView.invalidate();
   }  
 }

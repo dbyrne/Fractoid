@@ -51,6 +51,7 @@ public class Fractoid extends Activity {
   private FractalView fractalView;
   private Button juliaButton, calibrateButton;
   MenuItem itemPhoenix;
+  boolean relativeColors = false;
   private final int MAX_ITERATIONS_DIALOG = 1;
 
   @Override public void onCreate(Bundle savedInstanceState) {
@@ -60,6 +61,7 @@ public class Fractoid extends Activity {
     setContentView(R.layout.main_layout);
     
     fractalView = (FractalView) findViewById(R.id.mFractalView);
+    fractalView.setFractoid(this);
     
     juliaButton = (Button) findViewById(R.id.juliaButton);
     juliaButton.setOnClickListener(new View.OnClickListener() {
@@ -73,7 +75,15 @@ public class Fractoid extends Activity {
     calibrateButton = (Button) findViewById(R.id.calibrateButton);
     calibrateButton.setOnClickListener(new View.OnClickListener() {
       public void onClick(View v) {
-	fractalView.calibrateColors();
+	if (!relativeColors) {
+	  fractalView.calibrateColors();
+	  calibrateButton.setText("Absolute Colors");
+	  relativeColors = true;
+	} else {
+	  calibrateButton.setText("Relative Colors");
+	  fractalView.startFractalTask();
+	  relativeColors = false;
+	}
 	fractalView.postInvalidate();
       }
     });
@@ -135,6 +145,17 @@ public class Fractoid extends Activity {
       System.out.println(e);
     }
     return uri;
+  }
+  
+  public void setCalibrateButtonEnabled(boolean b) {
+    if (b) {
+      relativeColors = false;
+      calibrateButton.setText("Relative Colors");
+      calibrateButton.setVisibility(View.VISIBLE);     
+    } else {
+      calibrateButton.setVisibility(View.INVISIBLE);
+    }
+    calibrateButton.setEnabled(b);
   }
   
   public void setJuliaButtonEnabled(boolean b) {   

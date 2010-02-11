@@ -42,8 +42,9 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   private FractalParameters params;
   private MultiTouchController<FractalView.Img> multiTouchController;
   private Resources res;
-  private boolean setFull = false, zoom = true, noZoom = false;
+  private boolean setFull = false, zoom = true;
   private ColorSet colorSet = ColorSet.RAINBOW;
+  private Fractoid mFractoid;
   
   public FractalView(Context context){
     super(context);
@@ -58,6 +59,10 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
         multiTouchController = new MultiTouchController<FractalView.Img>(this, res);
         params = new FractalParameters();
   }
+  
+  public void setFractoid(Fractoid f) {
+    mFractoid = f;
+  }
 
   private void calculateColors(int numberOfColors) {
     
@@ -69,7 +74,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
       case RAINBOW:
         for (int x = 0; x < numberOfColors; x++) {
           double data = x;
-          data = 2*Math.PI*(data/500);
+          data = 2*Math.PI*(data/1020);
           red = Math.sin(data + Math.PI*shiftFactor);
           green = Math.cos(data + Math.PI*shiftFactor);
           blue = -((red + green)*.707);
@@ -82,77 +87,84 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
       
       case WINTER:
         for (int x = 0; x < numberOfColors; x++) {
-          int value = x%510;
+          int value = (x%1020)/2;
           int color;
           if (value <= 255)
-            color = Math.abs(value);
-          else color = Math.abs(255-(value-255));
+            color = value;
+          else
+            color = 255-(value-255);
           colorIntegers[x] = Color.rgb(255-color,255-color,255-color/3);
         }
         break;
       
       case SUMMER:
         for (int x = 0; x < numberOfColors; x++) {
-          int value = x%510;
+          int value = (x%1020)/2;
           int color;
           if (value <= 255)
-            color = Math.abs(value);
-          else color = Math.abs(255-(value-255));
+            color = value;
+          else
+            color = 255-(value-255);
           colorIntegers[x] = Color.rgb(255-color/3,255-color,128-color/2);
         }
         break;
       
       case NIGHT_SKY:
         for (int x = 0; x < numberOfColors; x++) {
-          int value = x%510;
+          int value = (x%1020)/2;
           int color;
           if (value <= 255)
-            color = Math.abs(value);
-          else color = Math.abs(255-(value-255));
+            color = value;
+          else
+            color = 255-(value-255);
           colorIntegers[x] = Color.rgb(color/2,color,127+color/2);
         }
         break;
       
       case ORANGE:
         for (int x = 0; x < numberOfColors; x++) {
-          int value = x%510;
+          int value = (x%1020)/2;
           int color;
           if (value <= 255)
-            color = Math.abs(value);
-          else color = Math.abs(255-(value-255));
+            color = value;
+          else
+            color = 255-(value-255);
           colorIntegers[x] = Color.rgb(color,color/2,0);
         }
         break;
       
       case RED:
         for (int x = 0; x < numberOfColors; x++) {
-          int value = x%510;
+          int value = (x%1020)/2;
           int color;
           if (value <= 255)
-            color = Math.abs(value);
-          else color = Math.abs(255-(value-255));
+            color = value;
+          else
+            color = 255-(value-255);
           colorIntegers[x] = Color.rgb(color,0,0);
         }
         break;
       
       case GREEN:
         for (int x = 0; x < numberOfColors; x++) {
-          int value = x%510;
+          int value = (x%1020)/2;
           int color;
           if (value <= 255)
-            color = Math.abs(value);
-          else color = Math.abs(255-(value-255));
+            color = value;
+          else
+            color = 255-(value-255);
           colorIntegers[x] = Color.rgb(0,color,0);
         }
         break;
       
       case YELLOW:
         for (int x = 0; x < numberOfColors; x++) {
-          int value = x%510;
+          int value = (x%1020)/2;
           int color;
           if (value <= 255)
-            color = Math.abs(value);
-          else color = Math.abs(255-(value-255));
+            color = value;
+          else
+            color = 255-(value-255);
           colorIntegers[x] = Color.rgb(color,color,0);
         }
         break;
@@ -170,7 +182,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
 
   public void setColorSet(ColorSet cs) {
     colorSet = cs;
-    calculateColors(1001);
+    calculateColors(1021);
     startFractalTask();
   }
   
@@ -188,7 +200,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     Paint p = new Paint();
     p.setStyle(Paint.Style.FILL_AND_STROKE);
     
-    int max = 0, min = 9999;
+    int max = 0, min = 999999;
     
     for (int[] colValues : values) {
       for (int val : colValues) {
@@ -209,7 +221,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
         for (int col=0; col < params.getXRes(); col++) {
           int cint = values[row][col];
           if (cint >= 0) {
-            int i = Math.round(((float)(cint-min)/range)*1000);
+            int i = Math.round(((float)(cint-min)/range)*1020);
             p.setColor(colors[i]);
             c.drawPoint(col,row,p);
           }
@@ -298,6 +310,10 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   public Bitmap getFractal() {
     return fractalBitmap.getDrawable().getBitmap();
   }
+  
+  public void turnCalibrateButtonOn() {
+    mFractoid.setCalibrateButtonEnabled(true);
+  }
 
   public void startFractalTask() {
     setFull = true;
@@ -306,7 +322,10 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     if (mGenerateFractalTask != null && mGenerateFractalTask.getStatus() == Status.RUNNING) {
       mGenerateFractalTask.cancel(true);
     }
-    calculateColors(1001);
+    
+    mFractoid.setCalibrateButtonEnabled(false);
+    
+    calculateColors(1021);
     mGenerateFractalTask = new GenerateFractalTask(params,this);
     mGenerateFractalTask.execute();
   }
@@ -373,7 +392,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
       params.resetMaxIterations();
     }
     
-    backgroundBitmap = null;
+    clearBackground();
     
     setZoom(true);
     startFractalTask();
@@ -404,7 +423,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
         params.setCoords(realmin, realmax, imagmin, imagmax);
         params.resetMaxIterations();
         params.setType(FractalType.JULIA);
-        backgroundBitmap = null;
+        clearBackground();
         startFractalTask();
       } else if (event.getAction() == MotionEvent.ACTION_UP) {
         setZoom(true);
@@ -412,17 +431,14 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
       return true;
     } else {
       if (fractalBitmap != null) {
-        if (mGenerateFractalTask == null ||
-            mGenerateFractalTask.getStatus() != Status.FINISHED ||
-            mGenerateFractalTask.isCancelled() == true) {
-          return multiTouchController.onTouchEvent(event);
-        } else {
-          System.out.println(mGenerateFractalTask.getStatus());
-          mGenerateFractalTask.cancel(true);
-        }
+        return multiTouchController.onTouchEvent(event);
       }
     }
     return true;
+  }
+  
+  public void clearBackground() {
+    backgroundBitmap = null;
   }
   
   public void mergeBitmaps() {
@@ -458,10 +474,8 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
    */
   public void selectObject(Img img, PointInfo touchPoint) {
     if (img == null) {
-      noZoom = true;
       backgroundBitmap = fractalBitmap;
       recalculate();
-      noZoom = false;
     }
     invalidate();
   }
