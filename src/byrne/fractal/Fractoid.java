@@ -24,6 +24,7 @@ import android.net.Uri;
 import android.app.Activity;
 import android.app.WallpaperManager;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ActivityNotFoundException;
@@ -54,6 +55,8 @@ public class Fractoid extends Activity {
   MenuItem itemPhoenix;
   boolean relativeColors = false;
   private final int MAX_ITERATIONS_DIALOG = 1;
+  ProgressDialog calibrationDialog;
+
 
   @Override public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -79,9 +82,19 @@ public class Fractoid extends Activity {
     calibrateButton.setOnClickListener(new View.OnClickListener() {
       public void onClick(View v) {
 	if (!relativeColors) {
-	  fractalView.calibrateColors();
+	  calibrationDialog = ProgressDialog.show(Fractoid.this, "", "Calibrating colors...", true);
+              
+          new Thread() {
+            public void run() {
+              fractalView.calibrateColors();
+	      fractalView.postInvalidate();	
+	      calibrationDialog.dismiss();
+            }
+          }.start();
+	       
 	  calibrateButton.setText("Absolute Colors");
 	  relativeColors = true;
+	  
 	} else {
 	  calibrateButton.setText("Relative Colors");
 	  fractalView.startFractalTask();
