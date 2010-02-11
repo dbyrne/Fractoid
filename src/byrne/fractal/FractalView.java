@@ -188,6 +188,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   
   public void setAlgorithm(Algorithm alg) {
     params.setAlgorithm(alg);
+    params.resetValues();
     backgroundBitmap = null;
     startFractalTask();
   }
@@ -257,6 +258,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   
   public void setMaxIterations(int i) {
     params.setMaxIterations(i);
+    params.resetValues();
     startFractalTask();
   }
   
@@ -299,6 +301,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     if (fractalBitmap.getScale() > 1)
       params.setMaxIterations(params.getMaxIterations()+10);
     params.setCoords(realmin,realmax,imagmin,imagmax);
+    params.resetValues();
     startFractalTask();
 
   }
@@ -376,6 +379,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     params.randomizeShiftFactor();
     params.setEquation(equation);
     params.setCoords(realmin,realmax,imagmin,imagmax);
+    params.resetValues();
     
     if (equation == ComplexEquation.PHOENIX) {
       /*
@@ -421,6 +425,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
         realmin = params.getResRatio()*-imagRange/2;
 
         params.setCoords(realmin, realmax, imagmin, imagmax);
+        params.resetValues();
         params.resetMaxIterations();
         params.setType(FractalType.JULIA);
         clearBackground();

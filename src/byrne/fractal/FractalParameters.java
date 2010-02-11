@@ -29,7 +29,7 @@ public class FractalParameters {
   public int[][] getValues() {return values;}
   
   public void resetMaxIterations() {maxIterations=STARTING_MAX_ITERATIONS;}
-  public void setMaxIterations(int i) {maxIterations = i;resetValues();}
+  public void setMaxIterations(int i) {maxIterations = i;}
   public int getMaxIterations() {return maxIterations;}
   
   private int[] colorSet;
@@ -37,11 +37,11 @@ public class FractalParameters {
   public int[] getColorSet() {return colorSet;}
   
   private Algorithm alg = Algorithm.ESCAPE_TIME;
-  public void setAlgorithm(Algorithm a) {alg = a;resetValues();}
+  public void setAlgorithm(Algorithm a) {alg = a;}
   public Algorithm getAlgorithm() {return alg;};
   
   private ComplexEquation equation;
-  public void setEquation(ComplexEquation e) {equation = e;resetValues();}
+  public void setEquation(ComplexEquation e) {equation = e;}
   public ComplexEquation getEquation() {return equation;}
   
   private int xres;
@@ -56,7 +56,7 @@ public class FractalParameters {
   
   private FractalType type;
   public FractalType getType() {return type;}
-  public void setType(FractalType t) {type = t;resetValues();}
+  public void setType(FractalType t) {type = t;}
   
   private double shiftFactor;
   public double getShiftFactor() {return shiftFactor;}
@@ -68,10 +68,10 @@ public class FractalParameters {
      realmax = rmax;
      imagmin = imin;
      imagmax = imax;
-     resetValues();
+     
   }
   
-  private void resetValues() {
+  public void resetValues() {
     int[][] v = new int[yres][xres];
     for (int col = 0; col < xres; col++) {
       for (int row = 0; row < yres; row++) {
