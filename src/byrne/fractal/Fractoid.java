@@ -45,6 +45,7 @@ import byrne.fractal.MultiTouchController;
 import byrne.fractal.MultiTouchController.MultiTouchObjectCanvas;
 import byrne.fractal.MultiTouchController.PointInfo;
 import byrne.fractal.MultiTouchController.PositionAndScale;
+//import android.os.Debug;
 
 public class Fractoid extends Activity {
 
@@ -59,6 +60,8 @@ public class Fractoid extends Activity {
     getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     
     setContentView(R.layout.main_layout);
+    
+  //  Debug.startMethodTracing("calc");
     
     fractalView = (FractalView) findViewById(R.id.mFractalView);
     fractalView.setFractoid(this);
@@ -95,6 +98,11 @@ public class Fractoid extends Activity {
   @Override public void onResume() {
     super.onResume();
     getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+  }
+  
+  @Override public void onPause() {
+    super.onPause();
+    //Debug.stopMethodTracing();
   }
   
   @Override protected Dialog onCreateDialog(int id) {

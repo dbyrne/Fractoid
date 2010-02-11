@@ -26,7 +26,17 @@ public class FractalParameters {
   private int[][] values;
   
   public void setValues(int[][] v) {values = v;}
-  public int[][] getValues() {return values;}
+  public int[][] getValues() {
+    if (values == null) {
+      values = new int[yres][xres];
+      for (int col = 0; col < xres; col++) {
+        for (int row = 0; row < yres; row++) {
+          values[row][col] = -2;
+        }
+      }
+    }
+    return values;
+  }
   
   public void resetMaxIterations() {maxIterations=STARTING_MAX_ITERATIONS;}
   public void setMaxIterations(int i) {maxIterations = i;}
@@ -72,13 +82,7 @@ public class FractalParameters {
   }
   
   public void resetValues() {
-    int[][] v = new int[yres][xres];
-    for (int col = 0; col < xres; col++) {
-      for (int row = 0; row < yres; row++) {
-        v[row][col] = -2;
-      }
-    }
-    setValues(v);
+    values = null;
   }
   
   public double getRealMin() {return realmin;}
