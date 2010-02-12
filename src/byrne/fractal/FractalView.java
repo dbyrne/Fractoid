@@ -45,6 +45,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   private boolean setFull = false, zoom = true;
   private ColorSet colorSet = ColorSet.RAINBOW;
   private Fractoid mFractoid;
+  private int touchCount = 0;
   
   public FractalView(Context context){
     super(context);
@@ -333,6 +334,11 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     mGenerateFractalTask.execute();
   }
 
+  public void removeTouch() {
+    if (touchCount > 0)
+      touchCount--;
+  }
+
   public void setFractal(Bitmap fa) {
     BitmapDrawable bd = new BitmapDrawable(res, fa);
     if (setFull) {    
@@ -435,7 +441,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
       }
       return true;
     } else {
-      if (fractalBitmap != null) {
+      if (fractalBitmap != null && touchCount < 3) {
         return multiTouchController.onTouchEvent(event);
       }
     }
@@ -468,6 +474,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
       mGenerateFractalTask.cancel(true);
     }
     
+    touchCount++;
     mergeBitmaps();
     
     return fractalBitmap;

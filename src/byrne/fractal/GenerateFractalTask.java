@@ -78,13 +78,14 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, int[][]> {
     final int PASSES = 2;
     int updateCount=0;
     int state = 0;
-    
+      
     for (int rpass = 0; rpass < PASSES; rpass++) {
       paint.setStrokeWidth(PASSES-rpass);
       for (int row=0; row < yres; row += PASSES-rpass) {
         
         updateCount++;
         if (updateCount % 15 == 0) {
+          fractalView.removeTouch();
           if (isCancelled()) {
             return fractalValues;
           }
