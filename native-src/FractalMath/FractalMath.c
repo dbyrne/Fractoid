@@ -189,7 +189,7 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
     }
     
     if (alg==3) { //Gaussian Integer average
-      fractalRow[col] = maxVal(1,(int)(((distance/index)/sqrt(2))*10200));
+      fractalRow[col] = maxVal(1,(int)(((distance/(index+1))/sqrt(2))*10200));
     } else if (alg==2) {
       fractalRow[col] = maxVal(1,(int)((distance/sqrt(2))*10200));
     } else if (lessThanMax == 1) {
