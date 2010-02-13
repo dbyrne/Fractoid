@@ -39,6 +39,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         android:layout_marginRight="5px"/>
     
     <Button
+        android:id="@+id/trapFactorButton"
+        android:text="Set Trap Factor"
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="5px"
+        android:layout_marginLeft="180px"/>
+    
+    <Button
         android:id="@+id/calibrateButton"
         android:text="Calibrate Colors"
         android:layout_width="wrap_content" 

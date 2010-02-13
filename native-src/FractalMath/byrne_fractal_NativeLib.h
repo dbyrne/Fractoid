@@ -10,10 +10,10 @@ extern "C" {
 /*
  * Class:     byrne_fractal_NativeLib
  * Method:    getFractalRow
- * Signature: (IIII[IIIIIIDDDDDD)[I
+ * Signature: (IIII[IIIIIIIDDDDDD)[I
  */
 JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
-  (JNIEnv *, jobject, jint, jint, jint, jint, jintArray, jint, jint, jint, jint, jint, jdouble, jdouble, jdouble, jdouble, jdouble, jdouble);
+  (JNIEnv *, jobject, jint, jint, jint, jint, jintArray, jint, jint, jint, jint, jint, jint, jdouble, jdouble, jdouble, jdouble, jdouble, jdouble);
 
 #ifdef __cplusplus
 }

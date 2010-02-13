@@ -53,6 +53,10 @@ public class FractalParameters {
   public int getXRes() {return xres;}
   public void setXRes(int xr) {xres = xr;}
   
+  private int trapFactor = 1;
+  public int getTrapFactor() {return trapFactor;}
+  public void setTrapFactor(int tf) {trapFactor = tf;}
+  
   private int yres;
   public int getYRes() {return yres;}
   public void setYRes(int yr) {yres = yr;}

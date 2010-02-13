@@ -39,7 +39,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
 (JNIEnv * env, jobject obj,
  jint row, jint xres, jint yres, jint state, jintArray rowValues,
- jint power, jint max, jint equation, jint fractalType, jint alg,
+ jint power, jint max, jint trapFactor, jint equation, jint fractalType, jint alg,
  jdouble P, jdouble Q,
  jdouble realmin, jdouble realmax,
  jdouble imagmin, jdouble imagmax) {
@@ -98,12 +98,12 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
     for (index = 0; index < max; index++) {
       
       if (alg == 3 && fractalType == 2) { //Gaussian Integer Average & Julia
-        int gint_x = round(x);
-        int gint_y = round(y);
+        double gint_x = round(x*trapFactor)/trapFactor;
+        double gint_y = round(y*trapFactor)/trapFactor;
         distance += sqrt((x - gint_x)*(x-gint_x) + (y-gint_y)*(y-gint_y));
       } else if (alg == 2 && fractalType == 2) { //Gaussian Integer Minimum & Julia
-        int gint_x = round(x);
-        int gint_y = round(y);
+        double gint_x = round(x*trapFactor)/trapFactor;
+        double gint_y = round(y*trapFactor)/trapFactor;
         distance = minVal(distance,sqrt((x - gint_x)*(x-gint_x) + (y-gint_y)*(y-gint_y)));
       }
       
@@ -178,20 +178,20 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
       x = xtmp;
       
       if (alg == 3 && fractalType == 1) { //Gaussian Integer Average & Mandelbrot
-        int gint_x = round(x);
-        int gint_y = round(y);
+        double gint_x = round(x*trapFactor)/trapFactor;
+        double gint_y = round(y*trapFactor)/trapFactor;
         distance += sqrt((x - gint_x)*(x-gint_x) + (y-gint_y)*(y-gint_y));
       } else if (alg == 2 && fractalType == 1) { //Gaussian Integer Minimum & Mandelbrot
-        int gint_x = round(x);
-        int gint_y = round(y);
+        double gint_x = round(x*trapFactor)/trapFactor;
+        double gint_y = round(y*trapFactor)/trapFactor;
         distance = minVal(distance,sqrt((x - gint_x)*(x-gint_x) + (y-gint_y)*(y-gint_y)));
       }      
     }
     
     if (alg==3) { //Gaussian Integer average
-      fractalRow[col] = maxVal(1,(int)(((distance/(index+1))/sqrt(2))*10200));
+      fractalRow[col] = maxVal(1,(int)(((distance/(index+1))/(sqrt(2)/trapFactor))*10200));
     } else if (alg==2) {
-      fractalRow[col] = maxVal(1,(int)((distance/sqrt(2))*10200));
+      fractalRow[col] = maxVal(1,(int)((distance/(sqrt(2)/trapFactor))*10200));
     } else if (lessThanMax == 1) {
       //char s[20];
       //sprintf(s,"%d",mu);

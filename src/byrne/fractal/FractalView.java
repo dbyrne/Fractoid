@@ -237,6 +237,16 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     setFractal(b);
   }
   
+  public void setTrapFactor(int tf) {
+    params.setTrapFactor(tf);
+    params.resetValues();
+    startFractalTask();
+  }
+  
+  public int getTrapFactor() {
+    return params.getTrapFactor();
+  }
+  
   public void setValues(int[][] v) {
     params.setValues(v);
   }
@@ -441,7 +451,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
       }
       return true;
     } else {
-      if (fractalBitmap != null && touchCount < 3) {
+      if (fractalBitmap != null && touchCount < 4) {
         return multiTouchController.onTouchEvent(event);
       }
     }

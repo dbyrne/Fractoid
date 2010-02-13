@@ -51,10 +51,11 @@ import byrne.fractal.MultiTouchController.PositionAndScale;
 public class Fractoid extends Activity {
 
   private FractalView fractalView;
-  private Button juliaButton, calibrateButton;
+  private Button juliaButton, calibrateButton,trapFactorButton;
   MenuItem itemPhoenix;
   boolean relativeColors = false;
   private final int MAX_ITERATIONS_DIALOG = 1;
+  private final int TRAP_FACTOR_DIALOG = 2;
   ProgressDialog calibrationDialog;
 
 
@@ -77,6 +78,14 @@ public class Fractoid extends Activity {
 	fractalView.postInvalidate();
       }
     });
+    
+    trapFactorButton = (Button) findViewById(R.id.trapFactorButton);
+    trapFactorButton.setOnClickListener(new View.OnClickListener() {
+      public void onClick(View v) {
+	showDialog(TRAP_FACTOR_DIALOG);
+      }
+    });
+    setTrapFactorButtonEnabled(false);
 
     calibrateButton = (Button) findViewById(R.id.calibrateButton);
     calibrateButton.setOnClickListener(new View.OnClickListener() {
@@ -142,6 +151,25 @@ public class Fractoid extends Activity {
 	});
 	
         break;
+    case TRAP_FACTOR_DIALOG:
+      dialog = new Dialog(this);
+
+      dialog.setContentView(R.layout.trap_factor_dialog);
+      dialog.setTitle("Set Trap Factor");
+      
+      final EditText trapFactorText = (EditText) dialog.findViewById(R.id.trapFactorText);
+      trapFactorText.setText(Integer.toString(fractalView.getTrapFactor()));
+      
+      final Button setTrapFactorButton = (Button) dialog.findViewById(R.id.setTrapFactorButton);
+      setTrapFactorButton.setOnClickListener(new View.OnClickListener() {
+	public void onClick(View v) {
+	  try {
+	     fractalView.setTrapFactor(Integer.parseInt(trapFactorText.getText().toString()));
+	     dismissDialog(TRAP_FACTOR_DIALOG);
+	  } catch (NumberFormatException e) {System.out.println(e);}
+	}
+      });
+      break;
       
     default:
         dialog = null;
@@ -177,6 +205,15 @@ public class Fractoid extends Activity {
       calibrateButton.setVisibility(View.INVISIBLE);
     }
     calibrateButton.setEnabled(b);
+  }
+  
+  public void setTrapFactorButtonEnabled(boolean b) {   
+    if (b) {
+      trapFactorButton.setVisibility(View.VISIBLE);     
+    } else {
+      trapFactorButton.setVisibility(View.INVISIBLE);
+    }
+    trapFactorButton.setEnabled(b);
   }
   
   public void setJuliaButtonEnabled(boolean b) {   
@@ -324,12 +361,15 @@ public class Fractoid extends Activity {
     
     case R.id.escape_time_button:
       switchAlgorithm(item,Algorithm.ESCAPE_TIME);
+      setTrapFactorButtonEnabled(false);
       return true;
     case R.id.gaussian_minimum_button:
       switchAlgorithm(item,Algorithm.GAUSSIAN_MINIMUM);
+      setTrapFactorButtonEnabled(true);
       return true;
         case R.id.gaussian_average_button:
       switchAlgorithm(item,Algorithm.GAUSSIAN_AVERAGE);
+      setTrapFactorButtonEnabled(true);
       return true;
 
     case R.id.share_button:
