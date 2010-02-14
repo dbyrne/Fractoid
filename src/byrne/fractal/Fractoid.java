@@ -147,7 +147,7 @@ public class Fractoid extends Activity {
       dialog = new Dialog(this);
 
       dialog.setContentView(R.layout.trap_factor_dialog);
-      dialog.setTitle("Set Trap Factor (default: 1)");
+      dialog.setTitle("Set Trap Density (default: 1)");
       
       final EditText trapFactorText = (EditText) dialog.findViewById(R.id.trapFactorText);
       trapFactorText.setText(Integer.toString(fractalView.getTrapFactor()));
@@ -349,11 +349,13 @@ public class Fractoid extends Activity {
       return true;
     case R.id.gaussian_minimum_button:
       switchAlgorithm(item,Algorithm.GAUSSIAN_MINIMUM);
-      showDialog(TRAP_FACTOR_DIALOG);
+      //showDialog(TRAP_FACTOR_DIALOG);
+      fractalView.startFractalTask();
       return true;
         case R.id.gaussian_average_button:
       switchAlgorithm(item,Algorithm.GAUSSIAN_AVERAGE);
-      showDialog(TRAP_FACTOR_DIALOG);
+      //showDialog(TRAP_FACTOR_DIALOG);
+      fractalView.startFractalTask();
       return true;
 
     case R.id.share_button:
