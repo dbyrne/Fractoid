@@ -191,7 +191,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   public void setAlgorithm(Algorithm alg) {
     params.setAlgorithm(alg);
     params.resetValues();
-    backgroundBitmap = null;
+    clearBackground();
     startFractalTask();
   }
   
@@ -336,7 +336,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
 
   public void startFractalTask() {
     setFull = true;
-    
+    progress = 0;
     calculationTime = null;
     if (mGenerateFractalTask != null && mGenerateFractalTask.getStatus() == Status.RUNNING) {
       mGenerateFractalTask.cancel(true);
@@ -473,7 +473,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     
     if (backgroundBitmap != null) {
       backgroundBitmap.draw(canvas);
-      backgroundBitmap = null;
+      clearBackground();
     }
     
     fractalBitmap.draw(canvas);
