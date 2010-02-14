@@ -36,6 +36,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 
+double orbitDistance(double x, double y, jint trapFactor) {
+  double gint_x = round(x*trapFactor)/trapFactor;
+  double gint_y = round(y*trapFactor)/trapFactor;
+  return sqrt((x - gint_x)*(x-gint_x) + (y-gint_y)*(y-gint_y));
+}
+
 JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
 (JNIEnv * env, jobject obj,
  jint row, jint xres, jint yres, jint state, jintArray rowValues,
@@ -98,13 +104,9 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
     for (index = 0; index < max; index++) {
       
       if (alg == 3 && fractalType == 2) { //Gaussian Integer Average & Julia
-        double gint_x = round(x*trapFactor)/trapFactor;
-        double gint_y = round(y*trapFactor)/trapFactor;
-        distance += sqrt((x - gint_x)*(x-gint_x) + (y-gint_y)*(y-gint_y));
+        distance += orbitDistance(x,y,trapFactor);
       } else if (alg == 2 && fractalType == 2) { //Gaussian Integer Minimum & Julia
-        double gint_x = round(x*trapFactor)/trapFactor;
-        double gint_y = round(y*trapFactor)/trapFactor;
-        distance = minVal(distance,sqrt((x - gint_x)*(x-gint_x) + (y-gint_y)*(y-gint_y)));
+        distance = minVal(distance,orbitDistance(x,y,trapFactor));
       }
       
       xsq = x*x;
@@ -178,13 +180,9 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
       x = xtmp;
       
       if (alg == 3 && fractalType == 1) { //Gaussian Integer Average & Mandelbrot
-        double gint_x = round(x*trapFactor)/trapFactor;
-        double gint_y = round(y*trapFactor)/trapFactor;
-        distance += sqrt((x - gint_x)*(x-gint_x) + (y-gint_y)*(y-gint_y));
+        distance += orbitDistance(x,y,trapFactor);
       } else if (alg == 2 && fractalType == 1) { //Gaussian Integer Minimum & Mandelbrot
-        double gint_x = round(x*trapFactor)/trapFactor;
-        double gint_y = round(y*trapFactor)/trapFactor;
-        distance = minVal(distance,sqrt((x - gint_x)*(x-gint_x) + (y-gint_y)*(y-gint_y)));
+        distance = minVal(distance,orbitDistance(x,y,trapFactor));
       }      
     }
     

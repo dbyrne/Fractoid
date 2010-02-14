@@ -51,7 +51,7 @@ import byrne.fractal.MultiTouchController.PositionAndScale;
 public class Fractoid extends Activity {
 
   private FractalView fractalView;
-  private Button juliaButton, calibrateButton,trapFactorButton;
+  private Button juliaButton, calibrateButton;
   MenuItem itemPhoenix;
   boolean relativeColors = false;
   private final int MAX_ITERATIONS_DIALOG = 1;
@@ -78,14 +78,6 @@ public class Fractoid extends Activity {
 	fractalView.postInvalidate();
       }
     });
-    
-    trapFactorButton = (Button) findViewById(R.id.trapFactorButton);
-    trapFactorButton.setOnClickListener(new View.OnClickListener() {
-      public void onClick(View v) {
-	showDialog(TRAP_FACTOR_DIALOG);
-      }
-    });
-    setTrapFactorButtonEnabled(false);
 
     calibrateButton = (Button) findViewById(R.id.calibrateButton);
     calibrateButton.setOnClickListener(new View.OnClickListener() {
@@ -155,7 +147,7 @@ public class Fractoid extends Activity {
       dialog = new Dialog(this);
 
       dialog.setContentView(R.layout.trap_factor_dialog);
-      dialog.setTitle("Set Trap Factor");
+      dialog.setTitle("Set Trap Factor (default: 1)");
       
       final EditText trapFactorText = (EditText) dialog.findViewById(R.id.trapFactorText);
       trapFactorText.setText(Integer.toString(fractalView.getTrapFactor()));
@@ -166,6 +158,7 @@ public class Fractoid extends Activity {
 	  try {
 	     fractalView.setTrapFactor(Integer.parseInt(trapFactorText.getText().toString()));
 	     dismissDialog(TRAP_FACTOR_DIALOG);
+	     fractalView.startFractalTask();
 	  } catch (NumberFormatException e) {System.out.println(e);}
 	}
       });
@@ -205,15 +198,6 @@ public class Fractoid extends Activity {
       calibrateButton.setVisibility(View.INVISIBLE);
     }
     calibrateButton.setEnabled(b);
-  }
-  
-  public void setTrapFactorButtonEnabled(boolean b) {   
-    if (b) {
-      trapFactorButton.setVisibility(View.VISIBLE);     
-    } else {
-      trapFactorButton.setVisibility(View.INVISIBLE);
-    }
-    trapFactorButton.setEnabled(b);
   }
   
   public void setJuliaButtonEnabled(boolean b) {   
@@ -361,15 +345,15 @@ public class Fractoid extends Activity {
     
     case R.id.escape_time_button:
       switchAlgorithm(item,Algorithm.ESCAPE_TIME);
-      setTrapFactorButtonEnabled(false);
+      fractalView.startFractalTask();
       return true;
     case R.id.gaussian_minimum_button:
       switchAlgorithm(item,Algorithm.GAUSSIAN_MINIMUM);
-      setTrapFactorButtonEnabled(true);
+      showDialog(TRAP_FACTOR_DIALOG);
       return true;
         case R.id.gaussian_average_button:
       switchAlgorithm(item,Algorithm.GAUSSIAN_AVERAGE);
-      setTrapFactorButtonEnabled(true);
+      showDialog(TRAP_FACTOR_DIALOG);
       return true;
 
     case R.id.share_button:
