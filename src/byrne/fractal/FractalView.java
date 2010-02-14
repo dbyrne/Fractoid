@@ -46,6 +46,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   private ColorSet colorSet = ColorSet.RAINBOW;
   private Fractoid mFractoid;
   private int touchCount = 0;
+  private float progress;
   
   public FractalView(Context context){
     super(context);
@@ -320,6 +321,10 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   public FractalType getType() {
     return params.getType();
   }
+
+  public void setProgress(float p) {
+    progress = p;
+  }
   
   public Bitmap getFractal() {
     return fractalBitmap.getDrawable().getBitmap();
@@ -542,18 +547,29 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
       p.setStrokeWidth(1);
 
       p.setTextSize(35);
+      
+      int xres = params.getXRes();
+      int yres = params.getYRes();
+      
       if (!zoom) {
-        canvas.drawText("Touch to Generate Julia Set",(params.getXRes()/2)-200,params.getYRes()-5,p);
+        canvas.drawText("Touch to Generate Julia Set",(xres/2)-200,yres-5,p);
       } else {
-        canvas.drawText("Pinch to Zoom",(params.getXRes()/2)-120,params.getYRes()-5,p);
+        canvas.drawText("Pinch to Zoom",(xres/2)-120,yres-5,p);
       }
       p.setTextSize(25);
       
       String maxIterString = "MaxIter: " + params.getMaxIterations();
-      canvas.drawText(maxIterString,5,params.getYRes()-5,p);
+      canvas.drawText(maxIterString,5,yres-5,p);
       
       if (calculationTime != null) {
-        canvas.drawText(calculationTime,params.getXRes()-140,params.getYRes()-5,p);
+        canvas.drawText(calculationTime,xres-140,yres-5,p);
+      } else {
+        Rect total = new Rect(xres-155,yres-30,xres-5,yres-5);
+        int pleft = (int)((1-progress)*150);
+        Rect prog = new Rect(xres-155,yres-30,xres-pleft-5,yres-5);
+        canvas.drawRect(prog,p);
+        p.setStyle(Paint.Style.STROKE);
+        canvas.drawRect(total,p);
       }
       
     } else {

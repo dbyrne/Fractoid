@@ -30,6 +30,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, int[][]> {
   NativeLib mNativeLib;
   Paint paint;
   int[] colors;
+  int prog = 0;
   
   public GenerateFractalTask(FractalParameters p, FractalView fv) {
     params = p;
@@ -83,7 +84,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, int[][]> {
     for (int rpass = 0; rpass < PASSES; rpass++) {
       paint.setStrokeWidth(PASSES-rpass);
       for (int row=0; row < yres; row += PASSES-rpass) {
-        
+        prog++;
         updateCount++;
         if (updateCount % 15 == 0) {
           fractalView.removeTouch();
@@ -137,6 +138,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, int[][]> {
   }
   @Override protected void onProgressUpdate(Bitmap... b) {
     fractalView.setFractal(b[0]);
+    fractalView.setProgress(((prog*2)/3.0f)/params.getYRes());
     fractalView.invalidate();
   }
   @Override protected void onPostExecute(int[][] v) {
