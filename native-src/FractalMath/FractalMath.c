@@ -54,6 +54,8 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
   double xtmp=0,x=-1,y=-1,prev_x=-1,prev_y=-1,tmp_prev_x,tmp_prev_y,mu=1,xsq,ysq;
   int index;
   int lessThanMax;
+  const double LOG_OF_TWO = log(2);
+  const double SQRT_OF_TWO = sqrt(2);
     
   jint* rowVals = (*env)->GetIntArrayElements(env, rowValues, NULL);
   
@@ -112,11 +114,13 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
       xsq = x*x;
       ysq = y*y;
 
-      if (xsq + ysq > 4) { //Escape Time
+      if (xsq + ysq > 4) {
+        if (alg > 1 && xsq+ysq > 16)
+          break;
         //a few extra iterations improves color smoothing - why don't some equations work when a higher number is used?
         if (extraIterations == 2) { 
           lessThanMax = 1;
-          mu = index + 2 - (log(log(sqrt(xsq + ysq))/ log(2.0))/log(power));
+          mu = index + 2 - (log(log(sqrt(xsq + ysq))/LOG_OF_TWO)/log(power));
           break;
         } else {
           extraIterations++;
@@ -185,9 +189,9 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
     }
     
     if (alg==3) { //Gaussian Integer average
-      fractalRow[col] = maxVal(1,(int)(((distance/(index+1))/(sqrt(2)/trapFactor))*10200));
+      fractalRow[col] = maxVal(1,(int)(((distance/(index+1))/(SQRT_OF_TWO/trapFactor))*10200));
     } else if (alg==2) {
-      fractalRow[col] = maxVal(1,(int)((distance/(sqrt(2)/trapFactor))*10200));
+      fractalRow[col] = maxVal(1,(int)((distance/(SQRT_OF_TWO/trapFactor))*10200));
     } else if (lessThanMax == 1) {
       //char s[20];
       //sprintf(s,"%d",mu);
