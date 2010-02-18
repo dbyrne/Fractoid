@@ -22,7 +22,7 @@ package byrne.fractal;
 import android.os.AsyncTask;
 import android.graphics.*;
 
-public class GenerateFractalTask extends AsyncTask<Void, Bitmap, int[][]> {
+public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
   
   FractalParameters params;
   FractalView fractalView;
@@ -42,7 +42,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, int[][]> {
     mNativeLib = new NativeLib();
   }
     
-  private int[][] createBitmap() {
+  private Bitmap createBitmap() {
     
     Algorithm alg = params.getAlgorithm();
     
@@ -60,7 +60,6 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, int[][]> {
     Canvas c = new Canvas(b);
     
     int[] rowColors;
-    int[][] fractalValues = params.getValues();
 
     double x=-1, y=-1, prev_x = -1, prev_y =-1,tmp_prev_x,tmp_prev_y, mu = 1;
     int index;
@@ -80,7 +79,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, int[][]> {
         updateCount++;
         
         if (isCancelled()) {
-          return fractalValues;
+          return b;
         }
   
         if (updateCount % 15 == 0) {
@@ -112,20 +111,18 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, int[][]> {
           } else {
             paint.setColor(Color.BLACK);
           }
-          fractalValues[row][col] = rowColors[col];
           //TODO Store results so color changes don't require recalculation
           c.drawPoint(col,row,paint);
         }
       }
     }
-    this.publishProgress(b);
-    return fractalValues;
+    return b;
   }
   
   @Override protected void onPreExecute() {
     startTime = System.currentTimeMillis();
   }
-  @Override protected int[][] doInBackground(Void... unused) {   
+  @Override protected Bitmap doInBackground(Void... unused) {   
     return createBitmap();
   }
   @Override protected void onProgressUpdate(Bitmap... b) {
@@ -133,8 +130,8 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, int[][]> {
     fractalView.setProgress(((prog*2)/3.0f)/params.getYRes());
     fractalView.invalidate();
   }
-  @Override protected void onPostExecute(int[][] v) {
-    fractalView.setValues(v);
+  @Override protected void onPostExecute(Bitmap b) {
+    fractalView.setFractal(b);
     fractalView.clearBackground();
     fractalView.setTime(System.currentTimeMillis()-startTime);
     fractalView.turnCalibrateButtonOn();
@@ -144,6 +141,8 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, int[][]> {
 class NativeLib {
   
   public native void resetValues();
+  public native void freeValues();
+  public native int[][] getValues();
   public native void setResolution(int xres, int yres);
   public native void setEquation(int equation, int power);
   public native void setCoords(double realmin, double realmax, double imagmin, double imagmax);

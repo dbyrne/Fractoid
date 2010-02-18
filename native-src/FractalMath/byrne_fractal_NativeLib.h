@@ -17,6 +17,22 @@ JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_resetValues
 
 /*
  * Class:     byrne_fractal_NativeLib
+ * Method:    freeValues
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_freeValues
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     byrne_fractal_NativeLib
+ * Method:    getValues
+ * Signature: ()[[I
+ */
+JNIEXPORT jobjectArray JNICALL Java_byrne_fractal_NativeLib_getValues
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     byrne_fractal_NativeLib
  * Method:    setResolution
  * Signature: (II)V
  */

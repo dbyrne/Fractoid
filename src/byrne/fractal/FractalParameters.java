@@ -21,16 +21,6 @@ package byrne.fractal;
 
 public class FractalParameters {
   
-  private int[][] values;
-  
-  public void setValues(int[][] v) {values = v;}
-  public int[][] getValues() {
-    if (values == null) {
-      values = new int[yres][xres];
-    }
-    return values;
-  }
-  
   private int[] colorSet;
   public void setColorSet(int[] cs) {colorSet = cs;}
   public int[] getColorSet() {return colorSet;}
@@ -60,10 +50,6 @@ public class FractalParameters {
      imagmin = imin;
      imagmax = imax;
      
-  }
-  
-  public void resetValues() {
-    values = null;
   }
   
   public double getRealMin() {return realmin;}

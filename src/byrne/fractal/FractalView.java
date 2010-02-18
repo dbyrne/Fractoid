@@ -195,14 +195,13 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   public void setAlgorithm(Algorithm alg) {
     params.setAlgorithm(alg);
     mNativeLib.setAlgorithm(alg.getInt());
-    params.resetValues();
     mNativeLib.resetValues();
     clearBackground();
   }
   
     public void calibrateColors() {
     int[] colors = params.getColorSet();
-    int[][] values = params.getValues();
+    int[][] values = mNativeLib.getValues();
     Bitmap b = Bitmap.createBitmap(params.getXRes(), params.getYRes(), Bitmap.Config.ARGB_8888);
     Canvas c = new Canvas(b);
     Paint p = new Paint();
@@ -246,17 +245,12 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   public void setTrapFactor(int tf) {
     mNativeLib.setTrapFactor(tf);
     trapFactor = tf;
-    params.resetValues();
     mNativeLib.resetValues();
     startFractalTask();
   }
   
   public int getTrapFactor() {
     return trapFactor;
-  }
-  
-  public void setValues(int[][] v) {
-    params.setValues(v);
   }
   
   public ComplexEquation getEquation() {
@@ -279,7 +273,6 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   public void setMaxIterations(int i) {
     mNativeLib.setMaxIterations(i);
     maxIterations = i;
-    params.resetValues();
     mNativeLib.resetValues();
     startFractalTask();
   }
@@ -324,7 +317,6 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
       mNativeLib.setMaxIterations(maxIterations+10);
     mNativeLib.setCoords(realmin,realmax,imagmin,imagmax);
     params.setCoords(realmin,realmax,imagmin,imagmax);
-    params.resetValues();
     mNativeLib.resetValues();
     startFractalTask();
 
@@ -412,7 +404,6 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     params.randomizeShiftFactor();
     mNativeLib.setCoords(realmin,realmax,imagmin,imagmax);
     params.setCoords(realmin,realmax,imagmin,imagmax);
-    params.resetValues();
     mNativeLib.resetValues();
     
     if (equation == ComplexEquation.PHOENIX) {
@@ -466,7 +457,6 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
 
         mNativeLib.setCoords(realmin, realmax, imagmin, imagmax);
         params.setCoords(realmin,realmax,imagmin,imagmax);
-        params.resetValues();
         mNativeLib.resetValues();
         mNativeLib.setMaxIterations(40);
         maxIterations = 40;

@@ -61,6 +61,17 @@ JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_resetValues
       values[row][col] = -2;
 }
 
+JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_freeValues
+(JNIEnv * env, jobject obj) {
+  if (values != NULL) {
+    int r;
+    for (r = 0; r < yres; r++) {
+      free(values[r]);
+    }
+    free(values);
+  }
+}
+
 JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_setResolution
 (JNIEnv * env, jobject obj, jint jxres, jint jyres) {
   xres = jxres;
