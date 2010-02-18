@@ -45,10 +45,6 @@ public class FractalParameters {
   public void setAlgorithm(Algorithm a) {alg = a;}
   public Algorithm getAlgorithm() {return alg;};
   
-  private ComplexEquation equation;
-  public void setEquation(ComplexEquation e) {equation = e;}
-  public ComplexEquation getEquation() {return equation;}
-  
   private int xres = -1;
   public int getXRes() {return xres;}
   public void setXRes(int xr) {xres = xr;}

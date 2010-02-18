@@ -44,8 +44,6 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, int[][]> {
     
   private int[][] createBitmap() {
     
-    ComplexEquation equation = params.getEquation();
-    int power = equation.getPower();
     int trapFactor = params.getTrapFactor();
     Algorithm alg = params.getAlgorithm();
     
@@ -102,8 +100,8 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, int[][]> {
         } else {
           state = 0;
         }
-        rowColors = mNativeLib.getFractalRow(row,state,fractalValues[row],power,max,trapFactor,
-                                             equation.getInt(),type.getInt(),alg.getInt(),
+        rowColors = mNativeLib.getFractalRow(row,state,fractalValues[row],max,trapFactor,
+                                             type.getInt(),alg.getInt(),
                                              P,Q,realmin,realmax,imagmin,imagmax);
         
         //TODO Find a more elegant way to handle 2x2 and 1x1 rendering
@@ -151,13 +149,12 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, int[][]> {
 }
 class NativeLib {
   public native void setResolution(int xres, int yres);
+  public native void setEquation(int equation, int power);
   public native int[] getFractalRow(int row,
                                     int state,
                                     int[] rowValues,
-                                    int power,
                                     int max,
                                     int trapFactor,
-                                    int equation,
                                     int type,
                                     int alg,
                                     double P,

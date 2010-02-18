@@ -47,6 +47,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   private Fractoid mFractoid;
   private int touchCount = 0;
   private float progress;
+  private final NativeLib mNativeLib = new NativeLib();
   
   public FractalView(Context context){
     super(context);
@@ -257,6 +258,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   
   public void setEquation(ComplexEquation e) {
     equation = e;
+    mNativeLib.setEquation(e.getInt(),e.getPower());
   }
   
   public void setZoom(boolean z) {
@@ -397,7 +399,6 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     double realmin = params.getResRatio()*r_y/2*-1;
     
     params.randomizeShiftFactor();
-    params.setEquation(equation);
     params.setCoords(realmin,realmax,imagmin,imagmax);
     params.resetValues();
     
@@ -426,8 +427,6 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     if (params.getXRes() == -1) {
       params.setXRes(width);
       params.setYRes(height);
-      NativeLib mNativeLib = new NativeLib();
-      System.out.println("Set Resolution");
       mNativeLib.setResolution(width,height);
     }
   }
