@@ -33,11 +33,51 @@ JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_setCoords
 
 /*
  * Class:     byrne_fractal_NativeLib
+ * Method:    setMaxIterations
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_setMaxIterations
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     byrne_fractal_NativeLib
+ * Method:    setTrapFactor
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_setTrapFactor
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     byrne_fractal_NativeLib
+ * Method:    setFractalType
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_setFractalType
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     byrne_fractal_NativeLib
+ * Method:    setAlgorithm
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_setAlgorithm
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     byrne_fractal_NativeLib
+ * Method:    setCValue
+ * Signature: (DD)V
+ */
+JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_setCValue
+  (JNIEnv *, jobject, jdouble, jdouble);
+
+/*
+ * Class:     byrne_fractal_NativeLib
  * Method:    getFractalRow
- * Signature: (II[IIIIIDD)[I
+ * Signature: (II[I)[I
  */
 JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
-  (JNIEnv *, jobject, jint, jint, jintArray, jint, jint, jint, jint, jdouble, jdouble);
+  (JNIEnv *, jobject, jint, jint, jintArray);
 
 #ifdef __cplusplus
 }

@@ -44,7 +44,6 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, int[][]> {
     
   private int[][] createBitmap() {
     
-    int trapFactor = params.getTrapFactor();
     Algorithm alg = params.getAlgorithm();
     
     double realmin = params.getRealMin();
@@ -52,14 +51,10 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, int[][]> {
     double imagmin = params.getImagMin();
     double imagmax = params.getImagMax();
     
-    double P = params.getP();
-    double Q = params.getQ();
-    
     double xtmp = 0;
     
     int xres = params.getXRes();
     int yres = params.getYRes();
-    FractalType type = params.getType();
     
     Bitmap b = Bitmap.createBitmap(xres, yres, Bitmap.Config.ARGB_8888);
     Canvas c = new Canvas(b);
@@ -74,7 +69,6 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, int[][]> {
     double deltaP = (realmax - realmin)/xres;
     double deltaQ = (imagmax - imagmin)/yres;
     
-    final int max = params.getMaxIterations();
     final int PASSES = 2;
     int updateCount=0;
     int state = 0;
@@ -100,8 +94,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, int[][]> {
         } else {
           state = 0;
         }
-        rowColors = mNativeLib.getFractalRow(row,state,fractalValues[row],max,trapFactor,
-                                             type.getInt(),alg.getInt(),P,Q);
+        rowColors = mNativeLib.getFractalRow(row,state,fractalValues[row]);
         
         //TODO Find a more elegant way to handle 2x2 and 1x1 rendering
         int step = 1;
@@ -147,18 +140,18 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, int[][]> {
   }  
 }
 class NativeLib {
+  
   public native void setResolution(int xres, int yres);
   public native void setEquation(int equation, int power);
   public native void setCoords(double realmin, double realmax, double imagmin, double imagmax);
-  public native int[] getFractalRow(int row,
-                                    int state,
-                                    int[] rowValues,
-                                    int max,
-                                    int trapFactor,
-                                    int type,
-                                    int alg,
-                                    double P,
-                                    double Q);
+  public native void setMaxIterations(int max);
+  public native void setTrapFactor(int trapFactor);
+  public native void setFractalType(int type);
+  public native void setAlgorithm(int alg);
+  public native void setCValue(double P, double Q);
+  
+  public native int[] getFractalRow(int row, int state, int[] rowValues);
+  
   static {
     System.loadLibrary("FractalMath");
   }

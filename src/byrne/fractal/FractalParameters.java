@@ -21,8 +21,6 @@ package byrne.fractal;
 
 public class FractalParameters {
   
-  final int STARTING_MAX_ITERATIONS = 40;
-  private int maxIterations = STARTING_MAX_ITERATIONS;
   private int[][] values;
   
   public void setValues(int[][] v) {values = v;}
@@ -32,10 +30,6 @@ public class FractalParameters {
     }
     return values;
   }
-  
-  public void resetMaxIterations() {maxIterations=STARTING_MAX_ITERATIONS;}
-  public void setMaxIterations(int i) {maxIterations = i;}
-  public int getMaxIterations() {return maxIterations;}
   
   private int[] colorSet;
   public void setColorSet(int[] cs) {colorSet = cs;}
@@ -49,19 +43,11 @@ public class FractalParameters {
   public int getXRes() {return xres;}
   public void setXRes(int xr) {xres = xr;}
   
-  private int trapFactor = 1;
-  public int getTrapFactor() {return trapFactor;}
-  public void setTrapFactor(int tf) {trapFactor = tf;}
-  
   private int yres = -1;
   public int getYRes() {return yres;}
   public void setYRes(int yr) {yres = yr;}
   
   public double getResRatio() {return (double)xres/yres;}
-  
-  private FractalType type;
-  public FractalType getType() {return type;}
-  public void setType(FractalType t) {type = t;}
   
   private double shiftFactor;
   public double getShiftFactor() {return shiftFactor;}
@@ -84,11 +70,5 @@ public class FractalParameters {
   public double getRealMax() {return realmax;}
   public double getImagMin() {return imagmin;}
   public double getImagMax() {return imagmax;}
-  
-  private double P=-1,Q=-1;
-  public double getP() {return P;}
-  public double getQ() {return Q;}
-  public void setP(double p) {P=p;}
-  public void setQ(double q) {Q=q;}
   
 }

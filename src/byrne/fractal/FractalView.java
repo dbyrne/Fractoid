@@ -44,6 +44,9 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   private Resources res;
   private boolean setFull = false, zoom = true;
   private ColorSet colorSet = ColorSet.RAINBOW;
+  private FractalType fractalType = FractalType.MANDELBROT;
+  int maxIterations = 40;
+  int trapFactor = 1;
   private Fractoid mFractoid;
   private int touchCount = 0;
   private float progress;
@@ -191,6 +194,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   
   public void setAlgorithm(Algorithm alg) {
     params.setAlgorithm(alg);
+    mNativeLib.setAlgorithm(alg.getInt());
     params.resetValues();
     clearBackground();
   }
@@ -239,13 +243,14 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   }
   
   public void setTrapFactor(int tf) {
-    params.setTrapFactor(tf);
+    mNativeLib.setTrapFactor(tf);
+    trapFactor = tf;
     params.resetValues();
     startFractalTask();
   }
   
   public int getTrapFactor() {
-    return params.getTrapFactor();
+    return trapFactor;
   }
   
   public void setValues(int[][] v) {
@@ -266,11 +271,12 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   }
   
   public int getMaxIterations() {
-    return params.getMaxIterations();
+    return maxIterations;
   }
   
   public void setMaxIterations(int i) {
-    params.setMaxIterations(i);
+    mNativeLib.setMaxIterations(i);
+    maxIterations = i;
     params.resetValues();
     startFractalTask();
   }
@@ -312,7 +318,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     imagmin = imagmin + offsetY;
     imagmax = imagmax + offsetY;
     if (fractalBitmap.getScale() > 1)
-      params.setMaxIterations(params.getMaxIterations()+10);
+      mNativeLib.setMaxIterations(maxIterations+10);
     mNativeLib.setCoords(realmin,realmax,imagmin,imagmax);
     params.setCoords(realmin,realmax,imagmin,imagmax);
     params.resetValues();
@@ -321,7 +327,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   }
   
   public FractalType getType() {
-    return params.getType();
+    return fractalType;
   }
 
   public void setProgress(float p) {
@@ -409,14 +415,16 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
       The mandelbrot fractal for this equation is ugly so
       we only allow the user to explore the Julia version
       */
-      params.setType(FractalType.JULIA);
-      params.setP(0.56666667);
-      params.setQ(-0.5);
-      params.setMaxIterations(100);
+      mNativeLib.setFractalType(FractalType.JULIA.getInt());
+      fractalType = FractalType.JULIA;
+      mNativeLib.setCValue(0.56666667,-0.5);
+      mNativeLib.setMaxIterations(100);
+      maxIterations = 100;
     }
     else {
-      params.setType(FractalType.MANDELBROT);
-      params.resetMaxIterations();
+      mNativeLib.setFractalType(FractalType.MANDELBROT.getInt());
+      mNativeLib.setMaxIterations(40);
+      maxIterations = 40;
     }
     
     clearBackground();
@@ -442,8 +450,9 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
         double realmax = params.getRealMax();
         double realRange = Math.abs(realmax-realmin);
         double imagRange = Math.abs(imagmax-imagmin);
-        params.setP(realmin + ((event.getX()/params.getXRes())*realRange));
-        params.setQ(imagmax - ((event.getY()/params.getYRes())*imagRange));
+        mNativeLib.setCValue(realmin + ((event.getX()/params.getXRes())*realRange),
+                        imagmax - ((event.getY()/params.getYRes())*imagRange));
+
         imagmax = 1.4;
         imagmin = -1.4;
         imagRange = Math.abs(imagmax-imagmin);
@@ -453,8 +462,10 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
         mNativeLib.setCoords(realmin, realmax, imagmin, imagmax);
         params.setCoords(realmin,realmax,imagmin,imagmax);
         params.resetValues();
-        params.resetMaxIterations();
-        params.setType(FractalType.JULIA);
+        mNativeLib.setMaxIterations(40);
+        maxIterations = 40;
+        mNativeLib.setFractalType(FractalType.JULIA.getInt());
+        fractalType = FractalType.JULIA;
         clearBackground();
         startFractalTask();
       } else if (event.getAction() == MotionEvent.ACTION_UP) {
@@ -564,7 +575,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
       }
       p.setTextSize(25);
       
-      String maxIterString = "MaxIter: " + params.getMaxIterations();
+      String maxIterString = "MaxIter: " + maxIterations;
       canvas.drawText(maxIterString,5,yres-5,p);
       
       if (calculationTime != null) {

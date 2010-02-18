@@ -34,8 +34,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   #define abs( a ) ( ((a) < (0)) ? (a*-1) : (a) )
 #endif
 
-int xres, yres, equation=1,power=2;
-double realmin, realmax, imagmin, imagmax;
+int xres, yres, equation=1,power=2,max=40, trapFactor=1, fractalType=1, alg=1;
+double realmin, realmax, imagmin, imagmax,P,Q;
 
 double orbitDistance(double x, double y, jint trapFactor) {
   double gint_x = round(x*trapFactor)/trapFactor;
@@ -55,6 +55,32 @@ JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_setEquation
   power = jpower;
 }
 
+JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_setMaxIterations
+(JNIEnv * env, jobject obj, jint jmax) {
+  max = jmax;
+}
+
+JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_setTrapFactor
+(JNIEnv * env, jobject obj, jint jtrapFactor) {
+  trapFactor = jtrapFactor;
+}
+
+JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_setFractalType
+(JNIEnv * env, jobject obj, jint jfractalType) {
+  fractalType = jfractalType;
+}
+
+JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_setAlgorithm
+(JNIEnv * env, jobject obj, jint jalg) {
+  alg = jalg;
+}
+
+JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_setCValue
+(JNIEnv * env, jobject obj, jdouble jP, jdouble jQ) {
+  P = jP;
+  Q = jQ;
+}
+
 JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_setCoords
 (JNIEnv * env, jobject obj, jdouble jrealmin, jdouble jrealmax, jdouble jimagmin, jdouble jimagmax) {
   realmin = jrealmin;
@@ -64,8 +90,7 @@ JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_setCoords
 }
 
 JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
-(JNIEnv * env, jobject obj, jint row, jint state, jintArray rowValues,
- jint max, jint trapFactor, jint fractalType, jint alg, jdouble P, jdouble Q) {
+(JNIEnv * env, jobject obj, jint row, jint state, jintArray rowValues) {
   
   jintArray result;
   double xtmp=0,x=-1,y=-1,prev_x=-1,prev_y=-1,tmp_prev_x,tmp_prev_y,mu=1,xsq,ysq;
@@ -131,8 +156,8 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
       xsq = x*x;
       ysq = y*y;
 
-      if (xsq + ysq > 4) {
-        if (alg > 1 && xsq+ysq > 16)
+      if ((alg == 1 && xsq + ysq > 4) || xsq + ysq > 16) {
+        if (alg > 1)
           break;
         //a few extra iterations improves color smoothing - why don't some equations work when a higher number is used?
         if (extraIterations == 2) { 
