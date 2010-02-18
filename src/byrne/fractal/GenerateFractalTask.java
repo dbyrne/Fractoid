@@ -78,11 +78,13 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, int[][]> {
       for (int row=0; row < yres; row += PASSES-rpass) {
         prog++;
         updateCount++;
+        
+        if (isCancelled()) {
+          return fractalValues;
+        }
+  
         if (updateCount % 15 == 0) {
           fractalView.removeTouch();
-          if (isCancelled()) {
-            return fractalValues;
-          }
           this.publishProgress(b);
         }
         if (row % 2 == 0) {
@@ -94,7 +96,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, int[][]> {
         } else {
           state = 0;
         }
-        rowColors = mNativeLib.getFractalRow(row,state,fractalValues[row]);
+        rowColors = mNativeLib.getFractalRow(row,state);
         
         //TODO Find a more elegant way to handle 2x2 and 1x1 rendering
         int step = 1;
@@ -141,6 +143,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, int[][]> {
 }
 class NativeLib {
   
+  public native void resetValues();
   public native void setResolution(int xres, int yres);
   public native void setEquation(int equation, int power);
   public native void setCoords(double realmin, double realmax, double imagmin, double imagmax);
@@ -150,7 +153,7 @@ class NativeLib {
   public native void setAlgorithm(int alg);
   public native void setCValue(double P, double Q);
   
-  public native int[] getFractalRow(int row, int state, int[] rowValues);
+  public native int[] getFractalRow(int row, int state);
   
   static {
     System.loadLibrary("FractalMath");

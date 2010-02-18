@@ -9,6 +9,14 @@ extern "C" {
 #endif
 /*
  * Class:     byrne_fractal_NativeLib
+ * Method:    resetValues
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_resetValues
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     byrne_fractal_NativeLib
  * Method:    setResolution
  * Signature: (II)V
  */
@@ -74,10 +82,10 @@ JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_setCValue
 /*
  * Class:     byrne_fractal_NativeLib
  * Method:    getFractalRow
- * Signature: (II[I)[I
+ * Signature: (II)[I
  */
 JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
-  (JNIEnv *, jobject, jint, jint, jintArray);
+  (JNIEnv *, jobject, jint, jint);
 
 #ifdef __cplusplus
 }

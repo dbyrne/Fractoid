@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <math.h>
 #include <android/log.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #ifndef maxVal
   #define maxVal( a, b ) ( ((a) > (b)) ? (a) : (b) )
@@ -37,10 +38,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 int xres, yres, equation=1,power=2,max=40, trapFactor=1, fractalType=1, alg=1;
 double realmin, realmax, imagmin, imagmax,P,Q;
 
+int** values;
+
 double orbitDistance(double x, double y, jint trapFactor) {
   double gint_x = round(x*trapFactor)/trapFactor;
   double gint_y = round(y*trapFactor)/trapFactor;
   return sqrt((x - gint_x)*(x-gint_x) + (y-gint_y)*(y-gint_y));
+}
+
+JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_resetValues
+(JNIEnv * env, jobject obj) {
+  if (values == NULL) {
+    int r;
+    values = (int**) malloc(yres * sizeof(int*));
+    for (r = 0; r < yres; r++) {
+      values[r] = (int*) malloc(xres * sizeof(int));
+    }
+  }
+  int row, col;
+  for (row = 0; row < yres; row++)
+    for (col = 0; col < xres; col++)
+      values[row][col] = -2;
 }
 
 JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_setResolution
@@ -90,7 +108,7 @@ JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_setCoords
 }
 
 JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
-(JNIEnv * env, jobject obj, jint row, jint state, jintArray rowValues) {
+(JNIEnv * env, jobject obj, jint row, jint state) {
   
   jintArray result;
   double xtmp=0,x=-1,y=-1,prev_x=-1,prev_y=-1,tmp_prev_x,tmp_prev_y,mu=1,xsq,ysq;
@@ -98,15 +116,11 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
   int lessThanMax;
   const double LOG_OF_TWO = log(2);
   const double SQRT_OF_TWO = sqrt(2);
-    
-  jint* rowVals = (*env)->GetIntArrayElements(env, rowValues, NULL);
   
   result = (*env)->NewIntArray(env, xres);
   if (result == NULL) {
     return NULL; /* out of memory error thrown */
   }
-
-  int fractalRow[xres];
 
   double deltaP = (realmax - realmin)/xres;
   double deltaQ = (imagmax - imagmin)/yres;
@@ -119,8 +133,7 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
   if (state > 0)
     step = 2;
   for(col=(state%2); col < xres; col = col+step) {
-    if (rowVals[col] != 0) {
-      fractalRow[col] = rowVals[col];
+    if (values[row][col] != -2) {
       continue;
     }
     if (fractalType == 1) { //Mandelbrot
@@ -231,20 +244,19 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
     }
     
     if (alg==3) { //Gaussian Integer average
-      fractalRow[col] = maxVal(1,(int)(((distance/(index+1))/(SQRT_OF_TWO/trapFactor))*10200));
+      values[row][col] = maxVal(1,(int)(((distance/(index+1))/(SQRT_OF_TWO/trapFactor))*10200));
     } else if (alg==2) {
-      fractalRow[col] = maxVal(1,(int)((distance/(SQRT_OF_TWO/trapFactor))*10200));
+      values[row][col] = maxVal(1,(int)((distance/(SQRT_OF_TWO/trapFactor))*10200));
     } else if (lessThanMax == 1) {
       //char s[20];
       //sprintf(s,"%d",mu);
       //__android_log_write(ANDROID_LOG_DEBUG,"FRACTOID_DEBUG",s);
-      fractalRow[col] = maxVal(1,((int)(mu*200)));
+      values[row][col] = maxVal(1,((int)(mu*200)));
     } else {
-      fractalRow[col] = -1;
+      values[row][col] = -1;
     }
   }
   
-  (*env)->ReleaseIntArrayElements(env, rowValues, rowVals, 0);
-  (*env)->SetIntArrayRegion(env, result, 0, xres, fractalRow);
+  (*env)->SetIntArrayRegion(env, result, 0, xres, values[row]);
   return result;
 }
