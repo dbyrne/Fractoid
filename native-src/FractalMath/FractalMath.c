@@ -34,7 +34,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   #define abs( a ) ( ((a) < (0)) ? (a*-1) : (a) )
 #endif
 
-
+int xres, yres;
 
 double orbitDistance(double x, double y, jint trapFactor) {
   double gint_x = round(x*trapFactor)/trapFactor;
@@ -42,9 +42,15 @@ double orbitDistance(double x, double y, jint trapFactor) {
   return sqrt((x - gint_x)*(x-gint_x) + (y-gint_y)*(y-gint_y));
 }
 
+JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_setResolution
+(JNIEnv * env, jobject obj, jint jxres, jint jyres) {
+  xres = jxres;
+  yres = jyres;
+}
+
 JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
 (JNIEnv * env, jobject obj,
- jint row, jint xres, jint yres, jint state, jintArray rowValues,
+ jint row, jint state, jintArray rowValues,
  jint power, jint max, jint trapFactor, jint equation, jint fractalType, jint alg,
  jdouble P, jdouble Q,
  jdouble realmin, jdouble realmax,

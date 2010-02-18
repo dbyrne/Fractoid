@@ -102,7 +102,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, int[][]> {
         } else {
           state = 0;
         }
-        rowColors = mNativeLib.getFractalRow(row,xres,yres,state,fractalValues[row],power,max,trapFactor,
+        rowColors = mNativeLib.getFractalRow(row,state,fractalValues[row],power,max,trapFactor,
                                              equation.getInt(),type.getInt(),alg.getInt(),
                                              P,Q,realmin,realmax,imagmin,imagmax);
         
@@ -150,9 +150,8 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, int[][]> {
   }  
 }
 class NativeLib {
+  public native void setResolution(int xres, int yres);
   public native int[] getFractalRow(int row,
-                                    int xres,
-                                    int yres,
                                     int state,
                                     int[] rowValues,
                                     int power,

@@ -423,8 +423,13 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   }
       
   @Override protected void onSizeChanged(int width, int height, int oldw, int oldh) {
-    params.setXRes(width);
-    params.setYRes(height);
+    if (params.getXRes() == -1) {
+      params.setXRes(width);
+      params.setYRes(height);
+      NativeLib mNativeLib = new NativeLib();
+      System.out.println("Set Resolution");
+      mNativeLib.setResolution(width,height);
+    }
   }
   
   @Override public boolean onTouchEvent (MotionEvent event) {

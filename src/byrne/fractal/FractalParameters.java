@@ -49,7 +49,7 @@ public class FractalParameters {
   public void setEquation(ComplexEquation e) {equation = e;}
   public ComplexEquation getEquation() {return equation;}
   
-  private int xres;
+  private int xres = -1;
   public int getXRes() {return xres;}
   public void setXRes(int xr) {xres = xr;}
   
@@ -57,7 +57,7 @@ public class FractalParameters {
   public int getTrapFactor() {return trapFactor;}
   public void setTrapFactor(int tf) {trapFactor = tf;}
   
-  private int yres;
+  private int yres = -1;
   public int getYRes() {return yres;}
   public void setYRes(int yr) {yres = yr;}
   
