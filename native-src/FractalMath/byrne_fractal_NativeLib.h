@@ -25,11 +25,19 @@ JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_setEquation
 
 /*
  * Class:     byrne_fractal_NativeLib
+ * Method:    setCoords
+ * Signature: (DDDD)V
+ */
+JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_setCoords
+  (JNIEnv *, jobject, jdouble, jdouble, jdouble, jdouble);
+
+/*
+ * Class:     byrne_fractal_NativeLib
  * Method:    getFractalRow
- * Signature: (II[IIIIIDDDDDD)[I
+ * Signature: (II[IIIIIDD)[I
  */
 JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
-  (JNIEnv *, jobject, jint, jint, jintArray, jint, jint, jint, jint, jdouble, jdouble, jdouble, jdouble, jdouble, jdouble);
+  (JNIEnv *, jobject, jint, jint, jintArray, jint, jint, jint, jint, jdouble, jdouble);
 
 #ifdef __cplusplus
 }
