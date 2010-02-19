@@ -42,7 +42,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   private FractalParameters params;
   private MultiTouchController<FractalView.Img> multiTouchController;
   private Resources res;
-  private boolean setFull = false, zoom = true;
+  private boolean setFull = false, zoom = true, greenLight = true;
   private ColorSet colorSet = ColorSet.RAINBOW;
   private FractalType fractalType = FractalType.MANDELBROT;
   int maxIterations = 40;
@@ -346,11 +346,22 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
       mGenerateFractalTask.cancel(true);
     }
     
+    while(!greenLight) {
+      try {
+        Thread.sleep(100);
+      } catch (InterruptedException e) {}
+    }
+    
     mFractoid.setCalibrateButtonEnabled(false);
     
     calculateColors(1021);
+    greenLight = false;
     mGenerateFractalTask = new GenerateFractalTask(params,this);
     mGenerateFractalTask.execute();
+  }
+
+  public void greenLight() {
+    greenLight = true;
   }
 
   public void removeTouch() {

@@ -79,6 +79,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
         updateCount++;
         
         if (isCancelled()) {
+          fractalView.greenLight();
           return b;
         }
   
@@ -135,6 +136,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
     fractalView.clearBackground();
     fractalView.setTime(System.currentTimeMillis()-startTime);
     fractalView.turnCalibrateButtonOn();
+    fractalView.greenLight();
     fractalView.invalidate();
   }  
 }
