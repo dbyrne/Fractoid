@@ -84,7 +84,6 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
         }
   
         if (updateCount % 15 == 0) {
-          fractalView.removeTouch();
           this.publishProgress(b);
         }
         if (row % 2 == 0) {

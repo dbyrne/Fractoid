@@ -48,7 +48,6 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   int maxIterations = 40;
   int trapFactor = 1;
   private Fractoid mFractoid;
-  private int touchCount = 0;
   private float progress;
   private final NativeLib mNativeLib = new NativeLib();
   
@@ -364,11 +363,6 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     greenLight = true;
   }
 
-  public void removeTouch() {
-    if (touchCount > 0)
-      touchCount--;
-  }
-
   public void setFractal(Bitmap fa) {
     BitmapDrawable bd = new BitmapDrawable(res, fa);
     if (setFull) {    
@@ -480,7 +474,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
       }
       return true;
     } else {
-      if (fractalBitmap != null && touchCount < 4) {
+      if (fractalBitmap != null) {
         return multiTouchController.onTouchEvent(event);
       }
     }
@@ -513,7 +507,6 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
       mGenerateFractalTask.cancel(true);
     }
     
-    touchCount++;
     mergeBitmaps();
     
     return fractalBitmap;
