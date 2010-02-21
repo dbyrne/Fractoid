@@ -188,13 +188,12 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   public void setColorSet(ColorSet cs) {
     colorSet = cs;
     calculateColors(1021);
-    startFractalTask();
+    startFractalTask(false);
   }
   
   public void setAlgorithm(Algorithm alg) {
     params.setAlgorithm(alg);
     mNativeLib.setAlgorithm(alg.getInt());
-    mNativeLib.resetValues();
     clearBackground();
   }
   
@@ -244,8 +243,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   public void setTrapFactor(int tf) {
     mNativeLib.setTrapFactor(tf);
     trapFactor = tf;
-    mNativeLib.resetValues();
-    startFractalTask();
+    startFractalTask(true);
   }
   
   public int getTrapFactor() {
@@ -272,8 +270,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   public void setMaxIterations(int i) {
     mNativeLib.setMaxIterations(i);
     maxIterations = i;
-    mNativeLib.resetValues();
-    startFractalTask();
+    startFractalTask(true);
   }
   
   public void recalculate() {
@@ -316,8 +313,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
       mNativeLib.setMaxIterations(maxIterations+10);
     mNativeLib.setCoords(realmin,realmax,imagmin,imagmax);
     params.setCoords(realmin,realmax,imagmin,imagmax);
-    mNativeLib.resetValues();
-    startFractalTask();
+    startFractalTask(true);
 
   }
   
@@ -337,7 +333,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     mFractoid.setCalibrateButtonEnabled(true);
   }
 
-  public void startFractalTask() {
+  public void startFractalTask(boolean reset) {
     setFull = true;
     progress = 0;
     calculationTime = null;
@@ -350,6 +346,9 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
         Thread.sleep(100);
       } catch (InterruptedException e) {}
     }
+    
+    if (reset)
+      mNativeLib.resetValues();
     
     mFractoid.setCalibrateButtonEnabled(false);
     
@@ -409,7 +408,6 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     params.randomizeShiftFactor();
     mNativeLib.setCoords(realmin,realmax,imagmin,imagmax);
     params.setCoords(realmin,realmax,imagmin,imagmax);
-    mNativeLib.resetValues();
     
     if (equation == ComplexEquation.PHOENIX) {
       /*
@@ -431,7 +429,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     clearBackground();
     
     setZoom(true);
-    startFractalTask();
+    startFractalTask(true);
   }
       
   @Override protected void onSizeChanged(int width, int height, int oldw, int oldh) {
@@ -452,7 +450,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
         double realRange = Math.abs(realmax-realmin);
         double imagRange = Math.abs(imagmax-imagmin);
         mNativeLib.setCValue(realmin + ((event.getX()/params.getXRes())*realRange),
-                        imagmax - ((event.getY()/params.getYRes())*imagRange));
+                             imagmax - ((event.getY()/params.getYRes())*imagRange));
 
         imagmax = 1.4;
         imagmin = -1.4;
@@ -462,13 +460,12 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
 
         mNativeLib.setCoords(realmin, realmax, imagmin, imagmax);
         params.setCoords(realmin,realmax,imagmin,imagmax);
-        mNativeLib.resetValues();
         mNativeLib.setMaxIterations(40);
         maxIterations = 40;
         mNativeLib.setFractalType(FractalType.JULIA.getInt());
         fractalType = FractalType.JULIA;
         clearBackground();
-        startFractalTask();
+        startFractalTask(true);
       } else if (event.getAction() == MotionEvent.ACTION_UP) {
         setZoom(true);
       }

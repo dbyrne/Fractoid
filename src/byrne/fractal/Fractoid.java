@@ -98,7 +98,7 @@ public class Fractoid extends Activity {
 	  
 	} else {
 	  calibrateButton.setText("Relative Colors");
-	  fractalView.startFractalTask();
+	  fractalView.startFractalTask(false);
 	  relativeColors = false;
 	}
 	fractalView.postInvalidate();
@@ -158,7 +158,7 @@ public class Fractoid extends Activity {
 	  try {
 	     fractalView.setTrapFactor(Integer.parseInt(trapFactorText.getText().toString()));
 	     dismissDialog(TRAP_FACTOR_DIALOG);
-	     fractalView.startFractalTask();
+	     fractalView.startFractalTask(true);
 	  } catch (NumberFormatException e) {System.out.println(e);}
 	}
       });
@@ -345,17 +345,17 @@ public class Fractoid extends Activity {
     
     case R.id.escape_time_button:
       switchAlgorithm(item,Algorithm.ESCAPE_TIME);
-      fractalView.startFractalTask();
+      fractalView.startFractalTask(true);
       return true;
     case R.id.gaussian_minimum_button:
       switchAlgorithm(item,Algorithm.GAUSSIAN_MINIMUM);
       //showDialog(TRAP_FACTOR_DIALOG);
-      fractalView.startFractalTask();
+      fractalView.startFractalTask(true);
       return true;
         case R.id.gaussian_average_button:
       switchAlgorithm(item,Algorithm.GAUSSIAN_AVERAGE);
       //showDialog(TRAP_FACTOR_DIALOG);
-      fractalView.startFractalTask();
+      fractalView.startFractalTask(true);
       return true;
 
     case R.id.share_button:
