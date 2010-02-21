@@ -194,7 +194,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   public void setAlgorithm(Algorithm alg) {
     params.setAlgorithm(alg);
     mNativeLib.setAlgorithm(alg.getInt());
-    clearBackground();
+    startFractalTask(true);
   }
   
     public void calibrateColors() {

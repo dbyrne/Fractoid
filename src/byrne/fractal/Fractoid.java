@@ -66,7 +66,7 @@ public class Fractoid extends Activity {
     
     setContentView(R.layout.main_layout);
     
-  //  Debug.startMethodTracing("calc");
+    //Debug.startMethodTracing("calc");
     
     fractalView = (FractalView) findViewById(R.id.mFractalView);
     fractalView.setFractoid(this);
@@ -346,17 +346,14 @@ public class Fractoid extends Activity {
     
     case R.id.escape_time_button:
       switchAlgorithm(item,Algorithm.ESCAPE_TIME);
-      fractalView.startFractalTask(true);
       return true;
     case R.id.gaussian_minimum_button:
       switchAlgorithm(item,Algorithm.GAUSSIAN_MINIMUM);
       //showDialog(TRAP_FACTOR_DIALOG);
-      fractalView.startFractalTask(true);
       return true;
         case R.id.gaussian_average_button:
       switchAlgorithm(item,Algorithm.GAUSSIAN_AVERAGE);
       //showDialog(TRAP_FACTOR_DIALOG);
-      fractalView.startFractalTask(true);
       return true;
 
     case R.id.share_button:
