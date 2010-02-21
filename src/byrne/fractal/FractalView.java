@@ -275,10 +275,10 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   
   public void recalculate() {
 
-    double imagmin = params.getImagMin();
-    double imagmax = params.getImagMax();
-    double realmin = params.getRealMin();
-    double realmax = params.getRealMax();
+    double imagmin = mNativeLib.getImagMin();
+    double imagmax = mNativeLib.getImagMax();
+    double realmin = mNativeLib.getRealMin();
+    double realmax = mNativeLib.getRealMax();
     double realRange = Math.abs(realmax-realmin);
     double imagRange = Math.abs(imagmax-imagmin);
     
@@ -314,7 +314,6 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
       mNativeLib.setMaxIterations(maxIterations);
     }
     mNativeLib.setCoords(realmin,realmax,imagmin,imagmax);
-    params.setCoords(realmin,realmax,imagmin,imagmax);
     startFractalTask(true);
 
   }
@@ -409,7 +408,6 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     
     params.randomizeShiftFactor();
     mNativeLib.setCoords(realmin,realmax,imagmin,imagmax);
-    params.setCoords(realmin,realmax,imagmin,imagmax);
     
     if (equation == ComplexEquation.PHOENIX) {
       /*
@@ -445,10 +443,10 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   @Override public boolean onTouchEvent (MotionEvent event) {
     if (!zoom) {
       if (event.getAction() == MotionEvent.ACTION_DOWN) {
-        double imagmin = params.getImagMin();
-        double imagmax = params.getImagMax();
-        double realmin = params.getRealMin();
-        double realmax = params.getRealMax();
+        double imagmin = mNativeLib.getImagMin();
+        double imagmax = mNativeLib.getImagMax();
+        double realmin = mNativeLib.getRealMin();
+        double realmax = mNativeLib.getRealMax();
         double realRange = Math.abs(realmax-realmin);
         double imagRange = Math.abs(imagmax-imagmin);
         mNativeLib.setCValue(realmin + ((event.getX()/params.getXRes())*realRange),
@@ -461,7 +459,6 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
         realmin = params.getResRatio()*-imagRange/2;
 
         mNativeLib.setCoords(realmin, realmax, imagmin, imagmax);
-        params.setCoords(realmin,realmax,imagmin,imagmax);
         mNativeLib.setMaxIterations(40);
         maxIterations = 40;
         mNativeLib.setFractalType(FractalType.JULIA.getInt());

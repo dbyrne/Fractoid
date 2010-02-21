@@ -103,6 +103,38 @@ JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_setCValue
 JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
   (JNIEnv *, jobject, jint, jint);
 
+/*
+ * Class:     byrne_fractal_NativeLib
+ * Method:    getRealMin
+ * Signature: ()D
+ */
+JNIEXPORT jdouble JNICALL Java_byrne_fractal_NativeLib_getRealMin
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     byrne_fractal_NativeLib
+ * Method:    getRealMax
+ * Signature: ()D
+ */
+JNIEXPORT jdouble JNICALL Java_byrne_fractal_NativeLib_getRealMax
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     byrne_fractal_NativeLib
+ * Method:    getImagMin
+ * Signature: ()D
+ */
+JNIEXPORT jdouble JNICALL Java_byrne_fractal_NativeLib_getImagMin
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     byrne_fractal_NativeLib
+ * Method:    getImagMax
+ * Signature: ()D
+ */
+JNIEXPORT jdouble JNICALL Java_byrne_fractal_NativeLib_getImagMax
+  (JNIEnv *, jobject);
+
 #ifdef __cplusplus
 }
 #endif

@@ -43,18 +43,4 @@ public class FractalParameters {
   public double getShiftFactor() {return shiftFactor;}
   public void randomizeShiftFactor() {shiftFactor = Math.random()*2;}
   
-  private double realmax,realmin,imagmax,imagmin;
-  public void setCoords(double rmin, double rmax, double imin, double imax) {
-     realmin = rmin;
-     realmax = rmax;
-     imagmin = imin;
-     imagmax = imax;
-     
-  }
-  
-  public double getRealMin() {return realmin;}
-  public double getRealMax() {return realmax;}
-  public double getImagMin() {return imagmin;}
-  public double getImagMax() {return imagmax;}
-  
 }

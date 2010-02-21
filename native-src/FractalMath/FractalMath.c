@@ -118,6 +118,19 @@ JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_setCoords
   imagmax = jimagmax;  
 }
 
+JNIEXPORT jdouble JNICALL Java_byrne_fractal_NativeLib_getRealMin(JNIEnv * env, jobject obj) {
+  return realmin;
+}
+JNIEXPORT jdouble JNICALL Java_byrne_fractal_NativeLib_getImagMin(JNIEnv * env, jobject obj) {
+  return imagmin;
+}
+JNIEXPORT jdouble JNICALL Java_byrne_fractal_NativeLib_getRealMax(JNIEnv * env, jobject obj) {
+  return realmax;
+}
+JNIEXPORT jdouble JNICALL Java_byrne_fractal_NativeLib_getImagMax(JNIEnv * env, jobject obj) {
+  return imagmax;
+}
+
 JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
 (JNIEnv * env, jobject obj, jint row, jint state) {
   

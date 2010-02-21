@@ -46,10 +46,10 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
     
     Algorithm alg = params.getAlgorithm();
     
-    double realmin = params.getRealMin();
-    double realmax = params.getRealMax();
-    double imagmin = params.getImagMin();
-    double imagmax = params.getImagMax();
+    double realmin = mNativeLib.getRealMin();
+    double realmax = mNativeLib.getRealMax();
+    double imagmin = mNativeLib.getImagMin();
+    double imagmax = mNativeLib.getImagMax();
     
     double xtmp = 0;
     
