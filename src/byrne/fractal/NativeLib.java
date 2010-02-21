@@ -40,6 +40,8 @@ class NativeLib {
   public native double getRealMax();
   public native double getImagMin();
   public native double getImagMax();
+  public native int getXRes();
+  public native int getYRes();
   
   static {
     System.loadLibrary("FractalMath");

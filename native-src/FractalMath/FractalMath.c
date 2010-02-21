@@ -35,7 +35,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   #define abs( a ) ( ((a) < (0)) ? (a*-1) : (a) )
 #endif
 
-int xres, yres, equation=1,power=2,max=40, trapFactor=1, fractalType=1, alg=1;
+int xres=-1, yres=-1, equation=1,power=2,max=40, trapFactor=1, fractalType=1, alg=1;
 double realmin, realmax, imagmin, imagmax,P,Q;
 
 int** values;
@@ -129,6 +129,12 @@ JNIEXPORT jdouble JNICALL Java_byrne_fractal_NativeLib_getRealMax(JNIEnv * env, 
 }
 JNIEXPORT jdouble JNICALL Java_byrne_fractal_NativeLib_getImagMax(JNIEnv * env, jobject obj) {
   return imagmax;
+}
+JNIEXPORT jint JNICALL Java_byrne_fractal_NativeLib_getXRes(JNIEnv * env, jobject obj) {
+  return xres;
+}
+JNIEXPORT jint JNICALL Java_byrne_fractal_NativeLib_getYRes(JNIEnv * env, jobject obj) {
+  return yres;
 }
 
 JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow

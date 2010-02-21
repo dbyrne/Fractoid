@@ -29,16 +29,6 @@ public class FractalParameters {
   public void setAlgorithm(Algorithm a) {alg = a;}
   public Algorithm getAlgorithm() {return alg;};
   
-  private int xres = -1;
-  public int getXRes() {return xres;}
-  public void setXRes(int xr) {xres = xr;}
-  
-  private int yres = -1;
-  public int getYRes() {return yres;}
-  public void setYRes(int yr) {yres = yr;}
-  
-  public double getResRatio() {return (double)xres/yres;}
-  
   private double shiftFactor;
   public double getShiftFactor() {return shiftFactor;}
   public void randomizeShiftFactor() {shiftFactor = Math.random()*2;}

@@ -53,8 +53,8 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
     
     double xtmp = 0;
     
-    int xres = params.getXRes();
-    int yres = params.getYRes();
+    int xres = mNativeLib.getXRes();
+    int yres = mNativeLib.getYRes();
     
     Bitmap b = Bitmap.createBitmap(xres, yres, Bitmap.Config.ARGB_8888);
     Canvas c = new Canvas(b);
@@ -127,7 +127,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
   }
   @Override protected void onProgressUpdate(Bitmap... b) {
     fractalView.setFractal(b[0]);
-    fractalView.setProgress(((prog*2)/3.0f)/params.getYRes());
+    fractalView.setProgress(((prog*2)/3.0f)/mNativeLib.getYRes());
     fractalView.invalidate();
   }
   @Override protected void onPostExecute(Bitmap b) {

@@ -135,6 +135,22 @@ JNIEXPORT jdouble JNICALL Java_byrne_fractal_NativeLib_getImagMin
 JNIEXPORT jdouble JNICALL Java_byrne_fractal_NativeLib_getImagMax
   (JNIEnv *, jobject);
 
+/*
+ * Class:     byrne_fractal_NativeLib
+ * Method:    getXRes
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_byrne_fractal_NativeLib_getXRes
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     byrne_fractal_NativeLib
+ * Method:    getYRes
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_byrne_fractal_NativeLib_getYRes
+  (JNIEnv *, jobject);
+
 #ifdef __cplusplus
 }
 #endif

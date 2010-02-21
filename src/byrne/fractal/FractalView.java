@@ -200,7 +200,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     public void calibrateColors() {
     int[] colors = params.getColorSet();
     int[][] values = mNativeLib.getValues();
-    Bitmap b = Bitmap.createBitmap(params.getXRes(), params.getYRes(), Bitmap.Config.ARGB_8888);
+    Bitmap b = Bitmap.createBitmap(mNativeLib.getXRes(), mNativeLib.getYRes(), Bitmap.Config.ARGB_8888);
     Canvas c = new Canvas(b);
     Paint p = new Paint();
     p.setStyle(Paint.Style.FILL_AND_STROKE);
@@ -222,8 +222,8 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     
     for (int rpass = 0; rpass < 2; rpass++) {
       p.setStrokeWidth(2-rpass);
-      for (int row=0; row < params.getYRes(); row += 2-rpass) {
-        for (int col=0; col < params.getXRes(); col++) {
+      for (int row=0; row < mNativeLib.getYRes(); row += 2-rpass) {
+        for (int col=0; col < mNativeLib.getXRes(); col++) {
           int cint = values[row][col];
           if (cint >= 0) {
             int i = Math.round(((float)(cint-min)/range)*1020);
@@ -286,8 +286,8 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     double centerY = (double)fractalBitmap.getCenterY();
     double scale = (double)fractalBitmap.getScale();
     
-    double xres = (double)params.getXRes();
-    double yres = (double)params.getYRes();
+    double xres = (double)mNativeLib.getXRes();
+    double yres = (double)mNativeLib.getYRes();
 
     double offsetX = realmin + realRange/2;
     double offsetY = imagmin + imagRange/2;
@@ -403,8 +403,8 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     }
     
     double r_y = Math.abs(imagmax - imagmin);
-    double realmax = params.getResRatio()*r_y/2;
-    double realmin = params.getResRatio()*r_y/2*-1;
+    double realmax = ((double)mNativeLib.getXRes()/mNativeLib.getYRes())*r_y/2;
+    double realmin = ((double)mNativeLib.getXRes()/mNativeLib.getYRes())*r_y/2*-1;
     
     params.randomizeShiftFactor();
     mNativeLib.setCoords(realmin,realmax,imagmin,imagmax);
@@ -433,9 +433,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   }
       
   @Override protected void onSizeChanged(int width, int height, int oldw, int oldh) {
-    if (params.getXRes() == -1) {
-      params.setXRes(width);
-      params.setYRes(height);
+    if (mNativeLib.getXRes() == -1) {
       mNativeLib.setResolution(width,height);
     }
   }
@@ -449,14 +447,14 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
         double realmax = mNativeLib.getRealMax();
         double realRange = Math.abs(realmax-realmin);
         double imagRange = Math.abs(imagmax-imagmin);
-        mNativeLib.setCValue(realmin + ((event.getX()/params.getXRes())*realRange),
-                             imagmax - ((event.getY()/params.getYRes())*imagRange));
+        mNativeLib.setCValue(realmin + ((event.getX()/mNativeLib.getXRes())*realRange),
+                             imagmax - ((event.getY()/mNativeLib.getYRes())*imagRange));
 
         imagmax = 1.4;
         imagmin = -1.4;
         imagRange = Math.abs(imagmax-imagmin);
-        realmax = params.getResRatio()*imagRange/2;
-        realmin = params.getResRatio()*-imagRange/2;
+        realmax = ((double)mNativeLib.getXRes()/mNativeLib.getYRes())*imagRange/2;
+        realmin = ((double)mNativeLib.getXRes()/mNativeLib.getYRes())*-imagRange/2;
 
         mNativeLib.setCoords(realmin, realmax, imagmin, imagmax);
         mNativeLib.setMaxIterations(40);
@@ -482,7 +480,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   }
   
   public void mergeBitmaps() {
-    Bitmap composite = Bitmap.createBitmap(params.getXRes(), params.getYRes(), Bitmap.Config.ARGB_8888);
+    Bitmap composite = Bitmap.createBitmap(mNativeLib.getXRes(), mNativeLib.getYRes(), Bitmap.Config.ARGB_8888);
     Canvas canvas = new Canvas(composite);
     
     if (backgroundBitmap != null) {
@@ -561,8 +559,8 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
 
       p.setTextSize(35);
       
-      int xres = params.getXRes();
-      int yres = params.getYRes();
+      int xres = mNativeLib.getXRes();
+      int yres = mNativeLib.getYRes();
       
       if (!zoom) {
         canvas.drawText("Touch to Generate Julia Set",(xres/2)-200,yres-5,p);
@@ -603,11 +601,11 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     }
 
     public void setFullScreen() {
-      width = params.getXRes();
-      height = params.getYRes();
-      displayHeight = params.getYRes();
-      displayWidth = params.getXRes();
-      setPos(params.getXRes()/2.0f, params.getYRes()/2.0f, 1.0f);
+      width = mNativeLib.getXRes();
+      height = mNativeLib.getYRes();
+      displayHeight = mNativeLib.getYRes();
+      displayWidth = mNativeLib.getXRes();
+      setPos(mNativeLib.getXRes()/2.0f, mNativeLib.getYRes()/2.0f, 1.0f);
     }
 
     /** Set the position and scale of an image in screen coordinates */
