@@ -139,23 +139,3 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
     fractalView.invalidate();
   }  
 }
-class NativeLib {
-  
-  public native void resetValues();
-  public native void freeValues();
-  public native int[][] getValues();
-  public native void setResolution(int xres, int yres);
-  public native void setEquation(int equation, int power);
-  public native void setCoords(double realmin, double realmax, double imagmin, double imagmax);
-  public native void setMaxIterations(int max);
-  public native void setTrapFactor(int trapFactor);
-  public native void setFractalType(int type);
-  public native void setAlgorithm(int alg);
-  public native void setCValue(double P, double Q);
-  
-  public native int[] getFractalRow(int row, int state);
-  
-  static {
-    System.loadLibrary("FractalMath");
-  }
-}

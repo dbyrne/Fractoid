@@ -309,8 +309,10 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     realmax = realmax + offsetX;
     imagmin = imagmin + offsetY;
     imagmax = imagmax + offsetY;
-    if (fractalBitmap.getScale() > 1)
-      mNativeLib.setMaxIterations(maxIterations+10);
+    if (fractalBitmap.getScale() > 1) {
+      maxIterations += 10;
+      mNativeLib.setMaxIterations(maxIterations);
+    }
     mNativeLib.setCoords(realmin,realmax,imagmin,imagmax);
     params.setCoords(realmin,realmax,imagmin,imagmax);
     startFractalTask(true);

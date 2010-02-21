@@ -62,6 +62,7 @@ public class Fractoid extends Activity {
   @Override public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
     
     setContentView(R.layout.main_layout);
     
