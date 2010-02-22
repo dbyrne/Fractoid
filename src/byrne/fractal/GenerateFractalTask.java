@@ -44,8 +44,6 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
     
   private Bitmap createBitmap() {
     
-    Algorithm alg = params.getAlgorithm();
-    
     double realmin = mNativeLib.getRealMin();
     double realmax = mNativeLib.getRealMax();
     double imagmin = mNativeLib.getImagMin();
@@ -104,10 +102,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
         for(int col=(state%2); col < xres; col = col+step) {
           
           if (rowColors[col] >= 0) {
-            if (params.getAlgorithm() == Algorithm.ESCAPE_TIME)
               paint.setColor(colors[(rowColors[col]%10200)/10]);  
-            else
-              paint.setColor(colors[rowColors[col]/10]);
           } else {
             paint.setColor(Color.BLACK);
           }

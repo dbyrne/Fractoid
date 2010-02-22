@@ -25,10 +25,6 @@ public class FractalParameters {
   public void setColorSet(int[] cs) {colorSet = cs;}
   public int[] getColorSet() {return colorSet;}
   
-  private Algorithm alg = Algorithm.ESCAPE_TIME;
-  public void setAlgorithm(Algorithm a) {alg = a;}
-  public Algorithm getAlgorithm() {return alg;};
-  
   private double shiftFactor;
   public double getShiftFactor() {return shiftFactor;}
   public void randomizeShiftFactor() {shiftFactor = Math.random()*2;}
