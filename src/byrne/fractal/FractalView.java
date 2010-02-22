@@ -333,11 +333,8 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   public void turnCalibrateButtonOn() {
     mFractoid.setCalibrateButtonEnabled(true);
   }
-
-  public void startFractalTask(boolean reset) {
-    setFull = true;
-    progress = 0;
-    calculationTime = null;
+  
+  public void stopFractalTask() {
     if (mGenerateFractalTask != null && mGenerateFractalTask.getStatus() == Status.RUNNING) {
       mGenerateFractalTask.cancel(true);
     }
@@ -347,6 +344,13 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
         Thread.sleep(100);
       } catch (InterruptedException e) {}
     }
+  }
+
+  public void startFractalTask(boolean reset) {
+    setFull = true;
+    progress = 0;
+    calculationTime = null;
+    stopFractalTask();
     
     if (reset)
       mNativeLib.resetValues();
@@ -469,7 +473,11 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
       return true;
     } else {
       if (fractalBitmap != null) {
-        return multiTouchController.onTouchEvent(event);
+        if (greenLight){
+          return multiTouchController.onTouchEvent(event);
+        } else {
+          stopFractalTask();  
+        }
       }
     }
     return true;

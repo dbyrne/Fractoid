@@ -120,6 +120,10 @@ public class Fractoid extends Activity {
     //Debug.stopMethodTracing();
   }
   
+  @Override public void onDestroy() {
+    new NativeLib().freeValues();
+  }
+  
   @Override protected Dialog onCreateDialog(int id) {
     Dialog dialog;
     switch(id) {
