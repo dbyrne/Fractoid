@@ -24,7 +24,6 @@ import android.net.Uri;
 import android.app.Activity;
 import android.app.WallpaperManager;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ActivityNotFoundException;
@@ -56,8 +55,6 @@ public class Fractoid extends Activity {
   boolean relativeColors = false;
   private final int MAX_ITERATIONS_DIALOG = 1;
   private final int TRAP_FACTOR_DIALOG = 2;
-  ProgressDialog calibrationDialog;
-
 
   @Override public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);

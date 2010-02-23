@@ -408,6 +408,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   @Override public boolean onTouchEvent (MotionEvent event) {
     if (!zoom) {
       if (event.getAction() == MotionEvent.ACTION_DOWN) {
+        stopFractalTask();
         double imagmin = mNativeLib.getImagMin();
         double imagmax = mNativeLib.getImagMax();
         double realmin = mNativeLib.getRealMin();
