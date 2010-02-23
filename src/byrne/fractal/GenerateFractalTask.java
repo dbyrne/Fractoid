@@ -48,8 +48,6 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
     double imagmin = mNativeLib.getImagMin();
     double imagmax = mNativeLib.getImagMax();
     
-    double xtmp = 0;
-    
     int xres = mNativeLib.getXRes();
     int yres = mNativeLib.getYRes();
     
@@ -61,10 +59,6 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
     Canvas c = new Canvas(b);
     
     int[] rowColors;
-
-    double x=-1, y=-1, prev_x = -1, prev_y =-1,tmp_prev_x,tmp_prev_y, mu = 1;
-    int index;
-    boolean lessThanMax;
 
     double deltaP = (realmax - realmin)/xres;
     double deltaQ = (imagmax - imagmin)/yres;
