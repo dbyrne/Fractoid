@@ -23,7 +23,6 @@ class NativeLib {
   
   public native void resetValues();
   public native void freeValues();
-  public native int[][] getValues();
   
   public native void setResolution(int xres, int yres);
   public native void setEquation(int equation, int power);
@@ -42,6 +41,8 @@ class NativeLib {
   public native double getImagMax();
   public native int getXRes();
   public native int getYRes();
+  public native int getMin();
+  public native int getMax();
   
   static {
     System.loadLibrary("FractalMath");

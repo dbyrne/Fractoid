@@ -25,14 +25,6 @@ JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_freeValues
 
 /*
  * Class:     byrne_fractal_NativeLib
- * Method:    getValues
- * Signature: ()[[I
- */
-JNIEXPORT jobjectArray JNICALL Java_byrne_fractal_NativeLib_getValues
-  (JNIEnv *, jobject);
-
-/*
- * Class:     byrne_fractal_NativeLib
  * Method:    setResolution
  * Signature: (II)V
  */
@@ -149,6 +141,22 @@ JNIEXPORT jint JNICALL Java_byrne_fractal_NativeLib_getXRes
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL Java_byrne_fractal_NativeLib_getYRes
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     byrne_fractal_NativeLib
+ * Method:    getMin
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_byrne_fractal_NativeLib_getMin
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     byrne_fractal_NativeLib
+ * Method:    getMax
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_byrne_fractal_NativeLib_getMax
   (JNIEnv *, jobject);
 
 #ifdef __cplusplus

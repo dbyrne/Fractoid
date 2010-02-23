@@ -35,7 +35,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   #define abs( a ) ( ((a) < (0)) ? (a*-1) : (a) )
 #endif
 
-int xres=-1, yres=-1, equation=1,power=2,max=40, trapFactor=1, fractalType=1, alg=1;
+int xres=-1, yres=-1, equation=1,power=2,max=40, trapFactor=1, fractalType=1, alg=1,minimum = 99999,maximum = 0;
 double realmin, realmax, imagmin, imagmax,P,Q;
 
 int** values;
@@ -46,8 +46,20 @@ double orbitDistance(double x, double y, jint trapFactor) {
   return sqrt((x - gint_x)*(x-gint_x) + (y-gint_y)*(y-gint_y));
 }
 
+JNIEXPORT jint JNICALL Java_byrne_fractal_NativeLib_getMin(JNIEnv * env, jobject obj) {
+  return minimum;
+}
+
+JNIEXPORT jint JNICALL Java_byrne_fractal_NativeLib_getMax(JNIEnv * env, jobject obj) {
+  return maximum;
+}
+
 JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_resetValues
 (JNIEnv * env, jobject obj) {
+  
+  minimum = 99999;
+  maximum = 0;
+  
   if (values == NULL) {
     int r;
     values = (int**) malloc(yres * sizeof(int*));
@@ -285,6 +297,9 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
     } else {
       values[row][col] = -1;
     }
+    if (values[row][col] > -1)
+      minimum = minVal(minimum,values[row][col]);
+    maximum = maxVal(maximum,values[row][col]);
   }
   
   (*env)->SetIntArrayRegion(env, result, 0, xres, values[row]);

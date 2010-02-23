@@ -38,31 +38,30 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   private Img fractalBitmap, backgroundBitmap;
   private GenerateFractalTask mGenerateFractalTask;
   private String calculationTime;
-  private ComplexEquation equation = ComplexEquation.SECOND_ORDER;  
-  private FractalParameters params;
+  private ComplexEquation equation = ComplexEquation.SECOND_ORDER;
   private MultiTouchController<FractalView.Img> multiTouchController;
   private Resources res;
-  private boolean setFull = false, zoom = true, greenLight = true;
+  private boolean setFull = false, zoom = true, greenLight = true, relative=false;
   private ColorSet colorSet = ColorSet.RAINBOW;
   private FractalType fractalType = FractalType.MANDELBROT;
   int maxIterations = 40;
   int trapFactor = 1;
   private Fractoid mFractoid;
   private float progress;
+  private double shiftFactor;
+  private int[] colorIntegers;
   private final NativeLib mNativeLib = new NativeLib();
   
   public FractalView(Context context){
     super(context);
     res = context.getResources();
     multiTouchController = new MultiTouchController<FractalView.Img>(this, res);
-    params = new FractalParameters();
   }
   
   public FractalView(Context context, AttributeSet attrs){
         super(context, attrs);
         res = context.getResources();
         multiTouchController = new MultiTouchController<FractalView.Img>(this, res);
-        params = new FractalParameters();
   }
   
   public void setFractoid(Fractoid f) {
@@ -72,8 +71,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   private void calculateColors(int numberOfColors) {
     
     double red, green, blue;
-    int[] colorIntegers = new int[numberOfColors];   
-    double shiftFactor = params.getShiftFactor();
+    colorIntegers = new int[numberOfColors];
     
     switch (colorSet) {
       case RAINBOW:
@@ -181,7 +179,6 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
           colorIntegers[x] = Color.rgb(color,color,color);
         }     
     }
-    params.setColorSet(colorIntegers);
   }
 
 
@@ -196,49 +193,6 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     startFractalTask(true);
   }
   
-    public void calibrateColors() {
-    int[] colors = params.getColorSet();
-    int[][] values = mNativeLib.getValues();
-    Bitmap b = Bitmap.createBitmap(mNativeLib.getXRes(), mNativeLib.getYRes(), Bitmap.Config.ARGB_8888);
-    Canvas c = new Canvas(b);
-    Paint p = new Paint();
-    p.setStyle(Paint.Style.FILL_AND_STROKE);
-    
-    int max = 0, min = 999999;
-    
-    for (int[] colValues : values) {
-      for (int val : colValues) {
-        if (val != -1) {
-          if (val > max)
-            max = val;
-          else if (val < min)
-            min = val;
-        }
-      }
-    }
-    
-    int range = max-min+1;   
-    
-    for (int rpass = 0; rpass < 2; rpass++) {
-      p.setStrokeWidth(2-rpass);
-      for (int row=0; row < mNativeLib.getYRes(); row += 2-rpass) {
-        for (int col=0; col < mNativeLib.getXRes(); col++) {
-          int cint = values[row][col];
-          if (cint >= 0) {
-            int i = Math.round(((float)(cint-min)/range)*1020);
-            p.setColor(colors[i]);
-            c.drawPoint(col,row,p);
-          }
-          else if (cint == -1) {
-            p.setColor(Color.BLACK);
-            c.drawPoint(col,row,p);
-          }
-        }
-      }
-    }
-    setFractal(b);
-  }
-  
   public void setTrapFactor(int tf) {
     mNativeLib.setTrapFactor(tf);
     trapFactor = tf;
@@ -247,6 +201,10 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   
   public int getTrapFactor() {
     return trapFactor;
+  }
+  
+  public int[] getColorSet() {
+    return colorIntegers;
   }
   
   public ComplexEquation getEquation() {
@@ -330,7 +288,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   }
   
   public void turnCalibrateButtonOn() {
-    mFractoid.setCalibrateButtonEnabled(true);
+    mFractoid.setCalibrateButtonEnabled(true,relative);
   }
   
   public void stopFractalTask() {
@@ -351,21 +309,27 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     calculationTime = null;
     stopFractalTask();
     
-    if (reset)
+    if (reset) {
       mNativeLib.resetValues();
+      relative = false;
+    }
     
-    mFractoid.setCalibrateButtonEnabled(false);
+    mFractoid.setCalibrateButtonEnabled(false,relative);
     
     calculateColors(1021);
     greenLight = false;
-    mGenerateFractalTask = new GenerateFractalTask(params,this);
+    mGenerateFractalTask = new GenerateFractalTask(this,relative);
     mGenerateFractalTask.execute();
   }
 
   public void greenLight() {
     greenLight = true;
   }
-
+  
+  public void setRelative(boolean r) {
+    relative = r;
+  }
+  
   public void setFractal(Bitmap fa) {
     BitmapDrawable bd = new BitmapDrawable(res, fa);
     if (setFull) {    
@@ -409,7 +373,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     double realmax = ((double)mNativeLib.getXRes()/mNativeLib.getYRes())*r_y/2;
     double realmin = ((double)mNativeLib.getXRes()/mNativeLib.getYRes())*r_y/2*-1;
     
-    params.randomizeShiftFactor();
+    shiftFactor = Math.random()*2;
     mNativeLib.setCoords(realmin,realmax,imagmin,imagmax);
     
     if (equation == ComplexEquation.PHOENIX) {

@@ -24,21 +24,20 @@ import android.graphics.*;
 
 public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
   
-  FractalParameters params;
   FractalView fractalView;
   long startTime;
   NativeLib mNativeLib;
   Paint paint;
   int[] colors;
   int prog = 0;
+  boolean relative;
   
-  public GenerateFractalTask(FractalParameters p, FractalView fv) {
-    params = p;
+  public GenerateFractalTask(FractalView fv, boolean rel) {
     fractalView = fv;
-    colors = params.getColorSet();
+    colors = fractalView.getColorSet();
     paint = new Paint();
     paint.setStyle(Paint.Style.FILL_AND_STROKE);
-    
+    relative = rel;
     mNativeLib = new NativeLib();
   }
     
@@ -53,6 +52,10 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
     
     int xres = mNativeLib.getXRes();
     int yres = mNativeLib.getYRes();
+    
+    int minimum = mNativeLib.getMin();
+    int maximum = mNativeLib.getMax();
+    int range = maximum-minimum+1;
     
     Bitmap b = Bitmap.createBitmap(xres, yres, Bitmap.Config.ARGB_8888);
     Canvas c = new Canvas(b);
@@ -102,7 +105,11 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
         for(int col=(state%2); col < xres; col = col+step) {
           
           if (rowColors[col] >= 0) {
-              paint.setColor(colors[(rowColors[col]%10200)/10]);  
+            if (relative) {
+              paint.setColor(colors[Math.round(((float)(rowColors[col]-minimum)/range)*1020)]);
+            } else {
+              paint.setColor(colors[(rowColors[col]%10200)/10]);
+            }
           } else {
             paint.setColor(Color.BLACK);
           }

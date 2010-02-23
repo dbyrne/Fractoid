@@ -84,24 +84,12 @@ public class Fractoid extends Activity {
     calibrateButton.setOnClickListener(new View.OnClickListener() {
       public void onClick(View v) {
 	if (!relativeColors) {
-	  calibrationDialog = ProgressDialog.show(Fractoid.this, "", "Calibrating colors...", true);
-              
-          new Thread() {
-            public void run() {
-              fractalView.calibrateColors();
-	      fractalView.postInvalidate();	
-	      calibrationDialog.dismiss();
-            }
-          }.start();
-	       
-	  calibrateButton.setText("Absolute Colors");
 	  relativeColors = true;
-	  
 	} else {
-	  calibrateButton.setText("Relative Colors");
-	  fractalView.startFractalTask(false);
 	  relativeColors = false;
 	}
+	fractalView.setRelative(relativeColors);
+	fractalView.startFractalTask(false);
 	fractalView.postInvalidate();
       }
     });
@@ -194,10 +182,13 @@ public class Fractoid extends Activity {
     return uri;
   }
   
-  public void setCalibrateButtonEnabled(boolean b) {
+  public void setCalibrateButtonEnabled(boolean b, boolean r) {
     if (b) {
-      relativeColors = false;
-      calibrateButton.setText("Relative Colors");
+      relativeColors = r;
+      if (relativeColors)
+	calibrateButton.setText("Absolute Colors");
+      else
+	calibrateButton.setText("Relative Colors");
       calibrateButton.setVisibility(View.VISIBLE);     
     } else {
       calibrateButton.setVisibility(View.INVISIBLE);
