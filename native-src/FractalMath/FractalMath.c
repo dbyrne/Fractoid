@@ -46,6 +46,10 @@ double orbitDistance(double x, double y, jint trapFactor) {
   return sqrt((x - gint_x)*(x-gint_x) + (y-gint_y)*(y-gint_y));
 }
 
+double orbitBailout(double x, double y) {
+  return minVal(abs(x),abs(y));
+}
+
 JNIEXPORT jint JNICALL Java_byrne_fractal_NativeLib_getMin(JNIEnv * env, jobject obj) {
   return minimum;
 }
@@ -158,6 +162,8 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
   int lessThanMax;
   const double LOG_OF_TWO = log(2);
   const double SQRT_OF_TWO = sqrt(2);
+
+  alg = 4;
   
   result = (*env)->NewIntArray(env, xres);
   if (result == NULL) {
@@ -194,7 +200,7 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
 
     int extraIterations = 0;
     double distance;
-    if (alg == 2)
+    if (alg == 2 || alg == 4)
       distance = 99;
     else
       distance = 0;
@@ -206,17 +212,20 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
         distance += orbitDistance(x,y,trapFactor);
       } else if (alg == 2 && fractalType == 2) { //Gaussian Integer Minimum & Julia
         distance = minVal(distance,orbitDistance(x,y,trapFactor));
+      }  else if (alg == 4 && fractalType == 2) {
+        distance = minVal(distance,orbitBailout(x,y));
       }
       
       xsq = x*x;
       ysq = y*y;
 
       if ((alg == 1 && xsq + ysq > 4) || xsq + ysq > 16) {
+        lessThanMax = 1;
         if (alg > 1)
           break;
         //a few extra iterations improves color smoothing - why don't some equations work when a higher number is used?
         if (extraIterations == 2) { 
-          lessThanMax = 1;
+          
           mu = index + 2 - (log(log(sqrt(xsq + ysq))/LOG_OF_TWO)/log(power));
           break;
         } else {
@@ -282,7 +291,9 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
         distance += orbitDistance(x,y,trapFactor);
       } else if (alg == 2 && fractalType == 1) { //Gaussian Integer Minimum & Mandelbrot
         distance = minVal(distance,orbitDistance(x,y,trapFactor));
-      }      
+      } else if (alg == 4 && fractalType == 1) {
+        distance = minVal(distance,orbitBailout(x,y));
+      }
     }
     
     if (alg==3) { //Gaussian Integer average
@@ -290,6 +301,9 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
       minimum = minVal(minimum,values[row][col]);
     } else if (alg==2) {
       values[row][col] = maxVal(1,(int)((distance/(SQRT_OF_TWO/trapFactor))*10200));
+      minimum = minVal(minimum,values[row][col]);
+    } else if (alg == 4) {
+      values[row][col] = maxVal(1,(int)(distance * 10200));
       minimum = minVal(minimum,values[row][col]);
     } else if (lessThanMax == 1) {
       //char s[20];
