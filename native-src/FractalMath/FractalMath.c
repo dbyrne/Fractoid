@@ -162,8 +162,6 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
   int lessThanMax;
   const double LOG_OF_TWO = log(2);
   const double SQRT_OF_TWO = sqrt(2);
-
-  alg = 4;
   
   result = (*env)->NewIntArray(env, xres);
   if (result == NULL) {

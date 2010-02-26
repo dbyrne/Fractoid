@@ -103,9 +103,13 @@ public class Fractoid extends Activity {
   @Override public void onPause() {
     super.onPause();
     //Debug.stopMethodTracing();
+    fractalView.stopFractalTask();
+    new NativeLib().freeValues();
   }
   
   @Override public void onDestroy() {
+    super.onDestroy();
+    fractalView.stopFractalTask();
     new NativeLib().freeValues();
   }
   
@@ -343,9 +347,12 @@ public class Fractoid extends Activity {
       switchAlgorithm(item,Algorithm.GAUSSIAN_MINIMUM);
       //showDialog(TRAP_FACTOR_DIALOG);
       return true;
-        case R.id.gaussian_average_button:
+    case R.id.gaussian_average_button:
       switchAlgorithm(item,Algorithm.GAUSSIAN_AVERAGE);
       //showDialog(TRAP_FACTOR_DIALOG);
+      return true;
+    case R.id.omega_cross_button:
+      switchAlgorithm(item,Algorithm.OMEGA_CROSS);
       return true;
 
     case R.id.share_button:

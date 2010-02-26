@@ -98,6 +98,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                       android:title="Gaussian Integer Minimum Distance"/>
                 <item android:id="@+id/gaussian_average_button"
                       android:title="Gaussian Integer Average Distance"/>
+                <item android:id="@+id/omega_cross_button"
+                      android:title="Omega Cross Orbit Trap"/>
             </group>
         </menu>
     </item>    
