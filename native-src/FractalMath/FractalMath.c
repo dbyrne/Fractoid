@@ -218,15 +218,17 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
       xsq = x*x;
       ysq = y*y;
 
-      if ((alg == 1 && xsq + ysq > 4) || xsq + ysq > 16) {
+      if ((alg == 1 && xsq + ysq > 4) || (alg ==5 && orbitBailout(x,y) < .01 && index > 0) || (alg != 5 && xsq + ysq > 16)) {
         lessThanMax = 1;
-        if (alg > 1)
+        if (alg > 1 && alg != 5)
           break;
         //a few extra iterations improves color smoothing - why don't some equations work when a higher number is used?
         if (extraIterations == 2) { 
           
           mu = index + 2 - (log(log(sqrt(xsq + ysq))/LOG_OF_TWO)/log(power));
           break;
+        } else if (alg == 5) {
+          mu = index;
         } else {
           extraIterations++;
           index--;

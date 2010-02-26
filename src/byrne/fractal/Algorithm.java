@@ -21,7 +21,7 @@ package byrne.fractal;
 
 public enum Algorithm {
 
-  ESCAPE_TIME(1),GAUSSIAN_MINIMUM(2),GAUSSIAN_AVERAGE(3),OMEGA_CROSS(4);
+  ESCAPE_TIME(1),GAUSSIAN_MINIMUM(2),GAUSSIAN_AVERAGE(3),OMEGA_CROSS(4),OMEGA_CROSS_BAILOUT(5);
   private int native_integer;
   
   Algorithm(int i) {

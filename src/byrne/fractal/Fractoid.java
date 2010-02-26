@@ -354,6 +354,9 @@ public class Fractoid extends Activity {
     case R.id.omega_cross_button:
       switchAlgorithm(item,Algorithm.OMEGA_CROSS);
       return true;
+    case R.id.omega_cross_bailout_button:
+      switchAlgorithm(item,Algorithm.OMEGA_CROSS_BAILOUT);
+      return true;
 
     case R.id.share_button:
       //TODO Find a way to share image without saving it first

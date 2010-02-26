@@ -99,7 +99,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <item android:id="@+id/gaussian_average_button"
                       android:title="Gaussian Integer Average Distance"/>
                 <item android:id="@+id/omega_cross_button"
-                      android:title="Omega Cross Orbit Trap"/>
+                      android:title="Omega Cross Minimum Distance"/>
+                <item android:id="@+id/omega_cross_bailout_button"
+                      android:title="Omega Cross Bailout"/>
             </group>
         </menu>
     </item>    
