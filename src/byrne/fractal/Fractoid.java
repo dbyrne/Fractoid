@@ -97,7 +97,7 @@ public class Fractoid extends Activity {
   
   @Override public void onResume() {
     super.onResume();
-    getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    new NativeLib().resetValues();
   }
   
   @Override public void onPause() {

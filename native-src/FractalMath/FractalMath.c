@@ -85,6 +85,7 @@ JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_freeValues
       free(values[r]);
     }
     free(values);
+    values = NULL;
   }
 }
 
