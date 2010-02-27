@@ -36,7 +36,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endif
 
 int xres=-1, yres=-1, equation=1,power=2,max=40, trapFactor=1, fractalType=1, alg=1,minimum = 99999,maximum = 0;
-double realmin, realmax, imagmin, imagmax,P,Q;
+double realmin, realmax, imagmin, imagmax,P,Q,LOG_OF_TWO,SQRT_OF_TWO;
 
 int** values;
 
@@ -91,6 +91,8 @@ JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_freeValues
 
 JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_setResolution
 (JNIEnv * env, jobject obj, jint jxres, jint jyres) {
+  LOG_OF_TWO = log(2);
+  SQRT_OF_TWO = sqrt(2);
   xres = jxres;
   yres = jyres;
 }
@@ -161,8 +163,6 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
   double xtmp=0,x=-1,y=-1,prev_x=-1,prev_y=-1,tmp_prev_x,tmp_prev_y,mu=1,xsq,ysq;
   int index;
   int lessThanMax;
-  const double LOG_OF_TWO = log(2);
-  const double SQRT_OF_TWO = sqrt(2);
   
   result = (*env)->NewIntArray(env, xres);
   if (result == NULL) {
@@ -204,7 +204,6 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
     else
       distance = 0;
       
-    
     for (index = 0; index < max; index++) {
       
       if (alg == 3 && fractalType == 2) { //Gaussian Integer Average & Julia
@@ -218,13 +217,12 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
       xsq = x*x;
       ysq = y*y;
 
-      if ((alg == 1 && xsq + ysq > 4) || (alg ==5 && orbitBailout(x,y) < .01 && index > 0) || (alg != 5 && xsq + ysq > 16)) {
+      if ((alg == 1 && xsq + ysq > 4) || (alg ==5 && orbitBailout(x,y) < .015 && index > 0) || (alg != 5 && xsq + ysq > 16)) {
         lessThanMax = 1;
         if (alg > 1 && alg != 5)
           break;
         //a few extra iterations improves color smoothing - why don't some equations work when a higher number is used?
-        if (extraIterations == 2) { 
-          
+        if (extraIterations == 2) {
           mu = index + 2 - (log(log(sqrt(xsq + ysq))/LOG_OF_TWO)/log(power));
           break;
         } else if (alg == 5) {
