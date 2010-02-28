@@ -35,8 +35,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   #define abs( a ) ( ((a) < (0)) ? (a*-1) : (a) )
 #endif
 
-int xres=-1, yres=-1, equation=1,power=2,max=40, trapFactor=1, fractalType=1, alg=1,minimum = 99999,maximum = 0;
-double realmin, realmax, imagmin, imagmax,P,Q,LOG_OF_TWO,SQRT_OF_TWO;
+int lessThanMax, xres=-1, yres=-1, equation=1,power=2,max=40;
+int trapFactor=1, fractalType=1, alg=1,minimum = 99999,maximum = 0;
+double realmin, realmax, imagmin, imagmax,P,Q,deltaP,deltaQ,LOG_OF_TWO,SQRT_OF_TWO;
+double xtmp=0,x=-1,y=-1,prev_x=-1,prev_y=-1,tmp_prev_x,tmp_prev_y,mu=1,xsq,ysq;
 
 int** values;
 
@@ -125,7 +127,9 @@ JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_setCoords
   realmin = jrealmin;
   realmax = jrealmax;
   imagmin = jimagmin;
-  imagmax = jimagmax;  
+  imagmax = jimagmax;
+  deltaP = (realmax - realmin)/xres;
+  deltaQ = (imagmax - imagmin)/yres;
 }
 
 JNIEXPORT jdouble JNICALL Java_byrne_fractal_NativeLib_getRealMin(JNIEnv * env, jobject obj) {
@@ -163,17 +167,11 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
 (JNIEnv * env, jobject obj, jint row, jint state) {
   
   jintArray result;
-  double xtmp=0,x=-1,y=-1,prev_x=-1,prev_y=-1,tmp_prev_x,tmp_prev_y,mu=1,xsq,ysq;
-  int index;
-  int lessThanMax;
   
   result = (*env)->NewIntArray(env, xres);
   if (result == NULL) {
     return NULL; /* out of memory error thrown */
   }
-
-  double deltaP = (realmax - realmin)/xres;
-  double deltaQ = (imagmax - imagmin)/yres;
   
   if (fractalType == 1) //Mandelbrot
     Q = imagmax - row*deltaQ;
@@ -207,6 +205,7 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
     else
       distance = 0;
       
+    int index;
     for (index = 0; index < max; index++) {
       
       if (alg == 3 && fractalType == 2) { //Gaussian Integer Average & Julia
