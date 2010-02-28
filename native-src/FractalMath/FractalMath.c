@@ -220,18 +220,21 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
       ysq = y*y;
 
       if ((alg == 1 && xsq + ysq > 4) || (alg ==5 && omegaCrossDist(x,y) < .015 && index > 0) || (alg != 5 && xsq + ysq > 16)) {
-        lessThanMax = 1;
-        if (alg > 1 && alg != 5)
-          break;
-        //a few extra iterations improves color smoothing - why don't some equations work when a higher number is used?
-        if (extraIterations == 2) {
-          mu = index + 2 - (log(log(sqrt(xsq + ysq))/LOG_OF_TWO)/log(power));
-          break;
-        } else if (alg == 5) {
+        if (alg == 1) { //Escape-Time
+          //a few extra iterations improves color smoothing - why don't some equations work when a higher number is used?
+          if (extraIterations == 2) {
+            mu = index + 2 - (log(log(sqrt(xsq + ysq))/LOG_OF_TWO)/log(power));
+            lessThanMax = 1;
+            break;
+          } else {
+            extraIterations++;
+            index--;
+          }
+        } else if (alg == 5) { //Omega cross bailout
+          lessThanMax = 1;
           mu = index;
         } else {
-          extraIterations++;
-          index--;
+          break;
         }
       }
       
