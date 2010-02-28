@@ -158,8 +158,12 @@ double gaussianIntDist(double x, double y, jint trapFactor) {
   return sqrt((x - gint_x)*(x-gint_x) + (y-gint_y)*(y-gint_y));
 }
 
-double omegaCrossDist(double x, double y) {
+double epsilonCrossDist(double x, double y) {
   return minVal(abs(x),abs(y));
+}
+
+double comboTrapDist(double x, double y) {
+  return minVal(sqrt(x*x+y*y),abs(cos(x)));
 }
 
 /***Main Loop***/
@@ -200,7 +204,7 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
 
     int extraIterations = 0;
     double distance;
-    if (alg == 2 || alg == 4)
+    if (alg == 2 || alg == 4  || alg == 6)
       distance = 99;
     else
       distance = 0;
@@ -208,18 +212,10 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
     int index;
     for (index = 0; index < max; index++) {
       
-      if (alg == 3 && fractalType == 2) { //Gaussian Integer Average & Julia
-        distance += gaussianIntDist(x,y,trapFactor);
-      } else if (alg == 2 && fractalType == 2) { //Gaussian Integer Minimum & Julia
-        distance = minVal(distance,gaussianIntDist(x,y,trapFactor));
-      }  else if (alg == 4 && fractalType == 2) {
-        distance = minVal(distance,omegaCrossDist(x,y));
-      }
-      
       xsq = x*x;
       ysq = y*y;
 
-      if ((alg == 1 && xsq + ysq > 4) || (alg ==5 && omegaCrossDist(x,y) < .015 && index > 0) || (alg != 5 && xsq + ysq > 16)) {
+      if ((alg == 1 && xsq + ysq > 4) || (alg ==5 && epsilonCrossDist(x,y) < .015 && index > 0) || (alg != 5 && xsq + ysq > 16)) {
         if (alg == 1) { //Escape-Time
           //a few extra iterations improves color smoothing - why don't some equations work when a higher number is used?
           if (extraIterations == 2) {
@@ -291,12 +287,14 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
       }
       x = xtmp;
       
-      if (alg == 3 && fractalType == 1) { //Gaussian Integer Average & Mandelbrot
+      if (alg == 3) { //Gaussian Integer Average & Mandelbrot
         distance += gaussianIntDist(x,y,trapFactor);
-      } else if (alg == 2 && fractalType == 1) { //Gaussian Integer Minimum & Mandelbrot
+      } else if (alg == 2) { //Gaussian Integer Minimum & Mandelbrot
         distance = minVal(distance,gaussianIntDist(x,y,trapFactor));
-      } else if (alg == 4 && fractalType == 1) {
-        distance = minVal(distance,omegaCrossDist(x,y));
+      } else if (alg == 4) {
+        distance = minVal(distance,epsilonCrossDist(x,y));
+      } else if (alg == 6) {
+        distance = minVal(distance,comboTrapDist(x,y));
       }
     }
     
@@ -306,7 +304,7 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
     } else if (alg==2) {
       values[row][col] = maxVal(1,(int)((distance/(SQRT_OF_TWO/trapFactor))*10200));
       minimum = minVal(minimum,values[row][col]);
-    } else if (alg == 4) {
+    } else if (alg == 4 || alg == 6) {
       values[row][col] = maxVal(1,(int)(distance * 10200));
       minimum = minVal(minimum,values[row][col]);
     } else if (lessThanMax == 1) {

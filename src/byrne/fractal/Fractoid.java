@@ -351,11 +351,14 @@ public class Fractoid extends Activity {
       switchAlgorithm(item,Algorithm.GAUSSIAN_AVERAGE);
       //showDialog(TRAP_FACTOR_DIALOG);
       return true;
-    case R.id.omega_cross_button:
-      switchAlgorithm(item,Algorithm.OMEGA_CROSS);
+    case R.id.epsilon_cross_button:
+      switchAlgorithm(item,Algorithm.EPSILON_CROSS);
       return true;
-    case R.id.omega_cross_bailout_button:
-      switchAlgorithm(item,Algorithm.OMEGA_CROSS_BAILOUT);
+    case R.id.epsilon_cross_bailout_button:
+      switchAlgorithm(item,Algorithm.EPSILON_CROSS_BAILOUT);
+      return true;
+    case R.id.combo_trap_button:
+      switchAlgorithm(item,Algorithm.COMBO_TRAP);
       return true;
 
     case R.id.share_button:
