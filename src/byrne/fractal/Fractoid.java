@@ -97,14 +97,12 @@ public class Fractoid extends Activity {
   
   @Override public void onResume() {
     super.onResume();
-    new NativeLib().resetValues();
+    //new NativeLib().resetValues();
   }
   
   @Override public void onPause() {
     super.onPause();
     //Debug.stopMethodTracing();
-    fractalView.stopFractalTask();
-    new NativeLib().freeValues();
   }
   
   @Override public void onDestroy() {
