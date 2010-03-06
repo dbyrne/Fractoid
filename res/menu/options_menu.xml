@@ -103,7 +103,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <item android:id="@+id/epsilon_cross_bailout_button"
                       android:title="Epsilon Cross Bailout"/>
                 <item android:id="@+id/combo_trap_button"
-                      android:title="Combo Trap Bailout"/>
+                      android:title="Combo Orbit Trap"/>
             </group>
         </menu>
     </item>    
