@@ -231,7 +231,7 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
           }
         } else if (alg == 5) { //Omega cross bailout
           lessThanMax = 1;
-          mu = index;
+          mu = index - (epsilonCrossDist(x,y)/.002);
         } else {
           break;
         }
