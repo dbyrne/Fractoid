@@ -45,6 +45,7 @@ import byrne.fractal.MultiTouchController;
 import byrne.fractal.MultiTouchController.MultiTouchObjectCanvas;
 import byrne.fractal.MultiTouchController.PointInfo;
 import byrne.fractal.MultiTouchController.PositionAndScale;
+
 //import android.os.Debug;
 
 public class Fractoid extends Activity {
@@ -59,7 +60,7 @@ public class Fractoid extends Activity {
   @Override public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-    getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    //getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
     
     setContentView(R.layout.main_layout);
     
@@ -90,25 +91,24 @@ public class Fractoid extends Activity {
 	fractalView.postInvalidate();
       }
     });
-    
     Eula.showEula(this);
-
   }
   
   @Override public void onResume() {
     super.onResume();
-    //new NativeLib().resetValues();
   }
   
   @Override public void onPause() {
     super.onPause();
-    //Debug.stopMethodTracing();
   }
   
   @Override public void onDestroy() {
     super.onDestroy();
     fractalView.stopFractalTask();
-    new NativeLib().freeValues();
+    NativeLib n = new NativeLib();
+    n.freeValues();
+    n.setResolution(-1,-1);
+    //Debug.stopMethodTracing();
   }
   
   @Override protected Dialog onCreateDialog(int id) {

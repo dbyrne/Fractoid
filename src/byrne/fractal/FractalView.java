@@ -58,7 +58,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     multiTouchController = new MultiTouchController<FractalView.Img>(this, res);
   }
   
-  public FractalView(Context context, AttributeSet attrs){
+  public FractalView(Context context, AttributeSet attrs) {
         super(context, attrs);
         res = context.getResources();
         multiTouchController = new MultiTouchController<FractalView.Img>(this, res);
@@ -357,7 +357,6 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   }
 
   protected void resetCoords() {
-    
     double imagmax, imagmin;
     
     if (equation == ComplexEquation.BURNING_SHIP) {
@@ -402,6 +401,8 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   @Override protected void onSizeChanged(int width, int height, int oldw, int oldh) {
     if (mNativeLib.getXRes() == -1) {
       mNativeLib.setResolution(width,height);
+      System.out.println("#####RESETING COORDS#################");
+      resetCoords();
     }
   }
   
@@ -553,10 +554,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
         canvas.drawRect(prog,p);
         p.setStyle(Paint.Style.STROKE);
         canvas.drawRect(total,p);
-      }
-      
-    } else {
-      resetCoords();
+      } 
     }
   }
   

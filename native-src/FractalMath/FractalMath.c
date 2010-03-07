@@ -218,9 +218,8 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
       xsq = x*x;
       ysq = y*y;
 
-      if ((alg == 1 && xsq + ysq > 4) || (alg ==5 && epsilonCrossDist(x,y) < .015 && index > 0) || (alg != 5 && xsq + ysq > 16)) {
-        if (alg == 1) { //Escape-Time
-          //a few extra iterations improves color smoothing - why don't some equations work when a higher number is used?
+      if (alg == 1) {
+        if (xsq + ysq > 4) {
           if (extraIterations == 2) {
             mu = index + 2 - (log(log(sqrt(xsq + ysq))/LOG_OF_TWO)/log(power));
             lessThanMax = 1;
@@ -229,10 +228,14 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
             extraIterations++;
             index--;
           }
-        } else if (alg == 5) { //Omega cross bailout
+        }
+      } else if (alg ==5) {
+        if (epsilonCrossDist(x,y) < .015 && index > 0) {
           lessThanMax = 1;
           mu = index - (epsilonCrossDist(x,y)/.002);
-        } else {
+        }
+      } else {
+        if (xsq+ysq > 16) {
           break;
         }
       }
@@ -286,18 +289,21 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
           y = (2*x*y) + Q*prev_y;
           prev_x = tmp_prev_x;
           prev_y = tmp_prev_y;
-          break;
       }
       x = xtmp;
       
-      if (alg == 3) { //Gaussian Integer Average & Mandelbrot
-        distance += gaussianIntDist(x,y,trapFactor);
-      } else if (alg == 2) { //Gaussian Integer Minimum & Mandelbrot
-        distance = minVal(distance,gaussianIntDist(x,y,trapFactor));
-      } else if (alg == 4) {
-        distance = minVal(distance,epsilonCrossDist(x,y));
-      } else if (alg == 6) {
-        distance = minVal(distance,comboTrapDist(x,y));
+      switch (alg) {
+        case 2:
+          distance = minVal(distance,gaussianIntDist(x,y,trapFactor));
+          break;
+        case 3:
+          distance += gaussianIntDist(x,y,trapFactor);
+          break;
+        case 4:
+          distance = minVal(distance,epsilonCrossDist(x,y));
+          break;
+        case 6:
+          distance = minVal(distance,comboTrapDist(x,y));
       }
     }
     
