@@ -22,6 +22,7 @@ package byrne.fractal;
 class NativeLib {
   
   public native void resetValues();
+  public native void resetCurrentRow();
   public native void freeValues();
   
   public native void setResolution(int xres, int yres);

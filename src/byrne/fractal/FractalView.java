@@ -313,6 +313,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
       mNativeLib.resetValues();
       relative = false;
     }
+    mNativeLib.resetCurrentRow();
     
     mFractoid.setCalibrateButtonEnabled(false,relative);
     
