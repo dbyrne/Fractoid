@@ -299,16 +299,16 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
         x = xtmp;
         
         switch (alg) {
-          case 2:
+          case 2: //Gaussian Integer Min Distance
             distance = minVal(distance,gaussianIntDist(x,y,trapFactor));
             break;
-          case 3:
+          case 3: //Gaussian Integer Average Distance
             distance += gaussianIntDist(x,y,trapFactor);
             break;
-          case 4:
+          case 4: //Epsilon Cross Minimum Distance
             distance = minVal(distance,epsilonCrossDist(x,y));
             break;
-          case 6:
+          case 6: //Combo Trap
             distance = minVal(distance,comboTrapDist(x,y));
         }
       }
@@ -320,7 +320,7 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
         values[row][col] = maxVal(1,(int)((distance/(SQRT_OF_TWO/trapFactor))*10200));
         minimum = minVal(minimum,values[row][col]);
       } else if (alg == 4 || alg == 6) {
-        values[row][col] = maxVal(1,(int)(distance * 10200));
+        values[row][col] = maxVal(1,(int)(log(1+distance) * 20400));
         minimum = minVal(minimum,values[row][col]);
       } else if (lessThanMax == 1) {
         //char s[20];
