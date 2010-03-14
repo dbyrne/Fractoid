@@ -526,11 +526,10 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
         p.setColor(Color.WHITE);
       }
       
-      
       p.setStyle(Paint.Style.FILL_AND_STROKE);
       p.setStrokeWidth(1);
 
-      p.setTextSize(35);
+      p.setTextSize(25);
       
       int xres = mNativeLib.getXRes();
       int yres = mNativeLib.getYRes();
@@ -540,7 +539,6 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
       } else {
         canvas.drawText("Pinch to Zoom",(xres/2)-120,yres-5,p);
       }
-      p.setTextSize(25);
       
       String maxIterString = "MaxIter: " + maxIterations;
       canvas.drawText(maxIterString,5,yres-5,p);
