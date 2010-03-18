@@ -1,0 +1,5 @@
+android.keystore
+local.properties
+bin/
+gen/
+libs/
