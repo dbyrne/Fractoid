@@ -38,7 +38,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 int lessThanMax, xres=-1, yres=-1, equation,power,max=40,currentRow,rowsCached;
 int trapFactor=1, fractalType=1, alg,minimum = 99999,maximum = 0;
 double realmin, realmax, imagmin, imagmax,P,Q,deltaP,deltaQ,LOG_OF_TWO,SQRT_OF_TWO;
-double xtmp=0,x=-1,y=-1,prev_x=-1,prev_y=-1,tmp_prev_x,tmp_prev_y,mu=1,xsq,ysq;
+double xtmp=0,x=-1,y=-1,prev_x=-1,prev_y=-1,tmp_prev_x,tmp_prev_y,mu=1,xsq,ysq,rnv,inv,rdv,idv;
 
 int** values;
 
@@ -297,12 +297,23 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
             prev_y = tmp_prev_y;
             break;
           case 11:
-            tmp_prev_x = x;
-            tmp_prev_y = y;
-            xtmp = (xsq - ysq) + P + Q*prev_x;
-            y = (2*x*y) + Q*prev_y;
-            prev_x = tmp_prev_x;
-            prev_y = tmp_prev_y;
+            /*
+            rnv = xsq - ysq + P-1;
+            rdv = 2*x + P-2;
+            inv = 2*x*y - Q
+            idv = 2*y - Q;
+            tmp_prev_x = (rnv*rdv)/(rdv*rdv);
+            tmp_prev_y = 
+            xtmp = tmp_prev_x*tmp_prev_x - tmp_prev_y*tmp_prev_y;
+            y = 2*tmp_prev_x*tmp_prev_y;
+            */
+            if (x >= 0) {
+              xtmp=(x-1)*P - y*Q;
+              y = (x-1)*Q + y*P;
+            } else {
+              xtmp=(x+1)*P - y*Q;
+              y = (x+1)*Q + y*P;              
+            }
         }
         x = xtmp;
         

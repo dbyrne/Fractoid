@@ -364,6 +364,9 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
       //This equation needs a special range to be centered
       imagmax = 2.1;
       imagmin = -0.7;
+    } else if (equation == ComplexEquation.BARNSLEY) {
+      imagmax = 1.8;
+      imagmin = -1.8;
     } else {
       imagmax = 1.4;
       imagmin = -1.4;    
