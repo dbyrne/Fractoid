@@ -295,6 +295,14 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
             y = (2*x*y) + Q*prev_y;
             prev_x = tmp_prev_x;
             prev_y = tmp_prev_y;
+            break;
+          case 11:
+            tmp_prev_x = x;
+            tmp_prev_y = y;
+            xtmp = (xsq - ysq) + P + Q*prev_x;
+            y = (2*x*y) + Q*prev_y;
+            prev_x = tmp_prev_x;
+            prev_y = tmp_prev_y;
         }
         x = xtmp;
         

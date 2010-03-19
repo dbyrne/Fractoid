@@ -338,6 +338,10 @@ public class Fractoid extends Activity {
       switchEquation(item,ComplexEquation.PHOENIX);
       return true;
     
+    case R.id.barnsley_button:
+      switchEquation(item,ComplexEquation.BARNSLEY);
+      return true;
+    
     case R.id.escape_time_button:
       switchAlgorithm(item,Algorithm.ESCAPE_TIME);
       return true;

@@ -29,7 +29,8 @@ public enum ComplexEquation {
   Z6Z2(7,6),
   BURNING_SHIP(8,2),
   MANOWAR(9,2),
-  PHOENIX(10,2);
+  PHOENIX(10,2),
+  BARNSLEY(11,2);
   
   private int power, native_integer;
   
