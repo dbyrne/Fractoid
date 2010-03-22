@@ -21,6 +21,9 @@ package byrne.fractal;
 
 import android.os.AsyncTask;
 import android.graphics.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 
 public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
   
@@ -31,6 +34,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
   int[] colors;
   int prog = 0;
   boolean relative;
+  ArrayList<Integer> histogram;
   
   public GenerateFractalTask(FractalView fv, boolean rel) {
     fractalView = fv;
@@ -42,6 +46,16 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
   }
     
   private Bitmap createBitmap() {
+    
+    histogram = fractalView.getHistogram();
+    HashMap<Integer,Integer> map = new HashMap();
+    if (relative) {
+      int count = 0;
+      for (int i : histogram) {
+        map.put(i,count);
+        count++;
+      }
+    }
     
     double realmin = mNativeLib.getRealMin();
     double realmax = mNativeLib.getRealMax();
@@ -100,8 +114,10 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
           
           if (rowColors[col] >= 0) {
             if (relative) {
-              paint.setColor(colors[Math.round(((float)(rowColors[col]-minimum)/range)*1020)]);
+              int cindex = Math.round(((float)map.get(rowColors[col])/histogram.size())*1020);
+              paint.setColor(colors[cindex]);
             } else {
+              histogram.add(rowColors[col]);
               paint.setColor(colors[(rowColors[col]%10200)/10]);
             }
           } else {
@@ -127,6 +143,8 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
     fractalView.invalidate();
   }
   @Override protected void onPostExecute(Bitmap b) {
+    Collections.sort(histogram);
+    fractalView.setHistogram(histogram);
     fractalView.setFractal(b);
     fractalView.clearBackground();
     fractalView.setTime(System.currentTimeMillis()-startTime);

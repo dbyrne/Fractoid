@@ -31,6 +31,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.util.AttributeSet;
 import byrne.fractal.MultiTouchController.*;
+import java.util.ArrayList;
 
 public class FractalView extends View implements MultiTouchObjectCanvas<FractalView.Img> {
     
@@ -51,6 +52,8 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   private double shiftFactor;
   private int[] colorIntegers;
   private final NativeLib mNativeLib = new NativeLib();
+  
+  ArrayList<Integer> histogram;
   
   public FractalView(Context context){
     super(context);
@@ -181,6 +184,13 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     }
   }
 
+  public void setHistogram(ArrayList<Integer> a) {
+    histogram = a;
+  }
+  
+  public ArrayList<Integer> getHistogram() {
+    return histogram;
+  }
 
   public void setColorSet(ColorSet cs) {
     colorSet = cs;
@@ -310,6 +320,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     stopFractalTask();
     
     if (reset) {
+      histogram = new ArrayList();
       mNativeLib.resetValues();
       relative = false;
     }
