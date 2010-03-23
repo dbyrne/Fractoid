@@ -171,6 +171,10 @@ double comboTrapDist(double x, double y) {
   return minVal(sqrt(x*x+y*y),abs(cos(x)));
 }
 
+double TIA(double x, double y, double P, double Q) {
+  return minVal(abs(x),abs(y));
+}
+
 /***Main Loop***/
 JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
 (JNIEnv * env, jobject obj, jint row, jint state) {
@@ -329,11 +333,16 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
             break;
           case 6: //Combo Trap
             distance = minVal(distance,comboTrapDist(x,y));
+          case 7: //TIA
+            distance += TIA(x,y,P,Q);
         }
       }
       
       if (alg==3) { //Gaussian Integer average
         values[row][col] = maxVal(1,(int)(((distance/(index+1))/(SQRT_OF_TWO/trapFactor))*10200));
+        minimum = minVal(minimum,values[row][col]);
+      } else if (alg==7) {
+        values[row][col] = maxVal(1,(int)((distance/(index+1))*10200));
         minimum = minVal(minimum,values[row][col]);
       } else if (alg==2) {
         values[row][col] = maxVal(1,(int)((distance/(SQRT_OF_TWO/trapFactor))*10200));
