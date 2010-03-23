@@ -38,7 +38,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 int lessThanMax, xres=-1, yres=-1, equation,power,max=40,currentRow,rowsCached;
 int trapFactor=1, fractalType=1, alg,minimum = 99999,maximum = 0;
 double realmin, realmax, imagmin, imagmax,P,Q,deltaP,deltaQ,LOG_OF_TWO,SQRT_OF_TWO;
-double xtmp=0,x=-1,y=-1,prev_x=-1,prev_y=-1,tmp_prev_x,tmp_prev_y,mu=1,xsq,ysq,rnv,inv,rdv,idv;
+double xtmp=0,x=-1,y=-1,prev_x=-1,tia_prev_x=-1,tia_prev_y=-1,prev_y=-1,tmp_prev_x,tmp_prev_y,mu=1,xsq,ysq,rnv,inv,rdv,idv;
 
 int** values;
 
@@ -171,8 +171,16 @@ double comboTrapDist(double x, double y) {
   return minVal(sqrt(x*x+y*y),abs(cos(x)));
 }
 
-double TIA(double x, double y, double P, double Q) {
-  return minVal(abs(x),abs(y));
+double TIA(double x, double y, double prev_x, double prev_y, double P, double Q) {
+  double mn_real = abs(abs(prev_x)-abs(P));
+  double mn_imag = abs(abs(prev_y)-abs(Q));
+  double Mn_real = abs(prev_x) + abs(P);
+  double Mn_imag = abs(prev_y) + abs(Q);
+  double num_real = abs(x) - mn_real;
+  double num_imag = abs(y) - mn_imag;
+  double den_real = Mn_real - mn_real;
+  double den_imag = Mn_imag - mn_imag;
+  return minVal(num_real,num_imag);
 }
 
 /***Main Loop***/
@@ -248,6 +256,11 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
           if (xsq+ysq > 16) {
             break;
           }
+        }
+        
+        if (alg == 7) {
+          tia_prev_x = x;
+          tia_prev_y = y;
         }
         
         //TODO Refactoring needed.
@@ -334,7 +347,7 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
           case 6: //Combo Trap
             distance = minVal(distance,comboTrapDist(x,y));
           case 7: //TIA
-            distance += TIA(x,y,P,Q);
+            distance += TIA(x,y,tia_prev_x,tia_prev_y,P,Q);
         }
       }
       
