@@ -22,7 +22,7 @@ package byrne.fractal;
 public enum Algorithm {
 
   ESCAPE_TIME(1),GAUSSIAN_MINIMUM(2),GAUSSIAN_AVERAGE(3),
-  EPSILON_CROSS(4),EPSILON_CROSS_BAILOUT(5),COMBO_TRAP(6);
+  EPSILON_CROSS(4),EPSILON_CROSS_BAILOUT(5),COMBO_TRAP(6),TRIANGLE_INEQUALITY(7);
   private int native_integer;
   
   Algorithm(int i) {

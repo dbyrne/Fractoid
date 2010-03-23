@@ -345,6 +345,9 @@ public class Fractoid extends Activity {
     case R.id.escape_time_button:
       switchAlgorithm(item,Algorithm.ESCAPE_TIME);
       return true;
+    case R.id.triangle_inequality_button:
+      switchAlgorithm(item,Algorithm.TRIANGLE_INEQUALITY);
+      return true;
     case R.id.gaussian_minimum_button:
       switchAlgorithm(item,Algorithm.GAUSSIAN_MINIMUM);
       //showDialog(TRAP_FACTOR_DIALOG);

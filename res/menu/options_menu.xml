@@ -96,6 +96,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <item android:id="@+id/escape_time_button"
                       android:checked="true"
                       android:title="Escape-Time"/>
+                <item android:id="@+id/triangle_inequality_button"
+                      android:title="Triangle Inequality Average"/>
                 <item android:id="@+id/gaussian_minimum_button"
                       android:title="Gaussian Integer Minimum Distance"/>
                 <item android:id="@+id/gaussian_average_button"
