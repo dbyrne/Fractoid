@@ -182,12 +182,12 @@ double TIA(double x, double y, double prev_x, double prev_y, double P, double Q)
   
   if (den == 0)
     return 0;
-  
-  //__android_log_write(ANDROID_LOG_DEBUG,"FRACTOID_DEBUG","NEW ITERATION");  
-  
-  //char s4[20];
-  //sprintf(s4,"%f",num/den);
-  //__android_log_write(ANDROID_LOG_DEBUG,"FRACTOID_DEBUG",s4);
+
+  if (num/den < 0 || num/den > 1) {
+    char s4[20];
+    sprintf(s4,"%f",num/den);
+    __android_log_write(ANDROID_LOG_DEBUG,"FRACTOID_DEBUG",s4);     
+  }
   
   return num/den;
 }
@@ -233,7 +233,7 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
       lessThanMax = 0;
   
       int extraIterations = 0;
-      double distance;
+      double distance,distance1;
       if (alg == 2 || alg == 4  || alg == 6)
         distance = 99;
       else
@@ -248,13 +248,18 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
         if (alg == 1) {
           if (xsq + ysq > 4) {
             if (extraIterations == 2) {
-              mu = index + 2 - (log(log(sqrt(xsq + ysq))/LOG_OF_TWO)/log(power));
+              mu = index + 2 - (log(log(sqrt(xsq + ysq))/LOG_OF_TWO)/log(power));  
               lessThanMax = 1;
               break;
             } else {
               extraIterations++;
               index--;
             }
+          }
+        } else if (alg == 7) {
+          if (xsq + ysq > 128) {
+            mu = (log(log(128)) - log(log(sqrt(xsq + ysq))))/log(power) + 1;
+            break;
           }
         } else if (alg ==5) {
           if (epsilonCrossDist(x,y) < .015 && index > 0) {
@@ -346,6 +351,7 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
           case 6: //Combo Trap
             distance = minVal(distance,comboTrapDist(x,y));
           case 7: //TIA
+            distance1 = distance;
             distance += TIA(x,y,tia_prev_x,tia_prev_y,P,Q);  
         }
       }
@@ -354,11 +360,21 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
         values[row][col] = maxVal(1,(int)(((distance/(index+1))/(SQRT_OF_TWO/trapFactor))*10200));
         minimum = minVal(minimum,values[row][col]);
       } else if (alg==7) {
-        values[row][col] = maxVal(1,(int)((distance/(index+1))*10200));
+        
+        distance1 = distance1/(index+1);
+        distance = distance/(index+2);        
+        
+        __android_log_write(ANDROID_LOG_DEBUG,"FRACTOID_DEBUG","DISTANCES");
+        char s[20];
+        sprintf(s,"%f",mu*distance);
+        __android_log_write(ANDROID_LOG_DEBUG,"FRACTOID_DEBUG",s);
+        char s2[20];
+        sprintf(s2,"%f",(1-mu)*distance1);
+        __android_log_write(ANDROID_LOG_DEBUG,"FRACTOID_DEBUG",s2);
+        
+        values[row][col] = maxVal(1,(int)((mu*distance + (1-mu)*distance1)*10200));
+        //values[row][col] = maxVal(1,(int)(distance*10200));
         minimum = minVal(minimum,values[row][col]);
-            char s4[20];
-            sprintf(s4,"%f",distance);
-          __android_log_write(ANDROID_LOG_DEBUG,"FRACTOID_DEBUG",s4);
       } else if (alg==2) {
         values[row][col] = maxVal(1,(int)((distance/(SQRT_OF_TWO/trapFactor))*10200));
         minimum = minVal(minimum,values[row][col]);
