@@ -171,16 +171,25 @@ double comboTrapDist(double x, double y) {
   return minVal(sqrt(x*x+y*y),abs(cos(x)));
 }
 
-double TIA(double x, double y, double prev_x, double prev_y, double P, double Q) {
-  double mn_real = abs(abs(prev_x)-abs(P));
-  double mn_imag = abs(abs(prev_y)-abs(Q));
-  double Mn_real = abs(prev_x) + abs(P);
-  double Mn_imag = abs(prev_y) + abs(Q);
-  double num_real = abs(x) - mn_real;
-  double num_imag = abs(y) - mn_imag;
-  double den_real = Mn_real - mn_real;
-  double den_imag = Mn_imag - mn_imag;
-  return minVal(num_real,num_imag);
+double TIA(double x, double y, double prev_x, double prev_y, double P, double Q) {    
+  
+  double zr = prev_x*prev_x - prev_y*prev_y;
+  double zi = 2*prev_x*prev_y;
+  double mn = abs(sqrt(zr*zr + zi*zi)-sqrt(P*P + Q*Q));
+  double Mn = sqrt(zr*zr + zi*zi) + sqrt(P*P + Q*Q);
+  double num = sqrt(x*x + y*y) - mn;
+  double den = Mn - mn;
+  
+  if (den == 0)
+    return 0;
+  
+  //__android_log_write(ANDROID_LOG_DEBUG,"FRACTOID_DEBUG","NEW ITERATION");  
+  
+  //char s4[20];
+  //sprintf(s4,"%f",num/den);
+  //__android_log_write(ANDROID_LOG_DEBUG,"FRACTOID_DEBUG",s4);
+  
+  return num/den;
 }
 
 /***Main Loop***/
@@ -314,16 +323,6 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
             prev_y = tmp_prev_y;
             break;
           case 11:
-            /*
-            rnv = xsq - ysq + P-1;
-            rdv = 2*x + P-2;
-            inv = 2*x*y - Q
-            idv = 2*y - Q;
-            tmp_prev_x = (rnv*rdv)/(rdv*rdv);
-            tmp_prev_y = 
-            xtmp = tmp_prev_x*tmp_prev_x - tmp_prev_y*tmp_prev_y;
-            y = 2*tmp_prev_x*tmp_prev_y;
-            */
             if (x >= 0) {
               xtmp=(x-1)*P - y*Q;
               y = (x-1)*Q + y*P;
@@ -347,7 +346,7 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
           case 6: //Combo Trap
             distance = minVal(distance,comboTrapDist(x,y));
           case 7: //TIA
-            distance += TIA(x,y,tia_prev_x,tia_prev_y,P,Q);
+            distance += TIA(x,y,tia_prev_x,tia_prev_y,P,Q);  
         }
       }
       
@@ -357,6 +356,9 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
       } else if (alg==7) {
         values[row][col] = maxVal(1,(int)((distance/(index+1))*10200));
         minimum = minVal(minimum,values[row][col]);
+            char s4[20];
+            sprintf(s4,"%f",distance);
+          __android_log_write(ANDROID_LOG_DEBUG,"FRACTOID_DEBUG",s4);
       } else if (alg==2) {
         values[row][col] = maxVal(1,(int)((distance/(SQRT_OF_TWO/trapFactor))*10200));
         minimum = minVal(minimum,values[row][col]);
