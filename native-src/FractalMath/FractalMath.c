@@ -175,13 +175,11 @@ double TIA(double x, double y, double prev_x, double prev_y, double P, double Q)
   
   double zr = prev_x*prev_x - prev_y*prev_y;
   double zi = 2*prev_x*prev_y;
-  double mn = abs(sqrt(zr*zr + zi*zi)-sqrt(P*P + Q*Q));
+  double mn = sqrt(zr*zr + zi*zi)-sqrt(P*P + Q*Q);
+  mn = sqrt(mn*mn);
   double Mn = sqrt(zr*zr + zi*zi) + sqrt(P*P + Q*Q);
   double num = sqrt(x*x + y*y) - mn;
   double den = Mn - mn;
-  
-  if (den <= 0)
-    return 1;
   
   return num/den;
 }
@@ -251,8 +249,8 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
             }
           }
         } else if (alg == 7) {
-          if (xsq + ysq > 10000000000) {
-            mu = (log(log(100000)) - log(log(sqrt(xsq + ysq))))/log(power) + 1;
+          if (xsq + ysq > 100000000) {
+            mu = (log(log(10000)) - log(log(sqrt(xsq + ysq))))/log(power) + 1;
             lessThanMax = 1;
             break;
           }
