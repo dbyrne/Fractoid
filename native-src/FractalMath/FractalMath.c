@@ -175,9 +175,11 @@ double TIA(double x, double y, double prev_x, double prev_y, double P, double Q)
   
   double zr = prev_x*prev_x - prev_y*prev_y;
   double zi = 2*prev_x*prev_y;
-  double mn = sqrt(zr*zr + zi*zi)-sqrt(P*P + Q*Q);
+  double z_mag = sqrt(zr*zr + zi*zi);
+  double c_mag = sqrt(P*P + Q*Q);
+  double mn = z_mag - c_mag;
   mn = sqrt(mn*mn);
-  double Mn = sqrt(zr*zr + zi*zi) + sqrt(P*P + Q*Q);
+  double Mn = z_mag + c_mag;
   double num = sqrt(x*x + y*y) - mn;
   double den = Mn - mn;
   
