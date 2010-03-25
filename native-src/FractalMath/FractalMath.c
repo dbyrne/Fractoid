@@ -38,7 +38,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 int lessThanMax, xres=-1, yres=-1, equation,power,max=40,currentRow,rowsCached;
 int trapFactor=1, fractalType=1, alg,minimum = 99999,maximum = 0;
 double realmin, realmax, imagmin, imagmax,P,Q,deltaP,deltaQ,LOG_OF_TWO,SQRT_OF_TWO;
-double xtmp=0,x=-1,y=-1,prev_x=-1,tia_prev_x=-1,tia_prev_y=-1,prev_y=-1,tmp_prev_x,tmp_prev_y,mu=1,xsq,ysq,rnv,inv,rdv,idv;
+double xtmp,ytmp,x=-1,y=-1,prev_x=-1,tia_prev_x=-1,tia_prev_y=-1,prev_y=-1,tmp_prev_x,tmp_prev_y,mu=1,xsq,ysq,rnv,inv,rdv,idv;
 
 int** values;
 
@@ -208,25 +208,29 @@ void iterateZ() {
       break;
     case 11:
       if (x >= 0) {
-        xtmp=(x-1)*P - y*Q;
-        y = (x-1)*Q + y*P;
+        xtmp=(x-1)*P;
+        ytmp = (x-1)*Q;
       } else {
-        xtmp=(x+1)*P - y*Q;
-        y = (x+1)*Q + y*P;
+        xtmp=(x+1)*P;
+        ytmp = (x+1)*Q;
       }
   }
   x = xtmp;
 }
 
 double addC() {
-  if (equation < 10) { //Handles all equations except Barnsley 
+  if (equation < 10) { 
     x += P;
     y -= Q;
-  } else if (equation == 10) { //Special logic for Phoenix Julia
+  } else if (equation == 10) { //Phoenix Julia
     x += P + Q*prev_x;
     y += Q*prev_y;
     prev_x = tmp_prev_x;
     prev_y = tmp_prev_y;
+  } else if (equation == 11) { //Barnsley
+    x -= y*Q;
+    ytmp += y*P;
+    y=ytmp;
   }
 }
 
@@ -248,11 +252,15 @@ double TIA() {
   
   double z_mag = sqrt(tia_prev_x*tia_prev_x + tia_prev_y*tia_prev_y);
   double c_mag;
-  if (equation < 10) { //All equations except Barnsley
+  if (equation < 10) {
     c_mag = sqrt(P*P + Q*Q);
-  } else if (equation == 10) {
+  } else if (equation == 10) { //Phoenix Julia
     double rt = P + Q*prev_x;
     double it = Q*prev_y;
+    c_mag = sqrt(rt*rt + it*it);
+  } else if (equation == 11) { //Barnsley
+    double rt = y*Q;
+    double it = y*P;
     c_mag = sqrt(rt*rt + it*it);
   }
   double mn = z_mag - c_mag;
