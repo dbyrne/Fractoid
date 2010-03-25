@@ -203,10 +203,8 @@ void iterateZ() {
     case 10:
       tmp_prev_x = x;
       tmp_prev_y = y;
-      xtmp = (xsq - ysq) + P + Q*prev_x;
-      y = (2*x*y) + Q*prev_y;
-      prev_x = tmp_prev_x;
-      prev_y = tmp_prev_y;
+      xtmp = xsq - ysq;
+      y = 2*x*y;
       break;
     case 11:
       if (x >= 0) {
@@ -221,9 +219,14 @@ void iterateZ() {
 }
 
 double addC() {
-  if (equation < 10) { //exclude Phoenix Julia and Barnsley equations 
+  if (equation < 10) { //Handles all equations except Barnsley 
     x += P;
     y -= Q;
+  } else if (equation == 10) { //Special logic for Phoenix Julia
+    x += P + Q*prev_x;
+    y += Q*prev_y;
+    prev_x = tmp_prev_x;
+    prev_y = tmp_prev_y;
   }
 }
 
@@ -244,7 +247,14 @@ double comboTrapDist() {
 double TIA() {    
   
   double z_mag = sqrt(tia_prev_x*tia_prev_x + tia_prev_y*tia_prev_y);
-  double c_mag = sqrt(P*P + Q*Q);
+  double c_mag;
+  if (equation < 10) { //All equations except Barnsley
+    c_mag = sqrt(P*P + Q*Q);
+  } else if (equation == 10) {
+    double rt = P + Q*prev_x;
+    double it = Q*prev_y;
+    c_mag = sqrt(rt*rt + it*it);
+  }
   double mn = z_mag - c_mag;
   mn = sqrt(mn*mn);
   double Mn = z_mag + c_mag;
