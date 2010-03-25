@@ -161,42 +161,42 @@ JNIEXPORT jint JNICALL Java_byrne_fractal_NativeLib_getYRes(JNIEnv * env, jobjec
 void iterateZ() {
   switch (equation) {
     case 1:
-      xtmp = xsq - ysq + P;
-      y = (2*x*y) + Q;
+      xtmp = xsq - ysq;
+      y = (2*x*y);
       break;
     case 2:
-      xtmp = xsq*x - 3*x*ysq + P;
-      y = -ysq*y + 3*xsq*y + Q;
+      xtmp = xsq*x - 3*x*ysq;
+      y = -ysq*y + 3*xsq*y;
       break;
     case 3:
-      xtmp = xsq*xsq - 6*xsq*ysq + ysq*ysq + P;
-      y = 4*xsq*x*y - 4*x*ysq*y + Q;
+      xtmp = xsq*xsq - 6*xsq*ysq + ysq*ysq;
+      y = 4*xsq*x*y - 4*x*ysq*y;
       break;
     case 4:
-      xtmp = xsq*xsq*x-10*xsq*x*ysq+5*x*ysq*ysq + P;
-      y=(5*xsq*xsq*y-10*xsq*ysq*y+ysq*ysq*y) + Q;
+      xtmp = xsq*xsq*x-10*xsq*x*ysq+5*x*ysq*ysq;
+      y=(5*xsq*xsq*y-10*xsq*ysq*y+ysq*ysq*y);
       break;
     case 5:
-      xtmp = xsq*xsq*xsq-15*xsq*xsq*ysq+15*xsq*ysq*ysq-ysq*ysq*ysq + P;
-      y=(6*xsq*xsq*x*y-20*xsq*x*ysq*y+6*x*ysq*ysq*y) + Q;
+      xtmp = xsq*xsq*xsq-15*xsq*xsq*ysq+15*xsq*ysq*ysq-ysq*ysq*ysq;
+      y=(6*xsq*xsq*x*y-20*xsq*x*ysq*y+6*x*ysq*ysq*y);
       break;
     case 6:
-      xtmp = xsq*xsq - 6*xsq*ysq + ysq*ysq - (xsq*x - 3*x*ysq) - (xsq - ysq) + P;
-      y = 4*xsq*x*y - 4*x*ysq*y - (-ysq*y + 3*xsq*y) - (2*x*y) + Q;
+      xtmp = xsq*xsq - 6*xsq*ysq + ysq*ysq - (xsq*x - 3*x*ysq) - (xsq - ysq);
+      y = 4*xsq*x*y - 4*x*ysq*y - (-ysq*y + 3*xsq*y) - (2*x*y);
       break;
     case 7:
-      xtmp = xsq*xsq*xsq-15*xsq*xsq*ysq+15*xsq*ysq*ysq-ysq*ysq*ysq - (xsq - ysq) + P;
-      y = (6*xsq*xsq*x*y-20*xsq*x*ysq*y+6*x*ysq*ysq*y) - (2*x*y) + Q;
+      xtmp = xsq*xsq*xsq-15*xsq*xsq*ysq+15*xsq*ysq*ysq-ysq*ysq*ysq - (xsq - ysq);
+      y = (6*xsq*xsq*x*y-20*xsq*x*ysq*y+6*x*ysq*ysq*y) - (2*x*y);
       break;
     case 8:
-      xtmp = xsq - ysq + P;
-      y = (2*abs(x)*abs(y)) - Q;
+      xtmp = xsq - ysq;
+      y = (2*abs(x)*abs(y));
       break;
     case 9:
       tmp_prev_x = x;
       tmp_prev_y = y;
-      xtmp = (xsq - ysq) + prev_x + P;
-      y = (2*x*y) + prev_y + Q;
+      xtmp = (xsq - ysq) + prev_x;
+      y = (2*x*y) + prev_y;
       prev_x = tmp_prev_x;
       prev_y = tmp_prev_y;
       break;
@@ -220,6 +220,13 @@ void iterateZ() {
   x = xtmp;
 }
 
+double addC() {
+  if (equation < 10) { //exclude Phoenix Julia and Barnsley equations 
+    x += P;
+    y -= Q;
+  }
+}
+
 double gaussianIntDist() {
   double gint_x = round(x*trapFactor)/trapFactor;
   double gint_y = round(y*trapFactor)/trapFactor;
@@ -236,9 +243,7 @@ double comboTrapDist() {
 
 double TIA() {    
   
-  double zr = tia_prev_x*tia_prev_x - tia_prev_y*tia_prev_y;
-  double zi = 2*tia_prev_x*tia_prev_y;
-  double z_mag = sqrt(zr*zr + zi*zi);
+  double z_mag = sqrt(tia_prev_x*tia_prev_x + tia_prev_y*tia_prev_y);
   double c_mag = sqrt(P*P + Q*Q);
   double mn = z_mag - c_mag;
   mn = sqrt(mn*mn);
@@ -330,12 +335,12 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
           }
         }
         
+        iterateZ();
         if (alg == 7) {
           tia_prev_x = x;
           tia_prev_y = y;
         }
-        
-        iterateZ();
+        addC();
         
         switch (alg) {
           case 2: //Gaussian Integer Min Distance
