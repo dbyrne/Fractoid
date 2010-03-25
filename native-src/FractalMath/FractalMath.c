@@ -220,17 +220,17 @@ void iterateZ() {
   x = xtmp;
 }
 
-double gaussianIntDist(double x, double y, jint trapFactor) {
+double gaussianIntDist() {
   double gint_x = round(x*trapFactor)/trapFactor;
   double gint_y = round(y*trapFactor)/trapFactor;
   return sqrt((x - gint_x)*(x-gint_x) + (y-gint_y)*(y-gint_y));
 }
 
-double epsilonCrossDist(double x, double y) {
+double epsilonCrossDist() {
   return minVal(abs(x),abs(y));
 }
 
-double comboTrapDist(double x, double y) {
+double comboTrapDist() {
   return minVal(sqrt(x*x+y*y),abs(cos(x)));
 }
 
@@ -320,9 +320,9 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
             break;
           }
         } else if (alg ==5) {
-          if (epsilonCrossDist(x,y) < .015 && index > 0) {
+          if (epsilonCrossDist() < .015 && index > 0) {
             lessThanMax = 1;
-            mu = index - (epsilonCrossDist(x,y)/.002);
+            mu = index - (epsilonCrossDist()/.002);
           }
         } else {
           if (xsq+ysq > 16) {
@@ -339,16 +339,17 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
         
         switch (alg) {
           case 2: //Gaussian Integer Min Distance
-            distance = minVal(distance,gaussianIntDist(x,y,trapFactor));
+            distance = minVal(distance,gaussianIntDist());
             break;
           case 3: //Gaussian Integer Average Distance
-            distance += gaussianIntDist(x,y,trapFactor);
+            distance += gaussianIntDist();
             break;
           case 4: //Epsilon Cross Minimum Distance
-            distance = minVal(distance,epsilonCrossDist(x,y));
+            distance = minVal(distance,epsilonCrossDist());
             break;
           case 6: //Combo Trap
-            distance = minVal(distance,comboTrapDist(x,y));
+            distance = minVal(distance,comboTrapDist());
+            break;
           case 7: //TIA
             distance1 = distance;
             if (index > 0)
