@@ -234,10 +234,10 @@ double comboTrapDist() {
   return minVal(sqrt(x*x+y*y),abs(cos(x)));
 }
 
-double TIA(double x, double y, double prev_x, double prev_y, double P, double Q) {    
+double TIA() {    
   
-  double zr = prev_x*prev_x - prev_y*prev_y;
-  double zi = 2*prev_x*prev_y;
+  double zr = tia_prev_x*tia_prev_x - tia_prev_y*tia_prev_y;
+  double zi = 2*tia_prev_x*tia_prev_y;
   double z_mag = sqrt(zr*zr + zi*zi);
   double c_mag = sqrt(P*P + Q*Q);
   double mn = z_mag - c_mag;
@@ -353,7 +353,7 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
           case 7: //TIA
             distance1 = distance;
             if (index > 0)
-              distance += TIA(x,y,tia_prev_x,tia_prev_y,P,Q);  
+              distance += TIA(tia_prev_x,tia_prev_y,P,Q);  
         }
       }
       
