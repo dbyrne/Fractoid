@@ -157,6 +157,69 @@ JNIEXPORT jint JNICALL Java_byrne_fractal_NativeLib_getYRes(JNIEnv * env, jobjec
 }
 
 /***Helper functions***/
+
+void iterateZ() {
+  switch (equation) {
+    case 1:
+      xtmp = xsq - ysq + P;
+      y = (2*x*y) + Q;
+      break;
+    case 2:
+      xtmp = xsq*x - 3*x*ysq + P;
+      y = -ysq*y + 3*xsq*y + Q;
+      break;
+    case 3:
+      xtmp = xsq*xsq - 6*xsq*ysq + ysq*ysq + P;
+      y = 4*xsq*x*y - 4*x*ysq*y + Q;
+      break;
+    case 4:
+      xtmp = xsq*xsq*x-10*xsq*x*ysq+5*x*ysq*ysq + P;
+      y=(5*xsq*xsq*y-10*xsq*ysq*y+ysq*ysq*y) + Q;
+      break;
+    case 5:
+      xtmp = xsq*xsq*xsq-15*xsq*xsq*ysq+15*xsq*ysq*ysq-ysq*ysq*ysq + P;
+      y=(6*xsq*xsq*x*y-20*xsq*x*ysq*y+6*x*ysq*ysq*y) + Q;
+      break;
+    case 6:
+      xtmp = xsq*xsq - 6*xsq*ysq + ysq*ysq - (xsq*x - 3*x*ysq) - (xsq - ysq) + P;
+      y = 4*xsq*x*y - 4*x*ysq*y - (-ysq*y + 3*xsq*y) - (2*x*y) + Q;
+      break;
+    case 7:
+      xtmp = xsq*xsq*xsq-15*xsq*xsq*ysq+15*xsq*ysq*ysq-ysq*ysq*ysq - (xsq - ysq) + P;
+      y = (6*xsq*xsq*x*y-20*xsq*x*ysq*y+6*x*ysq*ysq*y) - (2*x*y) + Q;
+      break;
+    case 8:
+      xtmp = xsq - ysq + P;
+      y = (2*abs(x)*abs(y)) - Q;
+      break;
+    case 9:
+      tmp_prev_x = x;
+      tmp_prev_y = y;
+      xtmp = (xsq - ysq) + prev_x + P;
+      y = (2*x*y) + prev_y + Q;
+      prev_x = tmp_prev_x;
+      prev_y = tmp_prev_y;
+      break;
+    case 10:
+      tmp_prev_x = x;
+      tmp_prev_y = y;
+      xtmp = (xsq - ysq) + P + Q*prev_x;
+      y = (2*x*y) + Q*prev_y;
+      prev_x = tmp_prev_x;
+      prev_y = tmp_prev_y;
+      break;
+    case 11:
+      if (x >= 0) {
+        xtmp=(x-1)*P - y*Q;
+        y = (x-1)*Q + y*P;
+      } else {
+        xtmp=(x+1)*P - y*Q;
+        y = (x+1)*Q + y*P;
+      }
+  }
+  x = xtmp;
+}
+
 double gaussianIntDist(double x, double y, jint trapFactor) {
   double gint_x = round(x*trapFactor)/trapFactor;
   double gint_y = round(y*trapFactor)/trapFactor;
@@ -272,66 +335,7 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
           tia_prev_y = y;
         }
         
-        //TODO Refactoring needed.
-        switch (equation) {
-          case 1:
-            xtmp = xsq - ysq + P;
-            y = (2*x*y) + Q;
-            break;
-          case 2:
-            xtmp = xsq*x - 3*x*ysq + P;
-            y = -ysq*y + 3*xsq*y + Q;
-            break;
-          case 3:
-            xtmp = xsq*xsq - 6*xsq*ysq + ysq*ysq + P;
-            y = 4*xsq*x*y - 4*x*ysq*y + Q;
-            break;
-          case 4:
-            xtmp = xsq*xsq*x-10*xsq*x*ysq+5*x*ysq*ysq + P;
-            y=(5*xsq*xsq*y-10*xsq*ysq*y+ysq*ysq*y) + Q;
-            break;
-          case 5:
-            xtmp = xsq*xsq*xsq-15*xsq*xsq*ysq+15*xsq*ysq*ysq-ysq*ysq*ysq + P;
-            y=(6*xsq*xsq*x*y-20*xsq*x*ysq*y+6*x*ysq*ysq*y) + Q;
-            break;
-          case 6:
-            xtmp = xsq*xsq - 6*xsq*ysq + ysq*ysq - (xsq*x - 3*x*ysq) - (xsq - ysq) + P;
-            y = 4*xsq*x*y - 4*x*ysq*y - (-ysq*y + 3*xsq*y) - (2*x*y) + Q;
-            break;
-          case 7:
-            xtmp = xsq*xsq*xsq-15*xsq*xsq*ysq+15*xsq*ysq*ysq-ysq*ysq*ysq - (xsq - ysq) + P;
-            y = (6*xsq*xsq*x*y-20*xsq*x*ysq*y+6*x*ysq*ysq*y) - (2*x*y) + Q;
-            break;
-          case 8:
-            xtmp = xsq - ysq + P;
-            y = (2*abs(x)*abs(y)) - Q;
-            break;
-          case 9:
-            tmp_prev_x = x;
-            tmp_prev_y = y;
-            xtmp = (xsq - ysq) + prev_x + P;
-            y = (2*x*y) + prev_y + Q;
-            prev_x = tmp_prev_x;
-            prev_y = tmp_prev_y;
-            break;
-          case 10:
-            tmp_prev_x = x;
-            tmp_prev_y = y;
-            xtmp = (xsq - ysq) + P + Q*prev_x;
-            y = (2*x*y) + Q*prev_y;
-            prev_x = tmp_prev_x;
-            prev_y = tmp_prev_y;
-            break;
-          case 11:
-            if (x >= 0) {
-              xtmp=(x-1)*P - y*Q;
-              y = (x-1)*Q + y*P;
-            } else {
-              xtmp=(x+1)*P - y*Q;
-              y = (x+1)*Q + y*P;              
-            }
-        }
-        x = xtmp;
+        iterateZ();
         
         switch (alg) {
           case 2: //Gaussian Integer Min Distance
