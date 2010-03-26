@@ -160,39 +160,39 @@ JNIEXPORT jint JNICALL Java_byrne_fractal_NativeLib_getYRes(JNIEnv * env, jobjec
 
 void iterateZ() {
   switch (equation) {
-    case 1:
+    case 1: //Mandelbrot
       xtmp = xsq - ysq;
       y = (2*x*y);
       break;
-    case 2:
+    case 2: //Cubic Mandelbrot
       xtmp = xsq*x - 3*x*ysq;
       y = -ysq*y + 3*xsq*y;
       break;
-    case 3:
+    case 3: //Quartic Mandelbrot
       xtmp = xsq*xsq - 6*xsq*ysq + ysq*ysq;
       y = 4*xsq*x*y - 4*x*ysq*y;
       break;
-    case 4:
+    case 4: //Quintic Mandelbrot
       xtmp = xsq*xsq*x-10*xsq*x*ysq+5*x*ysq*ysq;
       y=(5*xsq*xsq*y-10*xsq*ysq*y+ysq*ysq*y);
       break;
-    case 5:
+    case 5: //Sextic Mandelbrot
       xtmp = xsq*xsq*xsq-15*xsq*xsq*ysq+15*xsq*ysq*ysq-ysq*ysq*ysq;
       y=(6*xsq*xsq*x*y-20*xsq*x*ysq*y+6*x*ysq*ysq*y);
       break;
-    case 6:
+    case 6: // Z^4 - Z^3 - Z^2 + C
       xtmp = xsq*xsq - 6*xsq*ysq + ysq*ysq - (xsq*x - 3*x*ysq) - (xsq - ysq);
       y = 4*xsq*x*y - 4*x*ysq*y - (-ysq*y + 3*xsq*y) - (2*x*y);
       break;
-    case 7:
+    case 7: // Z^6 - Z^2 + C
       xtmp = xsq*xsq*xsq-15*xsq*xsq*ysq+15*xsq*ysq*ysq-ysq*ysq*ysq - (xsq - ysq);
       y = (6*xsq*xsq*x*y-20*xsq*x*ysq*y+6*x*ysq*ysq*y) - (2*x*y);
       break;
-    case 8:
+    case 8: //Burning Ship
       xtmp = xsq - ysq;
       y = (2*abs(x)*abs(y));
       break;
-    case 9:
+    case 9: //Manowar
       tmp_prev_x = x;
       tmp_prev_y = y;
       xtmp = (xsq - ysq) + prev_x;
@@ -200,13 +200,13 @@ void iterateZ() {
       prev_x = tmp_prev_x;
       prev_y = tmp_prev_y;
       break;
-    case 10:
+    case 10: //Phoenix Julia
       tmp_prev_x = x;
       tmp_prev_y = y;
       xtmp = xsq - ysq;
       y = 2*x*y;
       break;
-    case 11:
+    case 11: //Barnsley
       if (x >= 0) {
         xtmp=(x-1)*P;
         ytmp = (x-1)*Q;
@@ -354,10 +354,12 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
         }
         
         iterateZ();
+        
         if (alg == 7) {
           tia_prev_x = x;
           tia_prev_y = y;
         }
+        
         addC();
         
         switch (alg) {
@@ -383,7 +385,7 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
       if (alg==3) { //Gaussian Integer average
         values[row][col] = maxVal(1,(int)(((distance/(index+1))/(SQRT_OF_TWO/trapFactor))*10200));
         minimum = minVal(minimum,values[row][col]);
-      } else if (alg==7) {
+      } else if (alg==7) { //TIA
         if (lessThanMax) {
           distance1 = distance1/(index-1);
           distance = distance/index;        
@@ -393,19 +395,19 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
         } else {
           values[row][col] = -1;
         }
-      } else if (alg==2) {
+      } else if (alg==2) { //Gaussian Int Min Distance
         values[row][col] = maxVal(1,(int)((distance/(SQRT_OF_TWO/trapFactor))*10200));
         minimum = minVal(minimum,values[row][col]);
-      } else if (alg == 4 || alg == 6) {
+      } else if (alg == 4 || alg == 6) { //Epsilon Cross Min Dist and Combo Trap
         values[row][col] = maxVal(1,(int)(log(1+distance) * 20400));
         minimum = minVal(minimum,values[row][col]);
-      } else if (lessThanMax == 1) {
+      } else if (lessThanMax == 1) { //Mandelbrot Divergent
         //char s[20];
         //sprintf(s,"%d",mu);
         //__android_log_write(ANDROID_LOG_DEBUG,"FRACTOID_DEBUG",s);
         values[row][col] = maxVal(1,((int)(mu*200)));
         minimum = minVal(minimum,values[row][col]);
-      } else {
+      } else { //Mandelbrot Convergent
         values[row][col] = -1;
       }
       maximum = maxVal(maximum,values[row][col]);

@@ -68,6 +68,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     mFractoid = f;
   }
 
+  //TODO: Needs some refactoring
   private void calculateColors(int numberOfColors) {
     
     double red, green, blue;
@@ -238,6 +239,8 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     double realmax = mNativeLib.getRealMax();
     double realRange = Math.abs(realmax-realmin);
     double imagRange = Math.abs(imagmax-imagmin);
+    double half_irange = imagRange/2;
+    double half_rrange = realRange/2;
     
     double centerX = (double)fractalBitmap.getCenterX();
     double centerY = (double)fractalBitmap.getCenterY();
@@ -246,8 +249,8 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     double xres = (double)mNativeLib.getXRes();
     double yres = (double)mNativeLib.getYRes();
 
-    double offsetX = realmin + realRange/2;
-    double offsetY = imagmin + imagRange/2;
+    double offsetX = realmin + half_rrange;
+    double offsetY = imagmin + half_irange;
     
     realmin = realmin - offsetX;
     realmax = realmax - offsetX;
@@ -257,10 +260,10 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     double image_y_center = (imagmin + (centerY/yres)*imagRange)/scale;
     double image_x_center = (realmax - (centerX/xres)*realRange)/scale;
     
-    imagmax = image_y_center + (imagRange/2)/scale;
-    imagmin = image_y_center - (imagRange/2)/scale;
-    realmin = image_x_center - (realRange/2)/scale; 
-    realmax = image_x_center + (realRange/2)/scale;
+    imagmax = image_y_center + half_irange/scale;
+    imagmin = image_y_center - half_irange/scale;
+    realmin = image_x_center - half_rrange/scale; 
+    realmax = image_x_center + half_rrange/scale;
 
     realmin = realmin + offsetX;
     realmax = realmax + offsetX;
@@ -386,7 +389,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
       */
       mNativeLib.setFractalType(FractalType.JULIA.getInt());
       fractalType = FractalType.JULIA;
-      mNativeLib.setCValue(0.56666667,-0.5);
+      mNativeLib.setCValue(0.56666667,-0.5); //magic number for the best julia set
       mNativeLib.setMaxIterations(100);
       maxIterations = 100;
     }
@@ -559,6 +562,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     }
   }
   
+  //Modified class from some of Luke Hutchison's sample code
   class Img {
 
     private BitmapDrawable drawable;

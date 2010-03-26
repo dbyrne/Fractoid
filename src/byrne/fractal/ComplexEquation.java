@@ -39,10 +39,12 @@ public enum ComplexEquation {
     power = p;
   }
   
+  //Used for passing equation to native code
   int getInt() {
     return native_integer;
   }
   
+  //Used for color smoothing
   int getPower() {
     return power;
   }
