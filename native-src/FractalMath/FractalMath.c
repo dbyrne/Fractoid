@@ -337,8 +337,8 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
             }
           }
         } else if (alg == 7) {
-          if (xsq + ysq > 250000) {
-            mu = (log(log(500)) - log(log(sqrt(xsq + ysq))))/log(power) + 1;
+          if (xsq + ysq > 40000) {
+            mu = (log(log(200)) - log(log(sqrt(xsq + ysq))))/log(power) + 1;
             lessThanMax = 1;
             break;
           }
