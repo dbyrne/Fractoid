@@ -200,13 +200,17 @@ void iterateZ() {
       prev_x = tmp_prev_x;
       prev_y = tmp_prev_y;
       break;
-    case 10: //Phoenix Julia
+    case 10: //Rudy's Cubic Mandelbrot
+      xtmp = xsq*x - 3*x*ysq + (-0.7198*x - 0.9111*y);
+      y = -ysq*y + 3*xsq*y + (-0.7198*y + 0.9111*x);
+      break;
+    case 11: //Phoenix Julia
       tmp_prev_x = x;
       tmp_prev_y = y;
       xtmp = xsq - ysq;
       y = 2*x*y;
       break;
-    case 11: //Barnsley
+    case 12: //Barnsley
       if (x >= 0) {
         xtmp=(x-1)*P;
         ytmp = (x-1)*Q;
@@ -219,15 +223,15 @@ void iterateZ() {
 }
 
 double addC() {
-  if (equation < 10) { 
+  if (equation < 11) { 
     x += P;
     y -= Q;
-  } else if (equation == 10) { //Phoenix Julia
+  } else if (equation == 11) { //Phoenix Julia
     x += P + Q*prev_x;
     y += Q*prev_y;
     prev_x = tmp_prev_x;
     prev_y = tmp_prev_y;
-  } else if (equation == 11) { //Barnsley
+  } else if (equation == 12) { //Barnsley
     x -= y*Q;
     ytmp += y*P;
     y=ytmp;
@@ -252,13 +256,13 @@ double TIA() {
   
   double z_mag = sqrt(tia_prev_x*tia_prev_x + tia_prev_y*tia_prev_y);
   double c_mag;
-  if (equation < 10) {
+  if (equation < 11) {
     c_mag = sqrt(P*P + Q*Q);
-  } else if (equation == 10) { //Phoenix Julia
+  } else if (equation == 11) { //Phoenix Julia
     double rt = P + Q*prev_x;
     double it = Q*prev_y;
     c_mag = sqrt(rt*rt + it*it);
-  } else if (equation == 11) { //Barnsley
+  } else if (equation == 12) { //Barnsley
     double rt = y*Q;
     double it = y*P;
     c_mag = sqrt(rt*rt + it*it);
