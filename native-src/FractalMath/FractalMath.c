@@ -37,7 +37,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 int lessThanMax, xres=-1, yres=-1, equation,power,max=40,currentRow,rowsCached;
 int trapFactor=1, fractalType=1, alg,minimum = 99999,maximum = 0;
-double realmin, realmax, imagmin, imagmax,P,Q,deltaP,deltaQ,LOG_OF_TWO,SQRT_OF_TWO;
+double realmin, realmax, imagmin, imagmax,P,Q,deltaP,deltaQ,LOG_OF_TWO,SQRT_OF_TWO,d_real,d_imag;
 double xtmp,ytmp,x=-1,y=-1,prev_x=-1,tia_prev_x=-1,tia_prev_y=-1,prev_y=-1,tmp_prev_x,tmp_prev_y,mu=1,xsq,ysq,rnv,inv,rdv,idv;
 
 int** values;
@@ -94,6 +94,10 @@ JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_setEquation
 (JNIEnv * env, jobject obj, jint jequation, jint jpower) {
   equation = jequation;
   power = jpower;
+  if (equation == 10) {
+    d_real = (((double)(rand() % 2000))/1000)-1;
+    d_imag = (((double)(rand() % 2000))/1000)-1;
+  }
 }
 
 JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_setMaxIterations
@@ -201,8 +205,8 @@ void iterateZ() {
       prev_y = tmp_prev_y;
       break;
     case 10: //Rudy's Cubic Mandelbrot
-      xtmp = xsq*x - 3*x*ysq + (-0.7198*x - 0.9111*y);
-      y = -ysq*y + 3*xsq*y + (-0.7198*y + 0.9111*x);
+      xtmp = xsq*x - 3*x*ysq + (-d_real*x - d_imag*y);
+      y = -ysq*y + 3*xsq*y + (-d_real*y + -d_imag*x);
       break;
     case 11: //Phoenix Julia
       tmp_prev_x = x;
