@@ -249,7 +249,7 @@ double epsilonCrossDist() {
 }
 
 double slope() {
-  return minVal(abs(y/x),2);
+  return minVal(abs(y/x),1);
 }
 
 double TIA() {    
@@ -342,7 +342,6 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
         } else if (alg == 7 || alg == 3 || alg == 6) {
           if (xsq + ysq > 40000) {
             mu = (log(log(200)) - log(log(sqrt(xsq + ysq))))/log(power) + 1;
-            lessThanMax = 1;
             break;
           }
         } else if (alg ==5) {
@@ -394,16 +393,13 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
         minimum = minVal(minimum,values[row][col]);
       }*/
       if (alg==7 || alg==3 || alg == 6) { //Average Coloring
-        if (lessThanMax || alg == 3 || alg == 6) {
-          distance1 = distance1/(index-1);
-          distance = distance/index;
+        distance1 = distance1/(index-1);
+        distance = distance/index;
           
-          values[row][col] = (int)((mu*distance + (1-mu)*distance1)*10200);
+        values[row][col] = (int)((mu*distance + (1-mu)*distance1)*10200);
 
-          minimum = minVal(minimum,values[row][col]);
-        } else {
-          values[row][col] = -1;
-        }
+        minimum = minVal(minimum,values[row][col]);
+
       } else if (alg==2) { //Gaussian Int Min Distance
         values[row][col] = maxVal(1,(int)((distance/(SQRT_OF_TWO/trapFactor))*10200));
         minimum = minVal(minimum,values[row][col]);
