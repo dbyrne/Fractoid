@@ -248,8 +248,8 @@ double epsilonCrossDist() {
   return minVal(abs(x),abs(y));
 }
 
-double comboTrapDist() {
-  return minVal(sqrt(x*x+y*y),abs(cos(x)));
+double slope() {
+  return minVal(abs(y/x),2);
 }
 
 double TIA() {    
@@ -315,10 +315,9 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
       }
   
       lessThanMax = 0;
-  
       int extraIterations = 0;
       double distance,distance1;
-      if (alg == 2 || alg == 4  || alg == 6)
+      if (alg == 2 || alg == 4)
         distance = 99;
       else
         distance = 0;
@@ -340,7 +339,7 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
               index--;
             }
           }
-        } else if (alg == 7 || alg == 3) {
+        } else if (alg == 7 || alg == 3 || alg == 6) {
           if (xsq + ysq > 40000) {
             mu = (log(log(200)) - log(log(sqrt(xsq + ysq))))/log(power) + 1;
             lessThanMax = 1;
@@ -378,13 +377,15 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
           case 4: //Epsilon Cross Minimum Distance
             distance = minVal(distance,epsilonCrossDist());
             break;
-          case 6: //Combo Trap
-            distance = minVal(distance,comboTrapDist());
+          case 6:
+            distance1 = distance;
+            if (index > 0)
+              distance += slope();
             break;
           case 7: //TIA
             distance1 = distance;
             if (index > 0)
-              distance += TIA(tia_prev_x,tia_prev_y,P,Q);  
+              distance += TIA();  
         }
       }
       
@@ -392,12 +393,13 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
         values[row][col] = maxVal(1,(int)(((distance/(index+1))/(SQRT_OF_TWO/trapFactor))*10200));
         minimum = minVal(minimum,values[row][col]);
       }*/
-      if (alg==7 || alg==3) { //TIA
-        if (lessThanMax || alg == 3) {
+      if (alg==7 || alg==3 || alg == 6) { //Average Coloring
+        if (lessThanMax || alg == 3 || alg == 6) {
           distance1 = distance1/(index-1);
-          distance = distance/index;        
-        
+          distance = distance/index;
+          
           values[row][col] = (int)((mu*distance + (1-mu)*distance1)*10200);
+
           minimum = minVal(minimum,values[row][col]);
         } else {
           values[row][col] = -1;
@@ -405,7 +407,7 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
       } else if (alg==2) { //Gaussian Int Min Distance
         values[row][col] = maxVal(1,(int)((distance/(SQRT_OF_TWO/trapFactor))*10200));
         minimum = minVal(minimum,values[row][col]);
-      } else if (alg == 4 || alg == 6) { //Epsilon Cross Min Dist and Combo Trap
+      } else if (alg == 4) { //Epsilon Cross Min Dist
         values[row][col] = maxVal(1,(int)(log(1+distance) * 20400));
         minimum = minVal(minimum,values[row][col]);
       } else if (lessThanMax == 1) { //Mandelbrot Divergent
