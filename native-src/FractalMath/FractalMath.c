@@ -339,9 +339,10 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
               index--;
             }
           }
-        } else if (alg == 7 || alg == 3 || alg == 6) {
+        } else if (alg == 7 || alg == 3 || alg == 6 || alg == 2) {
           if (xsq + ysq > 40000) {
             mu = (log(log(200)) - log(log(sqrt(xsq + ysq))))/log(power) + 1;
+            lessThanMax = 1;
             break;
           }
         } else if (alg ==5) {
@@ -366,7 +367,9 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
         
         switch (alg) {
           case 2: //Gaussian Integer Min Distance
-            distance = minVal(distance,gaussianIntDist());
+            distance1 = distance;
+            if (index > 0)
+              distance = minVal(distance,gaussianIntDist());
             break;
           case 3: //Gaussian Integer Average Distance
             distance1 = distance;
@@ -392,7 +395,7 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
         values[row][col] = maxVal(1,(int)(((distance/(index+1))/(SQRT_OF_TWO/trapFactor))*10200));
         minimum = minVal(minimum,values[row][col]);
       }*/
-      if (alg==7 || alg==3 || alg == 6) { //Average Coloring
+      if ((alg==7 || alg==3 || alg == 6) && lessThanMax == 1) { //Average Coloring
         distance1 = distance1/(index-1);
         distance = distance/index;
           
@@ -401,7 +404,8 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
         minimum = minVal(minimum,values[row][col]);
 
       } else if (alg==2) { //Gaussian Int Min Distance
-        values[row][col] = maxVal(1,(int)((distance/(SQRT_OF_TWO/trapFactor))*10200));
+        values[row][col] = (int)((mu*distance + (1-mu)*distance1)*10200);
+
         minimum = minVal(minimum,values[row][col]);
       } else if (alg == 4) { //Epsilon Cross Min Dist
         values[row][col] = maxVal(1,(int)(log(1+distance) * 20400));
