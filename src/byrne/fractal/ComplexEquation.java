@@ -30,8 +30,7 @@ public enum ComplexEquation {
   BURNING_SHIP(8,2),
   MANOWAR(9,2),
   RUDY(10,3),
-  PHOENIX(11,2),
-  BARNSLEY(12,2);
+  PHOENIX(11,2);
 
   
   private int power, native_integer;

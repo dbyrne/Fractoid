@@ -209,15 +209,6 @@ void iterateZ() {
       tmp_prev_y = y;
       xtmp = xsq - ysq;
       y = 2*x*y;
-      break;
-    case 12: //Barnsley
-      if (x >= 0) {
-        xtmp=(x-1)*P;
-        ytmp = (x-1)*Q;
-      } else {
-        xtmp=(x+1)*P;
-        ytmp = (x+1)*Q;
-      }
   }
   x = xtmp;
 }
@@ -231,10 +222,6 @@ double addC() {
     y += Q*prev_y;
     prev_x = tmp_prev_x;
     prev_y = tmp_prev_y;
-  } else if (equation == 12) { //Barnsley
-    x -= y*Q;
-    ytmp += y*P;
-    y=ytmp;
   }
 }
 
@@ -261,10 +248,6 @@ double TIA() {
   } else if (equation == 11) { //Phoenix Julia
     double rt = P + Q*prev_x;
     double it = Q*prev_y;
-    c_mag = sqrt(rt*rt + it*it);
-  } else if (equation == 12) { //Barnsley
-    double rt = y*Q;
-    double it = y*P;
     c_mag = sqrt(rt*rt + it*it);
   }
   double mn = z_mag - c_mag;
