@@ -79,8 +79,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                       android:title="Burning Ship: (|Re(Z(n))| + |Im(Z(n))|)^2 + C"/>
                 <item android:id="@+id/manowar_button"
                       android:title="Manowar: Z(n)^2 + Z(n-1) + C"/>
-                <item android:id="@+id/barnsley_button"
-                      android:title="Barnsley Mandelbrot"/>
                 <item android:id="@+id/rudy_button"
                       android:title="Rudy's Cubic Mandelbrot: Z(n)^2 + D * Z(n) + C"/>
                 <item android:id="@+id/z4z3z2_button"
