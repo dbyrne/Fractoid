@@ -38,7 +38,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 int lessThanMax, xres=-1, yres=-1, equation,power,max=40,currentRow,rowsCached;
 int trapFactor=1, fractalType=1, alg,minimum = 99999,maximum = 0;
 double realmin, realmax, imagmin, imagmax,P,Q,deltaP,deltaQ,LOG_OF_TWO,SQRT_OF_TWO;
-double xtmp,ytmp,x=-1,y=-1,prev_x=-1,tia_prev_x=-1,tia_prev_y=-1,prev_y=-1,tmp_prev_x,tmp_prev_y,mu=1,xsq,ysq,rnv,inv,rdv,idv;
+double xtmp,ytmp,x=-1,y=-1,prev_x_2,prev_y_2,prev_x=-1,prev_y=-1,tia_prev_x=-1,tia_prev_y=-1,tmp_prev_x,tmp_prev_y,mu=1,xsq,ysq,rnv,inv,rdv,idv;
 
 int** values;
 
@@ -162,7 +162,7 @@ void iterateZ() {
   switch (equation) {
     case 1: //Mandelbrot
       xtmp = xsq - ysq;
-      y = (2*x*y);
+      y = 2*x*y;
       break;
     case 2: //Cubic Mandelbrot
       xtmp = xsq*x - 3*x*ysq;
@@ -193,20 +193,16 @@ void iterateZ() {
       y = (2*abs(x)*abs(y));
       break;
     case 9: //Manowar
-      tmp_prev_x = x;
-      tmp_prev_y = y;
+
       xtmp = (xsq - ysq) + prev_x;
       y = (2*x*y) + prev_y;
-      prev_x = tmp_prev_x;
-      prev_y = tmp_prev_y;
+
       break;
     case 10: //Rudy's Cubic Mandelbrot
       xtmp = xsq*x - 3*x*ysq + (-0.7198*x - 0.9111*y);
       y = -ysq*y + 3*xsq*y + (-0.7198*y + 0.9111*x);
       break;
     case 11: //Phoenix Julia
-      tmp_prev_x = x;
-      tmp_prev_y = y;
       xtmp = xsq - ysq;
       y = 2*x*y;
   }
@@ -220,8 +216,6 @@ double addC() {
   } else if (equation == 11) { //Phoenix Julia
     x += P + Q*prev_x;
     y += Q*prev_y;
-    prev_x = tmp_prev_x;
-    prev_y = tmp_prev_y;
   }
 }
 
@@ -235,8 +229,17 @@ double epsilonCrossDist() {
   return minVal(abs(x),abs(y));
 }
 
-double slope() {
-  return minVal(abs(y/x),1);
+double curve_est() {
+  //return minVal(abs(y/x),1);
+  double num_x = x - prev_x;
+  double num_y = y - prev_y;
+  double den_x = prev_x - prev_x_2;
+  double den_y = prev_y - prev_y_2;
+  double denom = (den_x*den_x + den_y*den_y);
+  double real = (num_x*den_x + num_y*den_y)/denom;
+  double imag = (den_x*num_y - den_y*num_x)/denom;
+  return (abs(atan2(imag,real))/M_PI);
+
 }
 
 double TIA() {    
@@ -289,12 +292,12 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
     
         P = realmin + col*deltaP;
         x = y = 0.0;
-        prev_x = prev_y = 0.0;
+        prev_x = prev_y = prev_x_2 = prev_y_2 = 0.0;
       } else { //Julia
         x = realmin + (double)col * deltaP;
         y = imagmax - (double)row * deltaQ;
-        prev_x = x;
-        prev_y = y;
+        prev_x = prev_x_2 = x;
+        prev_y = prev_y_2 = y;
       }
   
       lessThanMax = 0;
@@ -338,16 +341,24 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
             break;
           }
         }
+  
+        tmp_prev_x = x;
+        tmp_prev_y = y;
         
         iterateZ();
-        
+
         if (alg == 7) {
           tia_prev_x = x;
           tia_prev_y = y;
         }
         
         addC();
-        
+
+        prev_x_2 = prev_x;
+        prev_y_2 = prev_y;
+        prev_x = tmp_prev_x;
+        prev_y = tmp_prev_y;
+
         switch (alg) {
           case 2: //Gaussian Integer Min Distance
             distance1 = distance;
@@ -362,10 +373,10 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
           case 4: //Epsilon Cross Minimum Distance
             distance = minVal(distance,epsilonCrossDist());
             break;
-          case 6:
+          case 6: //Curvature_Estimation
             distance1 = distance;
-            if (index > 0)
-              distance += slope();
+            if (index > 1)
+              distance += curve_est();
             break;
           case 7: //TIA
             distance1 = distance;
