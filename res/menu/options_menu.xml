@@ -106,8 +106,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                       android:title="Epsilon Cross Minimum Distance"/>
                 <item android:id="@+id/epsilon_cross_bailout_button"
                       android:title="Epsilon Cross Bailout"/>
-                <item android:id="@+id/combo_trap_button"
-                      android:title="Combo Orbit Trap"/>
+                <item android:id="@+id/curvature_est_button"
+                      android:title="Curvature Estimation"/>
             </group>
         </menu>
     </item>    

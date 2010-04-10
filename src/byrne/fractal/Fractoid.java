@@ -362,8 +362,8 @@ public class Fractoid extends Activity {
     case R.id.epsilon_cross_bailout_button:
       switchAlgorithm(item,Algorithm.EPSILON_CROSS_BAILOUT);
       return true;
-    case R.id.combo_trap_button:
-      switchAlgorithm(item,Algorithm.COMBO_TRAP);
+    case R.id.curvature_est_button:
+      switchAlgorithm(item,Algorithm.CURVATURE_ESTIMATION);
       return true;
 
     case R.id.share_button:
