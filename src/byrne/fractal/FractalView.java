@@ -137,15 +137,19 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
         }
         break;
       
-      case RED:
+      case CAMPFIRE:
         for (int x = 0; x < numberOfColors; x++) {
-          int value = (x%1020)/2;
+          int value = (x%1020);
           int color;
-          if (value <= 255)
-            color = value;
-          else
-            color = 255-(value-255);
-          colorIntegers[x] = Color.rgb(color,0,0);
+          if (value <= 255) {
+            colorIntegers[x] = Color.rgb(value,0,0);
+          } else if (value <= 510) {
+            colorIntegers[x] = Color.rgb(255,value-255,0);
+          } else if (value <= 765) {
+            colorIntegers[x] = Color.rgb(255,765-value,0); 
+          } else {
+            colorIntegers[x] = Color.rgb(1020-value,0,0);
+          }
         }
         break;
       
