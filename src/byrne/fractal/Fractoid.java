@@ -365,6 +365,9 @@ public class Fractoid extends Activity {
     case R.id.curvature_est_button:
       switchAlgorithm(item,Algorithm.CURVATURE_ESTIMATION);
       return true;
+    case R.id.stripes_button:
+      switchAlgorithm(item,Algorithm.STRIPES);
+      return true;
 
     case R.id.share_button:
       //TODO Find a way to share image without saving it first

@@ -229,8 +229,13 @@ double epsilonCrossDist() {
   return minVal(abs(x),abs(y));
 }
 
+double stripes() {
+  //double rad = sin(5.0 * log(sqrt(x*x+y*y)));
+  double ang = sin(4 * atan2(y,x));
+  return 0.5 + 0.5*(ang);
+}
+  
 double curve_est() {
-  //return minVal(abs(y/x),1);
   double num_x = x - prev_x;
   double num_y = y - prev_y;
   double den_x = prev_x - prev_x_2;
@@ -325,7 +330,7 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
               index--;
             }
           }
-        } else if (alg == 7 || alg == 3 || alg == 6 || alg == 2) {
+        } else if (alg == 8 || alg == 7 || alg == 3 || alg == 6 || alg == 2) {
           if (xsq + ysq > 40000) {
             mu = (log(log(200)) - log(log(sqrt(xsq + ysq))))/log(power) + 1;
             lessThanMax = 1;
@@ -381,7 +386,12 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
           case 7: //TIA
             distance1 = distance;
             if (index > 0)
-              distance += TIA();  
+              distance += TIA();
+            break;
+          case 8: //Stripes
+            distance1 = distance;
+            if (index > 0)
+              distance += stripes();
         }
       }
       
@@ -389,7 +399,7 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
         values[row][col] = maxVal(1,(int)(((distance/(index+1))/(SQRT_OF_TWO/trapFactor))*10200));
         minimum = minVal(minimum,values[row][col]);
       }*/
-      if ((alg==7 || alg==3 || alg == 6) && lessThanMax == 1) { //Average Coloring
+      if ((alg == 8 || alg == 7 || alg==3 || alg == 6) && lessThanMax == 1) { //Average Coloring
         distance1 = distance1/(index-1);
         distance = distance/index;
           
