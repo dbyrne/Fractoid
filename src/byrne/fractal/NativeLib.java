@@ -31,7 +31,7 @@ class NativeLib {
   public native void setMaxIterations(int max);
   public native void setTrapFactor(int trapFactor);
   public native void setFractalType(int type);
-  public native void setAlgorithm(int alg);
+  public native void setAlgorithm(int alg, int bailout);
   public native void setCValue(double P, double Q);
   
   public native int[] getFractalRow(int row, int state);

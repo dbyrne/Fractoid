@@ -82,10 +82,10 @@ JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_setFractalType
 /*
  * Class:     byrne_fractal_NativeLib
  * Method:    setAlgorithm
- * Signature: (I)V
+ * Signature: (II)V
  */
 JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_setAlgorithm
-  (JNIEnv *, jobject, jint);
+  (JNIEnv *, jobject, jint, jint);
 
 /*
  * Class:     byrne_fractal_NativeLib

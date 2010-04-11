@@ -36,7 +36,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endif
 
 int lessThanMax, xres=-1, yres=-1, equation,power,max=40,currentRow,rowsCached;
-int trapFactor=1, fractalType=1, alg,minimum = 99999,maximum = 0;
+int trapFactor=1, fractalType=1, alg,minimum = 99999,maximum = 0,bailout,bsq;
 double realmin, realmax, imagmin, imagmax,P,Q,deltaP,deltaQ,LOG_OF_TWO,SQRT_OF_TWO;
 double xtmp,ytmp,x=-1,y=-1,prev_x_2,prev_y_2,prev_x=-1,prev_y=-1,tia_prev_x=-1,tia_prev_y=-1,tmp_prev_x,tmp_prev_y,mu=1,xsq,ysq,rnv,inv,rdv,idv;
 
@@ -61,6 +61,8 @@ JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_resetValues
   if (values == NULL) {
     int r;
     alg = 1;
+    bailout = 2;
+    bsq = 4;
     equation = 1;
     power = 2;
     values = (int**) malloc(yres * sizeof(int*));
@@ -117,8 +119,10 @@ JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_setFractalType
 }
 
 JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_setAlgorithm
-(JNIEnv * env, jobject obj, jint jalg) {
+(JNIEnv * env, jobject obj, jint jalg, jint jbailout) {
   alg = jalg;
+  bailout = jbailout;
+  bsq = bailout*bailout;
 }
 
 JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_setCValue
@@ -320,7 +324,7 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
         ysq = y*y;
   
         if (alg == 1) {
-          if (xsq + ysq > 4) {
+          if (xsq + ysq > bsq) {
             if (extraIterations == 2) {
               mu = index + 2 - (log(log(sqrt(xsq + ysq))/LOG_OF_TWO)/log(power));  
               lessThanMax = 1;
@@ -330,9 +334,10 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
               index--;
             }
           }
-        } else if (alg == 8 || alg == 7 || alg == 3 || alg == 6 || alg == 2) {
-          if (xsq + ysq > 40000) {
-            mu = (log(log(200)) - log(log(sqrt(xsq + ysq))))/log(power) + 1;
+        } else if (alg == 8 || alg == 7 || alg == 6 || alg == 2 || alg == 3) {
+          
+          if (xsq + ysq > bsq) {
+            mu = (log(log(bailout)) - log(log(sqrt(xsq + ysq))))/log(power) + 1;
             lessThanMax = 1;
             break;
           }
@@ -342,7 +347,7 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
             mu = index - (epsilonCrossDist()/.002);
           }
         } else {
-          if (xsq+ysq > 16) {
+          if (xsq+ysq > bsq) {
             break;
           }
         }
@@ -367,13 +372,11 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
         switch (alg) {
           case 2: //Gaussian Integer Min Distance
             distance1 = distance;
-            if (index > 0)
-              distance = minVal(distance,gaussianIntDist());
+            distance = minVal(distance,gaussianIntDist());
             break;
           case 3: //Gaussian Integer Average Distance
             distance1 = distance;
-            if (index > 0)
-              distance += gaussianIntDist();
+            distance += gaussianIntDist();
             break;
           case 4: //Epsilon Cross Minimum Distance
             distance = minVal(distance,epsilonCrossDist());
@@ -390,16 +393,11 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
             break;
           case 8: //Stripes
             distance1 = distance;
-            if (index > 0)
-              distance += stripes();
+            distance += stripes();
         }
       }
       
-      /* if (alg==3) { //Gaussian Integer average
-        values[row][col] = maxVal(1,(int)(((distance/(index+1))/(SQRT_OF_TWO/trapFactor))*10200));
-        minimum = minVal(minimum,values[row][col]);
-      }*/
-      if ((alg == 8 || alg == 7 || alg==3 || alg == 6) && lessThanMax == 1) { //Average Coloring
+      if ((alg == 8 || alg == 7 || (alg==3 && lessThanMax == 1) || (alg == 6 && lessThanMax == 1))) { //Average Coloring
         distance1 = distance1/(index-1);
         distance = distance/index;
           

@@ -39,7 +39,7 @@ public enum ComplexEquation {
     native_integer = i;
     power = p;
   }
-  
+
   //Used for passing equation to native code
   int getInt() {
     return native_integer;

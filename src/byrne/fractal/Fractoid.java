@@ -91,6 +91,7 @@ public class Fractoid extends Activity {
 	fractalView.postInvalidate();
       }
     });
+    
     Eula.showEula(this);
   }
   

@@ -21,15 +21,20 @@ package byrne.fractal;
 
 public enum Algorithm {
 
-  ESCAPE_TIME(1),GAUSSIAN_MINIMUM(2),GAUSSIAN_AVERAGE(3),
-  EPSILON_CROSS(4),EPSILON_CROSS_BAILOUT(5),CURVATURE_ESTIMATION(6),TRIANGLE_INEQUALITY(7),STRIPES(8);
-  private int native_integer;
+  ESCAPE_TIME(1,2),GAUSSIAN_MINIMUM(2,16),GAUSSIAN_AVERAGE(3,16),
+  EPSILON_CROSS(4,4),EPSILON_CROSS_BAILOUT(5,4),CURVATURE_ESTIMATION(6,200),TRIANGLE_INEQUALITY(7,200),STRIPES(8,200);
+  private int native_integer,bailout;
   
-  Algorithm(int i) {
+  Algorithm(int i,int b) {
     native_integer = i;
+    bailout = b;
   }
   
   int getInt() {
     return native_integer;
+  }
+  
+  int getBailout() {
+    return bailout;
   }
 }
