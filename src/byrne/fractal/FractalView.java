@@ -68,9 +68,39 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     mFractoid = f;
   }
 
+  private void quadColorScheme(int numberOfColors,int[] color1,int[] color2,int[] color3,int[] color4) {
+    
+    for (int x = 0; x < numberOfColors; x++) {
+      int value = (x%1020);
+      int color;
+      if (value <= 255) {
+        colorIntegers[x] = Color.rgb((int)((double)((color2[0]-color1[0])/255.0)*value + color1[0]),
+                                     (int)((double)((color2[1]-color1[1])/255.0)*value + color1[1]),
+                                     (int)((double)((color2[2]-color1[2])/255.0)*value + color1[2])
+                                    );
+      } else if (value <= 510) {
+        colorIntegers[x] = Color.rgb((int)((double)((color3[0]-color2[0])/255.0)*(value-255) + color2[0]),
+                                     (int)((double)((color3[1]-color2[1])/255.0)*(value-255) + color2[1]),
+                                     (int)((double)((color3[2]-color2[2])/255.0)*(value-255) + color2[2])
+                                    );
+      } else if (value <= 765) {
+        colorIntegers[x] = Color.rgb((int)((double)((color4[0]-color3[0])/255.0)*(value-510) + color3[0]),
+                                     (int)((double)((color4[1]-color3[1])/255.0)*(value-510) + color3[1]),
+                                     (int)((double)((color4[2]-color3[2])/255.0)*(value-510) + color3[2])
+                                    ); 
+      } else {
+        colorIntegers[x] = Color.rgb((int)((double)((color1[0]-color4[0])/255.0)*(value-765) + color4[0]),
+                                     (int)((double)((color1[1]-color4[1])/255.0)*(value-765) + color4[1]),
+                                     (int)((double)((color1[2]-color4[2])/255.0)*(value-765) + color4[2])
+                                    );
+      }
+    }
+  }
+
   //TODO: Needs some refactoring
   private void calculateColors(int numberOfColors) {
     
+    int[] color1,color2,color3,color4;
     double red, green, blue;
     colorIntegers = new int[numberOfColors];
     
@@ -138,43 +168,27 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
         break;
       
       case CAMPFIRE:
-        for (int x = 0; x < numberOfColors; x++) {
-          int value = (x%1020);
-          int color;
-          if (value <= 255) {
-            colorIntegers[x] = Color.rgb(value,0,0);
-          } else if (value <= 510) {
-            colorIntegers[x] = Color.rgb(255,value-255,0);
-          } else if (value <= 765) {
-            colorIntegers[x] = Color.rgb(255,765-value,0); 
-          } else {
-            colorIntegers[x] = Color.rgb(1020-value,0,0);
-          }
-        }
+        color1 = new int[] {0,0,0};
+        color2 = new int[] {255,0,0};
+        color3 = new int[] {255,255,0};
+        color4 = new int[] {255,0,0};
+        quadColorScheme(numberOfColors,color1,color2,color3,color4);
         break;
       
-      case GREEN:
-        for (int x = 0; x < numberOfColors; x++) {
-          int value = (x%1020)/2;
-          int color;
-          if (value <= 255)
-            color = value;
-          else
-            color = 255-(value-255);
-          colorIntegers[x] = Color.rgb(0,color,0);
-        }
+      case CAMO:
+        color1 = new int[] {50,205,50};
+        color2 = new int[] {34,139,34};
+        color3 = new int[] {0,0,0};
+        color4 = new int[] {107,142,35};
+        quadColorScheme(numberOfColors,color1,color2,color3,color4);
         break;
       
-      case YELLOW:
-        for (int x = 0; x < numberOfColors; x++) {
-          int value = (x%1020)/2;
-          int color;
-          if (value <= 255)
-            color = value;
-          else
-            color = 255-(value-255);
-          colorIntegers[x] = Color.rgb(color,color,0);
-        }
+      case EARTH:
+        color1 = new int[] {238,221,130};
+        color2 = new int[] {0,0,0};
+        color3 = new int[] {255,215,0};
+        color4 = new int[] {218,165,32};
+        quadColorScheme(numberOfColors,color1,color2,color3,color4);
         break;
         
       case BLACK_AND_WHITE:

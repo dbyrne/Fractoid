@@ -31,6 +31,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <item android:id="@+id/rainbow_button"
                       android:checked="true"
                       android:title="Rainbow"/>
+                <item android:id="@+id/black_and_white_button"
+                      android:checked="false"
+                      android:title="Black and White"/>
+                <item android:id="@+id/camp_fire_button"
+                      android:checked="false"
+                      android:title="Camp Fire"/>
+                <item android:id="@+id/camo_button"
+                      android:checked="false"
+                      android:title="Camouflage"/>
+                <item android:id="@+id/earth_button"
+                      android:checked="false"
+                      android:title="Earth"/>
                 <item android:id="@+id/summer_button"
                       android:checked="false"
                       android:title="Summer"/>
@@ -40,21 +52,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <item android:id="@+id/night_sky_button"
                       android:checked="false"
                       android:title="Night Sky"/>
-                <item android:id="@+id/camp_fire_button"
-                      android:checked="false"
-                      android:title="Camp Fire"/>
-                <item android:id="@+id/black_and_white_button"
-                      android:checked="false"
-                      android:title="Black and White"/>
                 <item android:id="@+id/orange_button"
                       android:checked="false"
                       android:title="Orange"/>
-                <item android:id="@+id/green_button"
-                      android:checked="false"
-                      android:title="Green"/>
-                <item android:id="@+id/yellow_button"
-                      android:checked="false"
-                      android:title="Yellow"/>
             </group>
         </menu>
     </item>

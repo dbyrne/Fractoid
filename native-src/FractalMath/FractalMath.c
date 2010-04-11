@@ -397,7 +397,7 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
         }
       }
       
-      if ((alg == 8 || alg == 7 || (alg==3 && lessThanMax == 1) || (alg == 6 && lessThanMax == 1))) { //Average Coloring
+      if ((alg == 8 || alg == 7 || alg==3 || alg == 6) && lessThanMax == 1) { //Average Coloring
         distance1 = distance1/(index-1);
         distance = distance/index;
           

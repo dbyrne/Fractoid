@@ -286,13 +286,13 @@ public class Fractoid extends Activity {
       switchColorSet(item,ColorSet.CAMPFIRE);
       return true;
     
-    case R.id.green_button:
-      fractalView.setColorSet(ColorSet.GREEN);
+    case R.id.camo_button:
+      fractalView.setColorSet(ColorSet.CAMO);
       item.setChecked(true);
       return true;
     
-    case R.id.yellow_button:
-      switchColorSet(item,ColorSet.YELLOW);
+    case R.id.earth_button:
+      switchColorSet(item,ColorSet.EARTH);
       return true;
     
     case R.id.black_and_white_button:
