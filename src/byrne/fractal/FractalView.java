@@ -183,11 +183,11 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
         quadColorScheme(numberOfColors,color1,color2,color3,color4);
         break;
       
-      case EARTH:
-        color1 = new int[] {238,221,130};
+      case BUMBLEBEE:
+        color1 = new int[] {255,215,0};
         color2 = new int[] {0,0,0};
-        color3 = new int[] {255,215,0};
-        color4 = new int[] {218,165,32};
+        color3 = new int[] {218,165,32};
+        color4 = new int[] {0,0,0};
         quadColorScheme(numberOfColors,color1,color2,color3,color4);
         break;
         

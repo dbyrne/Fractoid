@@ -20,5 +20,5 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package byrne.fractal;
 
 public enum ColorSet {
-    RAINBOW, BLACK_AND_WHITE, CAMPFIRE, CAMO, EARTH, WINTER, SUMMER, ORANGE, NIGHT_SKY
+    RAINBOW, BLACK_AND_WHITE, CAMPFIRE, CAMO, BUMBLEBEE, WINTER, SUMMER, ORANGE, NIGHT_SKY
 }

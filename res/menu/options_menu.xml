@@ -40,9 +40,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <item android:id="@+id/camo_button"
                       android:checked="false"
                       android:title="Camouflage"/>
-                <item android:id="@+id/earth_button"
+                <item android:id="@+id/bumblebee_button"
                       android:checked="false"
-                      android:title="Earth"/>
+                      android:title="Bumblebee"/>
                 <item android:id="@+id/summer_button"
                       android:checked="false"
                       android:title="Summer"/>

@@ -291,8 +291,8 @@ public class Fractoid extends Activity {
       item.setChecked(true);
       return true;
     
-    case R.id.earth_button:
-      switchColorSet(item,ColorSet.EARTH);
+    case R.id.bumblebee_button:
+      switchColorSet(item,ColorSet.BUMBLEBEE);
       return true;
     
     case R.id.black_and_white_button:
