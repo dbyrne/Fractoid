@@ -323,6 +323,10 @@ public class Fractoid extends Activity {
       switchEquation(item,ComplexEquation.Z2ZP2);
       return true;
     
+    case R.id.z4z3z2_button:
+      switchEquation(item,ComplexEquation.Z4Z3Z2);
+      return true;
+    
     case R.id.z6z2_button:
       switchEquation(item,ComplexEquation.Z6Z2);
       return true;
