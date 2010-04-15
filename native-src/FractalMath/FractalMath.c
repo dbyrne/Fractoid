@@ -197,16 +197,18 @@ void iterateZ() {
       y = (2*abs(x)*abs(y));
       break;
     case 9: //Manowar
-
       xtmp = (xsq - ysq) + prev_x;
       y = (2*x*y) + prev_y;
-
       break;
     case 10: //Rudy's Cubic Mandelbrot
       xtmp = xsq*x - 3*x*ysq + (-0.7198*x - 0.9111*y);
       y = -ysq*y + 3*xsq*y + (-0.7198*y + 0.9111*x);
       break;
-    case 11: //Phoenix Julia
+    case 11: //Z(n)^2 - Z(n-1)^2
+      xtmp = (xsq - ysq) - (prev_x*prev_x - prev_y*prev_y);
+      y = (2*x*y) - (2*prev_x*prev_y);
+      break;
+    case 12: //Phoenix Julia
       xtmp = xsq - ysq;
       y = 2*x*y;
   }
@@ -214,10 +216,10 @@ void iterateZ() {
 }
 
 double addC() {
-  if (equation < 11) { 
+  if (equation != 12) { 
     x += P;
     y -= Q;
-  } else if (equation == 11) { //Phoenix Julia
+  } else { //Phoenix Julia
     x += P + Q*prev_x;
     y += Q*prev_y;
   }
@@ -255,9 +257,9 @@ double TIA() {
   
   double z_mag = sqrt(tia_prev_x*tia_prev_x + tia_prev_y*tia_prev_y);
   double c_mag;
-  if (equation < 11) {
+  if (equation != 12) {
     c_mag = sqrt(P*P + Q*Q);
-  } else if (equation == 11) { //Phoenix Julia
+  } else { //Phoenix Julia
     double rt = P + Q*prev_x;
     double it = Q*prev_y;
     c_mag = sqrt(rt*rt + it*it);

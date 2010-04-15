@@ -81,6 +81,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                       android:title="Manowar: Z(n)^2 + Z(n-1) + C"/>
                 <item android:id="@+id/rudy_button"
                       android:title="Rudy's Cubic Mandelbrot: Z(n)^2 + D * Z(n) + C"/>
+                <item android:id="@+id/z2zp2_button"
+                      android:title="Z(n)^2 - Z(n-1)^2 + C"/>
                 <item android:id="@+id/z4z3z2_button"
                       android:title="Z(n)^4 - Z(n)^3 - Z(n)^2 + C"/>
                 <item android:id="@+id/z6z2_button"

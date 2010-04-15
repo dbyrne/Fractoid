@@ -318,9 +318,9 @@ public class Fractoid extends Activity {
     case R.id.z6_button:
       switchEquation(item,ComplexEquation.SIXTH_ORDER);
       return true;
-   
-    case R.id.z4z3z2_button:
-      switchEquation(item,ComplexEquation.Z4Z3Z2);
+
+    case R.id.z2zp2_button:
+      switchEquation(item,ComplexEquation.Z2ZP2);
       return true;
     
     case R.id.z6z2_button:
