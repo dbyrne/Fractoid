@@ -38,7 +38,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   private Img fractalBitmap, backgroundBitmap;
   private GenerateFractalTask mGenerateFractalTask;
   private String calculationTime;
-  private ComplexEquation equation = ComplexEquation.SECOND_ORDER;
+  private ComplexEquation equation;
   private MultiTouchController<FractalView.Img> multiTouchController;
   private Resources res;
   private boolean setFull = false, zoom = true, greenLight = true, relative=false;
@@ -52,16 +52,11 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   private int[] colorIntegers;
   private final NativeLib mNativeLib = new NativeLib();
   
-  public FractalView(Context context){
-    super(context);
-    res = context.getResources();
-    multiTouchController = new MultiTouchController<FractalView.Img>(this, res);
-  }
-  
   public FractalView(Context context, AttributeSet attrs) {
         super(context, attrs);
         res = context.getResources();
         multiTouchController = new MultiTouchController<FractalView.Img>(this, res);
+        this.setEquation(ComplexEquation.SECOND_ORDER);
   }
   
   public void setFractoid(Fractoid f) {
