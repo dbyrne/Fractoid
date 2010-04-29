@@ -37,7 +37,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 int lessThanMax, xres=-1, yres=-1, equation,power,max=40,currentRow,rowsCached;
 int trapFactor=1, fractalType=1, alg,minimum = 99999,maximum = 0,bailout,bsq;
-double realmin, realmax, imagmin, imagmax,P,Q,deltaP,deltaQ,LOG_OF_TWO,SQRT_OF_TWO;
+double realmin, realmax, imagmin, imagmax,P,Q,deltaP,deltaQ,LOG_OF_TWO,SQRT_OF_TWO,LOG_OF_POWER;
 double xtmp,ytmp,x=-1,y=-1,prev_x_2,prev_y_2,prev_x=-1,prev_y=-1,tia_prev_x=-1,tia_prev_y=-1,tmp_prev_x,tmp_prev_y,mu=1,xsq,ysq,rnv,inv,rdv,idv;
 
 int** values;
@@ -96,6 +96,7 @@ JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_setEquation
 (JNIEnv * env, jobject obj, jint jequation, jint jpower) {
   equation = jequation;
   power = jpower;
+  LOG_OF_POWER = log(power);
 }
 
 JNIEXPORT void JNICALL Java_byrne_fractal_NativeLib_setMaxIterations
@@ -328,7 +329,7 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
         if (alg == 1) {
           if (xsq + ysq > bsq) {
             if (extraIterations == 2) {
-              mu = index + 2 - (log(log(sqrt(xsq + ysq))/LOG_OF_TWO)/log(power));  
+              mu = index + 2 - (log(log(sqrt(xsq + ysq))/LOG_OF_TWO)/LOG_OF_POWER);  
               lessThanMax = 1;
               break;
             } else {
@@ -339,7 +340,7 @@ JNIEXPORT jintArray JNICALL Java_byrne_fractal_NativeLib_getFractalRow
         } else if (alg == 8 || alg == 7 || alg == 6 || alg == 2 || alg == 3) {
           
           if (xsq + ysq > bsq) {
-            mu = (log(log(bailout)) - log(log(sqrt(xsq + ysq))))/log(power) + 1;
+            mu = (log(log(bailout)) - log(log(sqrt(xsq + ysq))))/LOG_OF_POWER + 1;
             lessThanMax = 1;
             break;
           }
