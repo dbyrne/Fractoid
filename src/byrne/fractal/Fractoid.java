@@ -41,10 +41,8 @@ import android.provider.MediaStore.Images.Media;
 import android.content.ContentValues;
 import android.widget.Button;
 import android.widget.EditText;
-import byrne.fractal.MultiTouchController;
-import byrne.fractal.MultiTouchController.MultiTouchObjectCanvas;
-import byrne.fractal.MultiTouchController.PointInfo;
-import byrne.fractal.MultiTouchController.PositionAndScale;
+
+import org.metalev.multitouch.controller.MultiTouchController.*;
 
 //import android.os.Debug;
 

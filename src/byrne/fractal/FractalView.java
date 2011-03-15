@@ -30,7 +30,10 @@ import android.content.res.Resources;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.util.AttributeSet;
-import byrne.fractal.MultiTouchController.*;
+
+import org.metalev.multitouch.controller.MultiTouchController;
+import org.metalev.multitouch.controller.MultiTouchController.*;
+
 
 public class FractalView extends View implements MultiTouchObjectCanvas<FractalView.Img> {
     
@@ -41,7 +44,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   private ComplexEquation equation;
   private MultiTouchController<FractalView.Img> multiTouchController;
   private Resources res;
-  private boolean setFull = false, zoom = true, greenLight = true, relative=false;
+  private boolean setFull = false, zoom = true, relative=false;
   private ColorSet colorSet = ColorSet.RAINBOW;
   private FractalType fractalType = FractalType.MANDELBROT;
   int maxIterations = 40;
@@ -55,7 +58,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
   public FractalView(Context context, AttributeSet attrs) {
         super(context, attrs);
         res = context.getResources();
-        multiTouchController = new MultiTouchController<FractalView.Img>(this, res);
+        multiTouchController = new MultiTouchController<FractalView.Img>(this);
         this.setEquation(ComplexEquation.SECOND_ORDER);
   }
   
@@ -312,11 +315,6 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
       mGenerateFractalTask.cancel(true);
     }
     
-    while(!greenLight) {
-      try {
-        Thread.sleep(100);
-      } catch (InterruptedException e) {}
-    }
   }
 
   public void startFractalTask(boolean reset) {
@@ -334,14 +332,13 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
     mFractoid.setCalibrateButtonEnabled(false,relative);
     
     calculateColors(1021);
-    greenLight = false;
+
     mGenerateFractalTask = new GenerateFractalTask(this,relative);
+    System.out.println("Starting new fractal");
     mGenerateFractalTask.execute();
   }
 
-  public void greenLight() {
-    greenLight = true;
-  }
+
   
   public void setRelative(boolean r) {
     relative = r;
@@ -454,11 +451,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
       return true;
     } else {
       if (fractalBitmap != null) {
-        if (greenLight){
-          return multiTouchController.onTouchEvent(event);
-        } else {
-          stopFractalTask();  
-        }
+	return multiTouchController.onTouchEvent(event);
       }
     }
     return true;
@@ -501,6 +494,7 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
    */
   public void selectObject(Img img, PointInfo touchPoint) {
     if (img == null) {
+      System.out.println("fractalBitmap="+fractalBitmap.toString());
       backgroundBitmap = fractalBitmap;
       recalculate();
     }
@@ -509,7 +503,8 @@ public class FractalView extends View implements MultiTouchObjectCanvas<FractalV
 
   /** Get the current position and scale of the selected image. Called whenever a drag starts or is reset. */
   public void getPositionAndScale(Img img, PositionAndScale objPosAndScaleOut) {
-    objPosAndScaleOut.set(img.getCenterX(), img.getCenterY(), img.getScale());
+    objPosAndScaleOut.set(img.getCenterX(), img.getCenterY(),true, img.getScale(),
+                          false, 0.0f, 0.0f, false, 0.0f);
   }
 
   /** Set the position and scale of the dragged/stretched image. */
