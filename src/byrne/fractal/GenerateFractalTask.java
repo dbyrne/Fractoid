@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package byrne.fractal;
 
 import android.os.AsyncTask;
+import android.util.Log;
 import android.graphics.*;
 
 public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
@@ -90,27 +91,27 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
           state = 0;
         }
         rowColors = mNativeLib.getFractalRow(row,state);
-        
-        //TODO Find a more elegant way to handle 2x2 and 1x1 rendering
-        int step = 1;
-        if (state > 0)
-          step = 2;
-        for(int col=(state%2); col < xres; col = col+step) {
-          
-          if (rowColors[col] >= 0) {
-            if (relative) {
-              paint.setColor(colors[Math.round(((float)(rowColors[col]-minimum)/range)*1020)]);
-            } else {
-              paint.setColor(colors[(rowColors[col]%10200)/10]);
-            }
-          } else {
-            paint.setColor(Color.BLACK);
-          }
-          //TODO Store results so color changes don't require recalculation
-          c.drawPoint(col,row,paint);
+
+        for(int col=0; col < xres; col++) {
+     	    if (rowColors[col] >= 0) {
+     	    	rowColors[col] = colors[rowColors[col]%1000];
+     	    } else {
+     	    	rowColors[col] = 0;
+     	    }
+        }
+        if (rpass==0) { // TODO: We can do better...
+            for(int col=0; col < xres; col+=2) {
+            	rowColors[col+1] = rowColors[col];
+       	    }
+            b.setPixels(rowColors, 0, xres, 0, row, xres, 1);
+            b.setPixels(rowColors, 0, xres, 0, row+1, xres, 1);
+        } else {
+            b.setPixels(rowColors, 0, xres, 0, row, xres, 1);
         }
       }
     }
+	Log.i("range", "min:"+ minimum + " max:" + maximum);
+
     return b;
   }
   
@@ -121,7 +122,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
     return createBitmap();
   }
   @Override protected void onProgressUpdate(Bitmap... b) {
-    fractalView.setFractal(b[0]);
+    fractalView.setFractal(b[0]); // TODO: only update the new rows...
     fractalView.setProgress(((prog*2)/3.0f)/mNativeLib.getYRes());
     fractalView.invalidate();
   }
