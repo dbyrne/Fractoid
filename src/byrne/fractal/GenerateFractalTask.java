@@ -90,27 +90,30 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
           state = 0;
         }
         rowColors = mNativeLib.getFractalRow(row,state);
-        
-        //TODO Find a more elegant way to handle 2x2 and 1x1 rendering
-        int step = 1;
-        if (state > 0)
-          step = 2;
-        for(int col=(state%2); col < xres; col = col+step) {
-          
-          if (rowColors[col] >= 0) {
-            if (relative) {
-              paint.setColor(colors[Math.round(((float)(rowColors[col]-minimum)/range)*1020)]);
-            } else {
-              paint.setColor(colors[(rowColors[col]%10200)/10]);
-            }
-          } else {
-            paint.setColor(Color.BLACK);
-          }
-          //TODO Store results so color changes don't require recalculation
-          c.drawPoint(col,row,paint);
+
+        for(int col=0; col < xres; col++) {
+     	    if (rowColors[col] >= 0) {
+     	    	rowColors[col] = colors[rowColors[col]%1000];
+     	    } else {
+     	    	rowColors[col] = 0;
+     	    }
+        }
+        if (rpass==0) {
+            // First pass, 2x downsampled
+            for(int col=0; col < xres; col+=2) {
+              // Double pixels size in row
+            	rowColors[col+1] = rowColors[col];
+       	    }
+            // And double-copy to bitmap 
+            b.setPixels(rowColors, 0, xres, 0, row, xres, 1);
+            b.setPixels(rowColors, 0, xres, 0, row+1, xres, 1);
+        } else {
+            // Copy to bitmap
+            b.setPixels(rowColors, 0, xres, 0, row, xres, 1);
         }
       }
     }
+
     return b;
   }
   
