@@ -20,7 +20,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package byrne.fractal;
 
 import android.os.AsyncTask;
-import android.util.Log;
 import android.graphics.*;
 
 public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
@@ -99,7 +98,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
      	    	rowColors[col] = 0;
      	    }
         }
-        if (rpass==0) { // TODO: We can do better...
+        if (rpass==0) {
             for(int col=0; col < xres; col+=2) {
             	rowColors[col+1] = rowColors[col];
        	    }
@@ -110,7 +109,6 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
         }
       }
     }
-	Log.i("range", "min:"+ minimum + " max:" + maximum);
 
     return b;
   }
@@ -122,7 +120,7 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
     return createBitmap();
   }
   @Override protected void onProgressUpdate(Bitmap... b) {
-    fractalView.setFractal(b[0]); // TODO: only update the new rows...
+    fractalView.setFractal(b[0]);
     fractalView.setProgress(((prog*2)/3.0f)/mNativeLib.getYRes());
     fractalView.invalidate();
   }
