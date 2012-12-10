@@ -99,12 +99,16 @@ public class GenerateFractalTask extends AsyncTask<Void, Bitmap, Bitmap> {
      	    }
         }
         if (rpass==0) {
+            // First pass, 2x downsampled
             for(int col=0; col < xres; col+=2) {
+              // Double pixels size in row
             	rowColors[col+1] = rowColors[col];
        	    }
+            // And double-copy to bitmap 
             b.setPixels(rowColors, 0, xres, 0, row, xres, 1);
             b.setPixels(rowColors, 0, xres, 0, row+1, xres, 1);
         } else {
+            // Copy to bitmap
             b.setPixels(rowColors, 0, xres, 0, row, xres, 1);
         }
       }
