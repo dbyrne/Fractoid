@@ -19,30 +19,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package byrne.fractal;
 
-import java.io.OutputStream;
-import android.net.Uri;
 import android.app.Activity;
-import android.app.WallpaperManager;
+import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
-import android.content.Intent;
+import android.app.WallpaperManager;
 import android.content.ActivityNotFoundException;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.view.Window;
+import android.provider.MediaStore.Images.Media;
 import android.view.Menu;
-import android.view.SubMenu;
-import android.view.MenuItem;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.provider.MediaStore.Images.Media;
-import android.content.ContentValues;
 import android.widget.Button;
 import android.widget.EditText;
-
-import org.metalev.multitouch.controller.MultiTouchController.*;
 
 //import android.os.Debug;
 
@@ -163,21 +155,13 @@ public class Fractoid extends Activity {
   
   public Uri saveImage() {
     //TODO Display an error dialog if user tries to save while image is being rendered
-    Uri uri = null;
     try{
-      ContentValues values = new ContentValues(3);
-      values.put(Media.DISPLAY_NAME, "Fractal");
-      values.put(Media.DESCRIPTION, "Generated using Fractoid");
-      values.put(Media.MIME_TYPE, "image/png");
-      uri = getContentResolver().insert(Media.EXTERNAL_CONTENT_URI, values);
-      OutputStream os = getContentResolver().openOutputStream(uri);
-      fractalView.getFractal().compress(CompressFormat.PNG, 100, os);
-      os.flush();
-      os.close();
+      String path = Media.insertImage(getContentResolver(), fractalView.getFractal(), "Fractal", "Generated using Fractoid");
+      return Uri.parse(path);
     } catch (Exception e) {
-      System.out.println(e);
+      e.printStackTrace();
+      return null;
     }
-    return uri;
   }
   
   public void setCalibrateButtonEnabled(boolean b, boolean r) {
