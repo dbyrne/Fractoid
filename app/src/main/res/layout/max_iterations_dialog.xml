@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <!--
 This file is part of Fractoid
@@ -26,14 +26,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
               android:layout_height="wrap_content"
               android:padding="10dp"
               >   
-    <EditText android:id="@+id/trapFactorText"
+    <EditText android:id="@+id/maxIterationsText"
               android:layout_width="100dip"
               android:layout_height="wrap_content"
               android:numeric="decimal"
               android:maxLength="5"
               />   
     <Button
-        android:id="@+id/setTrapFactorButton" 
+        android:id="@+id/setButton" 
         android:layout_width="wrap_content" 
         android:layout_height="wrap_content"
         android:text="Ok" />
