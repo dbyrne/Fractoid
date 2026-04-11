@@ -41,11 +41,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <Button
         android:id="@+id/calibrateButton"
         android:text="Calibrate Colors"
-        android:layout_width="wrap_content" 
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="5px"
-        android:layout_marginRight="5px"/>     
+        android:layout_marginRight="5px"/>
+
+    <Button
+        android:id="@+id/menuButton"
+        android:text="Menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="5px"/>
 
 </RelativeLayout>

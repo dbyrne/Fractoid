@@ -35,6 +35,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.PopupMenu;
 
 //import android.os.Debug;
 
@@ -46,6 +47,9 @@ public class Fractoid extends Activity {
   boolean relativeColors = false;
   private final int MAX_ITERATIONS_DIALOG = 1;
   private final int TRAP_FACTOR_DIALOG = 2;
+  private int checkedColorId = R.id.rainbow_button;
+  private int checkedEquationId = R.id.z2_button;
+  private int checkedAlgorithmId = R.id.escape_time_button;
 
   @Override public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -65,6 +69,25 @@ public class Fractoid extends Activity {
 	setJuliaButtonEnabled(false);
 	fractalView.setZoom(false);
 	fractalView.postInvalidate();
+      }
+    });
+
+    Button menuButton = (Button) findViewById(R.id.menuButton);
+    menuButton.setOnClickListener(new View.OnClickListener() {
+      public void onClick(View v) {
+        PopupMenu popup = new PopupMenu(Fractoid.this, v);
+        popup.getMenuInflater().inflate(R.menu.options_menu, popup.getMenu());
+        Menu menu = popup.getMenu();
+        itemPhoenix = menu.findItem(R.id.phoenix_button);
+        menu.findItem(checkedColorId).setChecked(true);
+        menu.findItem(checkedEquationId).setChecked(true);
+        menu.findItem(checkedAlgorithmId).setChecked(true);
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+          public boolean onMenuItemClick(MenuItem item) {
+            return onOptionsItemSelected(item);
+          }
+        });
+        popup.show();
       }
     });
 
@@ -188,34 +211,31 @@ public class Fractoid extends Activity {
   }
   
   public void switchColorSet(MenuItem item, ColorSet cs) {
-    if (!item.isChecked()) {
-      fractalView.setColorSet(cs);
-      item.setChecked(true);
-    }
+    checkedColorId = item.getItemId();
+    fractalView.setColorSet(cs);
+    item.setChecked(true);
   }
-  
+
   public void switchAlgorithm(MenuItem item, Algorithm alg) {
-    if (!item.isChecked()) {
-      fractalView.setAlgorithm(alg);
-      item.setChecked(true);
-    }
+    checkedAlgorithmId = item.getItemId();
+    fractalView.setAlgorithm(alg);
+    item.setChecked(true);
   }
-  
+
   public void switchEquation(MenuItem item, ComplexEquation e) {
-    if (!item.isChecked()) {
-      item.setChecked(true);
-      fractalView.setEquation(e);
-      if (item == itemPhoenix) {
-	/*
-	The mandelbrot fractal for this equation is ugly so
-	we only allow the user to explore the Julia version
-        */
-	setJuliaButtonEnabled(false);
-      } else {
-	setJuliaButtonEnabled(true);
-      }
-      fractalView.resetCoords();
+    checkedEquationId = item.getItemId();
+    item.setChecked(true);
+    fractalView.setEquation(e);
+    if (item.getItemId() == R.id.phoenix_button) {
+      /*
+      The mandelbrot fractal for this equation is ugly so
+      we only allow the user to explore the Julia version
+      */
+      setJuliaButtonEnabled(false);
+    } else {
+      setJuliaButtonEnabled(true);
     }
+    fractalView.resetCoords();
   }
   
   @Override public boolean onCreateOptionsMenu(Menu menu) {
@@ -269,8 +289,7 @@ public class Fractoid extends Activity {
       return true;
     
     case R.id.camo_button:
-      fractalView.setColorSet(ColorSet.CAMO);
-      item.setChecked(true);
+      switchColorSet(item,ColorSet.CAMO);
       return true;
     
     case R.id.bumblebee_button:
